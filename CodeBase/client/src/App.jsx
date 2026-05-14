@@ -10,7 +10,7 @@ import PostRoomSummary from './pages/PostRoomSummary';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { darkTheme, lightTheme } from './theme';
 import MainLogo from './assets/main-logo.png';
 
@@ -31,9 +31,11 @@ function App() {
   };
 
   const [theme, setTheme] = useState(initializeTheme);
+  const themeBeforeAnimation = useRef(theme);
 
   useEffect(() => {
     if (theme === 'animating') return;
+    themeBeforeAnimation.current = theme;
     const currentTheme = document.documentElement.getAttribute('data-theme');
     if (theme !== currentTheme) {
       const themeVars = theme === 'dark' ? darkTheme : lightTheme;
@@ -82,7 +84,7 @@ function App() {
                 title="Toggle light/dark mode"
                 aria-label="Toggle theme"
               >
-                {theme === 'dark' || theme === 'animating' ? (
+                {(theme === 'animating' ? themeBeforeAnimation.current === 'dark' : theme === 'dark') ? (
                   <svg className="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="5" />
                     <g>
@@ -145,7 +147,7 @@ function App() {
                 title="Toggle light/dark mode"
                 aria-label="Toggle theme"
               >
-                {theme === 'dark' || theme === 'animating' ? (
+                {(theme === 'animating' ? themeBeforeAnimation.current === 'dark' : theme === 'dark') ? (
                   <svg className="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="5" />
                     <g>
