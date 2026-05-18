@@ -1,0 +1,14 @@
+# robots.txt for WaveTone
+
+# Allow all user agents
+User-agent: *
+
+# Disallow crawling of certain directories
+Disallow: /private/
+Disallow: /temp/
+
+# Allow crawling of all other content
+Allow: /
+
+# Sitemap location
+Sitemap: https://wavetone.vercel.app/sitemap.xml

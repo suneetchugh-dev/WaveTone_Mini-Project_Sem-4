@@ -5,8 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'wasm-unsafe-eval' 'inline-speculation-rules' https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: wss: ws://localhost:5000 http://localhost:5000 wss://wave-tone-backend-production.up.railway.app; img-src 'self' data: https:; media-src 'self' blob:;" />
     <meta http-equiv="Permissions-Policy" content="accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), xr-spatial-tracking=(), browsing-topics=(), run-ad-auction=(), join-ad-interest-group=(), private-state-token-redemption=(), private-state-token-issuance=(), private-aggregation=(), attribution-reporting=()" />
+    <meta name="description" content="WaveTone - Create and join voice rooms effortlessly. Engage in discussions, debates, and chill sessions with ease." />
     <title>WaveTone</title>
-    <link rel="icon" type="image/png" href="/src/assets/main-logo.png" />
+    <link rel="icon" type="image/webp" href="./src/assets/main-logo.webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="image" href="/assets/main-logo-BYA0zUgt.png">
+    <style>
+      /* Critical CSS for above-the-fold content */
+      .app-bg {
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text-primary);
+        transition: background 0.35s ease, color 0.35s ease;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .app-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 200%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,50 Q300,10 600,50 T1200,50 L1200,120 L0,120 Z" fill="rgba(56, 189, 248, 0.03)" opacity="0.5"/><path d="M0,60 Q300,25 600,60 T1200,60 L1200,60 L0,120 Z" fill="rgba(56, 189, 248, 0.02)" opacity="0.3"/></svg>') repeat-x;
+        background-size: 800px 120px;
+        animation: wave-motion 15s linear infinite;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @keyframes wave-motion {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(400px); }
+      }
+
+      .main-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, rgba(26, 29, 36, 0.88) 0%, rgba(26, 29, 36, 0.8) 100%);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        padding: 0.25rem 2.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        transition: background 0.35s ease, box-shadow 0.35s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        width: 100%;
+      }
+
+      .nav-logo-img {
+        width: 48px;
+        height: 48px;
+        margin: 0 0.7rem 0 0.2rem;
+        border-radius: 10px;
+        object-fit: contain;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        transition: box-shadow 0.2s ease, filter 0.2s ease, transform 0.2s ease;
+        transform: translateY(-2px);
+      }
+      .nav-logo-link:hover .nav-logo-img {
+        transform: translateY(-3px);
+        filter: brightness(1.06) contrast(1.02);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
