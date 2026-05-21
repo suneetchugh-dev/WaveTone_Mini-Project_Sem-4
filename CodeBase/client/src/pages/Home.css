@@ -30,18 +30,21 @@
   max-width: 680px;
   margin: 0;
   color: var(--text-primary);
-  font-size: clamp(2.1rem, 5.4vw, 4.1rem);
-  line-height: 1.05;
-  font-weight: 900;
-  letter-spacing: -0.045em;
+  font-size: clamp(2rem, 5.2vw, 3.8rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .home-subtext {
   max-width: 580px;
   margin: 1.1rem 0 0;
   color: var(--text-secondary);
-  font-size: clamp(0.98rem, 1.8vw, 1.08rem);
-  line-height: 1.7;
+  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+  line-height: 1.75;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .home-actions {
@@ -87,16 +90,19 @@
 .live-eyebrow {
   display: block;
   color: var(--text-tertiary);
-  font-size: 0.76rem;
-  font-weight: 850;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
+  font-family: 'Geist Mono', monospace;
 }
 
 .live-panel h2 {
   margin: 0.2rem 0 0;
   color: var(--text-primary);
   font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .live-indicator {
@@ -172,13 +178,17 @@
 .preview-room strong {
   color: var(--text-primary);
   font-size: 0.95rem;
-  line-height: 1.35;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .preview-room span {
   margin-top: 0.2rem;
   color: var(--text-tertiary);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .room-count {
@@ -226,8 +236,9 @@
   margin: 0 0 0.6rem;
   color: var(--text-primary);
   font-size: 1rem;
-  line-height: 1.3;
-  font-weight: 850;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .feature-card p {
@@ -235,6 +246,8 @@
   color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.65;
+  font-weight: 400;
+  letter-spacing: -0.005em;
 }
 
 /* Add padding to .home-features in dark mode */

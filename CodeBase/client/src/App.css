@@ -178,14 +178,15 @@
 
 .nav-title {
   transform: translateY(-2px);
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   border: none;
   border-radius: 8px;
   padding: 0.75rem 0.5rem 0.35rem 0.5rem;
   background: transparent;
   position: relative;
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .nav-title::after {
@@ -218,8 +219,9 @@
 .nav-link {
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 500;
+  letter-spacing: -0.01em;
   padding: 0.45rem 0.85rem;
   display: flex;
   align-items: center;
@@ -404,8 +406,9 @@
 /* ===== BUTTONS ===== */
 .home-btn {
   padding: 0.9rem 2.25rem;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
   border-radius: 10px;
   text-decoration: none;
   transition: all 0.35s ease;

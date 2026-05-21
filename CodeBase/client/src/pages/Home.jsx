@@ -65,30 +65,6 @@ function Home() {
           </div>
         </aside>
       </section>
-
-      <section className="home-features">
-        <div className="feature-card fade-in">
-          <div className="feature-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          </div>
-          <h2>Voice-first rooms</h2>
-          <p>Open a room for the discussion at hand, then close it when the moment is done.</p>
-        </div>
-        <div className="feature-card fade-in" style={{ animationDelay: '0.1s' }}>
-          <div className="feature-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <h2>Alias-based entry</h2>
-          <p>Join with a short name instead of creating another account or public identity.</p>
-        </div>
-        <div className="feature-card fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="feature-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <h2>Live moderation</h2>
-          <p>Keep the room useful while people are speaking, without making hosts manage everything manually.</p>
-        </div>
-      </section>
     </div>
   );
 }
