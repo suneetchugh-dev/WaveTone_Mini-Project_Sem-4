@@ -764,14 +764,14 @@ body[data-route='create-room'] .form-label {
   animation: speaking-pulse-once 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1;
 }
 
-/* Participant name truncation */
+/* Participant name with wrapping and dynamic expansion */
 .participant-name {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: block;
+  max-width: 120px;
   word-break: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+  display: block;
+  line-height: 1.2;
 }
 
 /* Light theme participant avatar */
