@@ -526,6 +526,24 @@ body[data-route='create-room'] .form-label {
   padding-right: 2.5rem;
 }
 
+.form-select option {
+  background: var(--bg);
+  color: var(--text-primary);
+  padding: 0.5rem;
+}
+
+/* Dark theme form select option */
+[data-theme="dark"] .form-select option {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+/* Light theme form select option */
+[data-theme="light"] .form-select option {
+  background: #ffffff;
+  color: #0A2E50;
+}
+
 /* Number input styling */
 .form-input[type="number"] {
   appearance: textfield;
