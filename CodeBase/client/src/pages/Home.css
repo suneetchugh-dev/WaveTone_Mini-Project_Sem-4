@@ -10,6 +10,16 @@
   transform: none;
 }
 
+body[data-route="home"] {
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  body[data-route="home"] {
+    overflow-y: auto;
+  }
+}
+
 body[data-route="home"] .page-container {
   padding-top: clamp(0.4rem, 1.6vw, 1rem);
   padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
@@ -297,6 +307,7 @@ body[data-route="home"] .page-container {
   .home-title {
     margin-left: auto;
     margin-right: auto;
+    margin-top: 1rem;
   }
 
   .home-subtext {
