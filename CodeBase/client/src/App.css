@@ -179,8 +179,8 @@
 .nav-title {
   transform: translateY(-2px);
   font-size: 1.3rem;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--letter-spacing-normal);
+  font-weight: 800;
+  letter-spacing: 0.04em;
   border: none;
   border-radius: 8px;
   padding: 0.75rem 0.5rem 0.35rem 0.5rem;
@@ -188,6 +188,7 @@
   position: relative;
   font-family: var(--font-family-display);
   font-feature-settings: var(--font-features);
+  color: var(--text-primary);
 }
 
 .nav-title::after {
