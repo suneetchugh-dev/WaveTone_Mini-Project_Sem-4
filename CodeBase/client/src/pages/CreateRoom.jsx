@@ -58,8 +58,8 @@ function CreateRoom() {
       <h2 className="page-title">Create a Room</h2>
       <p className="page-subtitle">Set up your anonymous voice room in seconds.</p>
 
-      <form onSubmit={handleCreate}>
-        <div className="card" style={{ marginBottom: '1.2rem' }}>
+      <form onSubmit={handleCreate} className="create-room-form">
+        <div className="card create-room-card">
           <div className="form-group">
             <label className="form-label">Room Topic</label>
             <input
@@ -82,7 +82,7 @@ function CreateRoom() {
               onChange={e => setCustomAlias(e.target.value.slice(0, 16))}
               maxLength={16}
             />
-            <span style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem', marginTop: '0.3rem', display: 'block' }}>
+            <span className="field-hint">
               {customAlias.length}/16 characters
             </span>
           </div>
@@ -108,7 +108,7 @@ function CreateRoom() {
                 maxLength={20}
                 required
               />
-              <span style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem', marginTop: '0.3rem', display: 'block' }}>
+              <span className="field-hint">
                 {customCategory.length}/20 characters
               </span>
             </div>
@@ -128,7 +128,7 @@ function CreateRoom() {
             </select>
           </div>
 
-          <div className="toggle-row">
+          <div className="toggle-row create-room-toggle">
             <div>
               <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.92rem' }}>Private Room</span>
               <p style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem', margin: 0 }}>Only people with the link can join</p>
@@ -142,7 +142,7 @@ function CreateRoom() {
           </div>
 
           {error && (
-            <p style={{ color: 'var(--warning)', fontSize: '0.85rem', marginTop: '0.8rem' }}>
+            <p className="form-error">
               {error}
             </p>
           )}

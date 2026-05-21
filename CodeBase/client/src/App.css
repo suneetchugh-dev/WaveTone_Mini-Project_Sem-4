@@ -139,7 +139,7 @@
   background: linear-gradient(135deg, rgba(26, 29, 36, 0.88) 0%, rgba(26, 29, 36, 0.8) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  padding: 0.25rem 2.5rem;
+  padding: 0.10rem 2.5rem;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -394,6 +394,7 @@
   width: 100%;
   max-width: 1320px;
   min-height: calc(100vh - 120px);
+  margin-top: -0.5rem;
   background: transparent;
   border-radius: 0;
   padding: 0;

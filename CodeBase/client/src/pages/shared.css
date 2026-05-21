@@ -74,6 +74,19 @@
   }
 }
 @media (max-width: 700px) {
+  .create-room-card {
+    grid-template-columns: 1fr;
+  }
+
+  .create-room-toggle {
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .create-room-toggle .toggle-switch {
+    flex: 0 0 auto;
+  }
+
   .home-btn {
     font-size: 0.88rem;
     padding: 0.5rem 0.9rem;
@@ -85,6 +98,24 @@
 }
 
 @media (max-width: 500px) {
+  body[data-route='create-room'] .page-container {
+    padding-top: 0.5rem;
+  }
+
+  body[data-route='create-room'] .page-section {
+    padding-inline: 0.85rem;
+  }
+
+  body[data-route='create-room'] .page-subtitle {
+    margin-bottom: 0.8rem;
+  }
+
+  .create-room-card {
+    gap: 0.8rem;
+    padding: 0.9rem;
+    margin-bottom: 0.85rem;
+  }
+
   .home-btn {
     font-size: 0.8rem;
     padding: 0.4rem 0.6rem;
@@ -208,7 +239,7 @@
 .page-subtitle {
   color: var(--text-tertiary);
   font-size: 0.95rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 /* Light theme subtitle */
@@ -262,6 +293,69 @@
 /* Form elements */
 .form-group {
   margin-bottom: 1rem;
+}
+
+body[data-route='create-room'] .page-container {
+  padding-top: clamp(0.5rem, 1.6vw, 1rem);
+  padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+body[data-route='create-room'] .page-section {
+  width: min(100%, 900px);
+  padding-block: 0;
+}
+
+body[data-route='create-room'] .page-title {
+  margin-top: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+body[data-route='create-room'] .page-subtitle {
+  margin-bottom: 2.5rem;
+}
+
+.create-room-form {
+  width: 100%;
+}
+
+.create-room-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem 1.25rem;
+  margin-bottom: 2.05rem;
+  padding: 2.05rem;
+}
+
+.create-room-card .form-group {
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.create-room-toggle,
+.form-error {
+  grid-column: 1 / -1;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--text-tertiary);
+  font-size: 0.72rem;
+}
+
+body[data-route='create-room'] .form-input,
+body[data-route='create-room'] .form-select {
+  padding-block: 0.8rem;
+}
+
+body[data-route='create-room'] .form-label {
+  margin-bottom: 0.5rem;
+}
+
+.form-error {
+  margin: 0;
+  color: var(--warning);
+  font-size: 0.85rem;
 }
 
 .form-label {
@@ -377,8 +471,9 @@
 .toggle-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 0;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 5px;
 }
 .toggle-switch {
   width: 50px;
