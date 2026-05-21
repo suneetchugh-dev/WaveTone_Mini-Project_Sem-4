@@ -620,7 +620,9 @@ function VoiceRoom() {
                   {p.alias[0].toUpperCase()}
                 </div>
                 <div style={{ marginTop: '0.6rem', fontSize: '0.8rem', color: isSpeaking ? 'var(--speaking)' : 'var(--text-tertiary)', fontWeight: 600, marginBottom: '0.4rem' }}>
-                  {p.alias}{p.isSelf ? ' (you)' : ''}
+                  <div className="participant-name">
+                    {p.alias}{p.isSelf ? ' (you)' : ''}
+                  </div>
                   {isHost && p.isSelf && (
                     <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--speaking)', opacity: 0.7, marginTop: '0.1rem' }}>Host</span>
                   )}

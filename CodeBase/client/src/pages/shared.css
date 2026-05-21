@@ -764,6 +764,16 @@ body[data-route='create-room'] .form-label {
   animation: speaking-pulse-once 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1;
 }
 
+/* Participant name truncation */
+.participant-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  word-break: break-word;
+}
+
 /* Light theme participant avatar */
 [data-theme="light"] .participant-avatar {
   background: rgba(10, 46, 80, 0.1);
