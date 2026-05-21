@@ -10,13 +10,16 @@ html {
 
 body {
   margin: 0;
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-family-body, 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
   background: var(--bg);
   color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-normal, 1.5);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  font-feature-settings: "rlig" 1, "calt" 1;
+  font-feature-settings: var(--font-features, "rlig" 1, "calt" 1);
 }
 
 ::-webkit-scrollbar {
@@ -49,56 +52,65 @@ input, select, textarea { font-family: inherit; }
 
 /* Typography System */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+  font-feature-settings: var(--font-features);
 }
 
 h1 {
   font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
 }
 
 h2 {
   font-size: clamp(1.5rem, 4vw, 2.25rem);
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-normal);
 }
 
 h3 {
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-normal);
 }
 
 h4 {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-normal);
 }
 
 h5 {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-normal);
 }
 
 h6 {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-normal);
 }
 
 p {
   font-size: 1rem;
-  line-height: 1.6;
-  font-weight: 400;
+  line-height: var(--line-height-relaxed);
+  font-weight: var(--font-weight-regular);
+  font-feature-settings: var(--font-features);
 }
 
 small, .text-small {
   font-size: 0.875rem;
-  line-height: 1.5;
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-regular);
 }
 
 code, pre {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-family-mono);
   font-size: 0.9em;
+  font-weight: var(--font-weight-regular);
 }
