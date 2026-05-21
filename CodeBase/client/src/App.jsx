@@ -61,6 +61,9 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const resolvedTheme = theme === 'animating' ? themeBeforeAnimation.current : theme;
+  const themeToggleLabel = resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+
   return (
     <div className="app-bg">
       <nav className="main-nav">
@@ -87,8 +90,9 @@ function App() {
                     setTimeout(() => setTheme(theme === 'dark' ? 'light' : 'dark'), 400);
                   }
                 }}
-                title="Toggle light/dark mode"
-                aria-label="Toggle theme"
+                title={themeToggleLabel}
+                aria-label={themeToggleLabel}
+                data-tooltip={themeToggleLabel}
               >
                 {(theme === 'animating' ? themeBeforeAnimation.current === 'dark' : theme === 'dark') ? (
                   <svg className="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -150,8 +154,9 @@ function App() {
                     setTimeout(() => setTheme(theme === 'dark' ? 'light' : 'dark'), 400);
                   }
                 }}
-                title="Toggle light/dark mode"
-                aria-label="Toggle theme"
+                title={themeToggleLabel}
+                aria-label={themeToggleLabel}
+                data-tooltip={themeToggleLabel}
               >
                 {(theme === 'animating' ? themeBeforeAnimation.current === 'dark' : theme === 'dark') ? (
                   <svg className="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

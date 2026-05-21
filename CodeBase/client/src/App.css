@@ -284,13 +284,47 @@
   transition: all 0.3s ease;
   z-index: 0;
 }
+.theme-toggle::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  right: 0;
+  z-index: 20;
+  width: max-content;
+  max-width: 180px;
+  padding: 0.42rem 0.6rem;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  font-size: 0.72rem;
+  line-height: 1.25;
+  font-weight: var(--font-weight-medium);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
 .theme-toggle:hover::before {
   width: 36px;
   height: 36px;
 }
+.theme-toggle:hover::after,
+.theme-toggle:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
 .theme-toggle:hover {
   color: var(--speaking);
   border-color: var(--speaking);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+}
+.theme-toggle:focus-visible {
+  color: var(--speaking);
+  border-color: var(--speaking);
+  outline: 2px solid var(--speaking);
+  outline-offset: 3px;
   box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
 }
 .theme-toggle.rotating .theme-icon {
@@ -409,7 +443,7 @@
 
 /* ===== BUTTONS ===== */
 .home-btn {
-  padding: 0.9rem 2.25rem;
+  padding: 0.9rem 3.25rem;
   font-size: 1rem;
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--letter-spacing-normal);
