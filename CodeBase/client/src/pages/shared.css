@@ -812,9 +812,9 @@ body[data-route='create-room'] .form-label {
   100% { box-shadow: 0 0 8px 2px rgba(56, 189, 248, 0.25); }
 }
 @keyframes speaking-pulse-once-light {
-  0% { box-shadow: 0 0 8px 2px rgba(10, 46, 80, 0.18); }
-  50% { box-shadow: 0 0 24px 8px rgba(10, 46, 80, 0.35); }
-  100% { box-shadow: 0 0 8px 2px rgba(10, 46, 80, 0.18); }
+  0% { box-shadow: 0 0 8px 2px rgba(3, 105, 161, 0.25); }
+  50% { box-shadow: 0 0 24px 8px rgba(3, 105, 161, 0.45); }
+  100% { box-shadow: 0 0 8px 2px rgba(3, 105, 161, 0.25); }
 }
 
 
