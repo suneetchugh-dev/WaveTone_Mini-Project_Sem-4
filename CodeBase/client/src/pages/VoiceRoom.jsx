@@ -614,7 +614,7 @@ function VoiceRoom() {
             return (
               <div
                 key={p.socketId}
-                style={{ textAlign: 'center', padding: '1rem', border: `1.5px solid ${isSpeaking ? 'var(--speaking)' : 'var(--card-border)'}`, borderRadius: '10px', background: isSpeaking ? 'rgba(56,189,248,0.05)' : 'transparent', transition: 'all 0.2s ease' }}
+                style={{ textAlign: 'center', padding: '1rem', border: `1.5px solid ${isSpeaking ? 'var(--speaking)' : 'var(--card-border)'}`, borderRadius: '10px', background: isSpeaking ? 'rgba(56,189,248,0.05)' : 'transparent', transition: 'all 0.2s ease', width: 'fit-content', margin: '0 auto' }}
               >
                 <div className={`participant-avatar${isSpeaking ? ' speaking' : ''}`}>
                   {p.alias[0].toUpperCase()}
