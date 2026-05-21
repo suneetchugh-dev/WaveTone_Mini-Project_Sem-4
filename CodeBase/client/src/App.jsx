@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import BrowseRooms from './pages/BrowseRooms';
 import CreateRoom from './pages/CreateRoom';
@@ -32,6 +32,12 @@ function App() {
 
   const [theme, setTheme] = useState(initializeTheme);
   const themeBeforeAnimation = useRef(theme);
+  const location = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (theme === 'animating') return;
