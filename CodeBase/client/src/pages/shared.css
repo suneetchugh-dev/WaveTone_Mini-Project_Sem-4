@@ -764,6 +764,29 @@ body[data-route='create-room'] .form-label {
   animation: speaking-pulse-once 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1;
 }
 
+/* Participant card styling */
+.participant-card {
+  border: 1.5px solid var(--card-border);
+  background: transparent;
+}
+
+.participant-card.speaking {
+  border-color: var(--speaking);
+  background: rgba(56, 189, 248, 0.05);
+}
+
+/* Light theme participant card */
+[data-theme="light"] .participant-card {
+  border: 1.5px solid #0369A1;
+  background: rgba(3, 105, 161, 0.04);
+}
+
+[data-theme="light"] .participant-card.speaking {
+  border-color: #0369A1;
+  background: rgba(3, 105, 161, 0.12);
+  box-shadow: 0 2px 8px rgba(3, 105, 161, 0.15);
+}
+
 /* Participant name with dynamic horizontal expansion */
 .participant-name {
   white-space: nowrap;
