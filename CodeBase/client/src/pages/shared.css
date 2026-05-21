@@ -787,6 +787,20 @@ body[data-route='create-room'] .form-label {
   box-shadow: 0 2px 8px rgba(3, 105, 161, 0.15);
 }
 
+/* Participant text styling */
+.participant-text {
+  color: var(--text-tertiary);
+}
+
+.participant-text.speaking {
+  color: var(--speaking);
+}
+
+/* Light theme participant text */
+[data-theme="light"] .participant-text.speaking {
+  color: #0369A1;
+}
+
 /* Participant name with dynamic horizontal expansion */
 .participant-name {
   white-space: nowrap;
