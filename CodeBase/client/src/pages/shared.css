@@ -207,6 +207,61 @@
   border-color: #0ea5e9;
   transform: translateY(-2px) scale(1.03);
 }
+
+/* Mic icon animation for Join Voice Room button */
+@keyframes micPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+/* Style for the mic SVG inside the Join Voice Room button */
+.home-btn svg[viewBox*="12 1"] {
+  transform-origin: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  line-height: 1;
+  height: 18px;
+  width: 18px;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Specific styling for join room mic icon */
+.join-room-mic-icon {
+  transform-origin: center;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  line-height: 1;
+  height: 18px;
+  width: 18px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.home-btn:hover .join-room-mic-icon {
+  animation: micPulse 1.2s ease-in-out infinite !important;
+}
+
+/* Ensure SVGs in buttons are properly aligned */
+.home-btn svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
 /* ===== SHARED PAGE STYLES ===== */
 
 /* Page section wrapper */
