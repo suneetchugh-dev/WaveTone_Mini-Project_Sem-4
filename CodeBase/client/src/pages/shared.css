@@ -185,7 +185,7 @@
   background: #0ea5e9;
   color: #fff;
   box-shadow: 0 4px 16px rgba(56,189,248,0.22);
-  transform: translateY(-2px) scale(1.03);
+  transform: translateY(-2px);
 }
 /* Add subtle drop shadow for buttons */
 .home-btn-solid {
@@ -479,6 +479,63 @@ body[data-route='create-room'] .form-select {
 
 body[data-route='create-room'] .form-label {
   margin-bottom: 0.5rem;
+}
+
+body[data-route='create-room'] .home-btn-solid {
+  overflow: hidden;
+}
+
+.create-room-submit-icon {
+  flex: 0 0 auto;
+  transform-origin: center;
+}
+
+.create-room-submit-icon-ring,
+.create-room-submit-icon-plus {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+body[data-route='create-room'] .home-btn-solid:hover .create-room-submit-icon,
+body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit-icon {
+  animation: createRoomSubmitIconLift 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body[data-route='create-room'] .home-btn-solid:hover .create-room-submit-icon-ring,
+body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit-icon-ring {
+  animation: createRoomSubmitRingPulse 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body[data-route='create-room'] .home-btn-solid:hover .create-room-submit-icon-plus,
+body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit-icon-plus {
+  animation: createRoomSubmitPlusPop 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes createRoomSubmitIconLift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  42% { transform: translateY(-1px) rotate(8deg); }
+}
+
+@keyframes createRoomSubmitRingPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  45% { transform: scale(1.08); opacity: 0.72; }
+}
+
+@keyframes createRoomSubmitPlusPop {
+  0%, 100% { transform: scale(1); }
+  42% { transform: scale(0.72); }
+  72% { transform: scale(1.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-route='create-room'] .home-btn-solid:hover .create-room-submit-icon,
+  body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit-icon,
+  body[data-route='create-room'] .home-btn-solid:hover .create-room-submit-icon-ring,
+  body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit-icon-ring,
+  body[data-route='create-room'] .home-btn-solid:hover .create-room-submit-icon-plus,
+  body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit-icon-plus {
+    animation: none;
+  }
 }
 
 .form-error {

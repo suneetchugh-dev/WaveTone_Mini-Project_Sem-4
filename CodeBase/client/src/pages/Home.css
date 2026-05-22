@@ -80,6 +80,108 @@ body[data-route="home"] .page-container {
   margin-top: clamp(2rem, 3vw, 2.4rem);
 }
 
+.home-actions .home-btn {
+  overflow: hidden;
+}
+
+.home-action-icon {
+  flex: 0 0 auto;
+  transform-origin: center;
+}
+
+.home-action-icon-ring,
+.home-action-icon-plus,
+.home-action-icon-lens,
+.home-action-icon-handle,
+.home-action-icon-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.home-action-icon-spark {
+  opacity: 0;
+}
+
+.home-btn-solid:hover .home-action-icon-create,
+.home-btn-solid:focus-visible .home-action-icon-create {
+  animation: createIconLift 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-btn-solid:hover .home-action-icon-ring,
+.home-btn-solid:focus-visible .home-action-icon-ring {
+  animation: createRingPulse 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-btn-solid:hover .home-action-icon-plus,
+.home-btn-solid:focus-visible .home-action-icon-plus {
+  animation: createPlusPop 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-btn-outline:hover .home-action-icon-lens,
+.home-btn-outline:focus-visible .home-action-icon-lens {
+  animation: browseLensScan 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-btn-outline:hover .home-action-icon-handle,
+.home-btn-outline:focus-visible .home-action-icon-handle {
+  animation: browseHandleNudge 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-btn-outline:hover .home-action-icon-spark,
+.home-btn-outline:focus-visible .home-action-icon-spark {
+  animation: browseSparkSweep 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes createIconLift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  42% { transform: translateY(-1px) rotate(8deg); }
+}
+
+@keyframes createRingPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  45% { transform: scale(1.08); opacity: 0.72; }
+}
+
+@keyframes createPlusPop {
+  0%, 100% { transform: scale(1); }
+  42% { transform: scale(0.72); }
+  72% { transform: scale(1.18); }
+}
+
+@keyframes browseLensScan {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  38% { transform: translate(-1px, -1px) scale(1.05); }
+  70% { transform: translate(1px, 0) scale(0.98); }
+}
+
+@keyframes browseHandleNudge {
+  0%, 100% { transform: translate(0, 0); }
+  42% { transform: translate(1.4px, 1.4px); }
+}
+
+@keyframes browseSparkSweep {
+  0% { opacity: 0; transform: translateX(-2px) scaleX(0.35); }
+  35% { opacity: 0.95; transform: translateX(0) scaleX(1); }
+  100% { opacity: 0; transform: translateX(3px) scaleX(0.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-btn:hover .home-action-icon,
+  .home-btn:focus-visible .home-action-icon,
+  .home-btn:hover .home-action-icon-ring,
+  .home-btn:focus-visible .home-action-icon-ring,
+  .home-btn:hover .home-action-icon-plus,
+  .home-btn:focus-visible .home-action-icon-plus,
+  .home-btn:hover .home-action-icon-lens,
+  .home-btn:focus-visible .home-action-icon-lens,
+  .home-btn:hover .home-action-icon-handle,
+  .home-btn:focus-visible .home-action-icon-handle,
+  .home-btn:hover .home-action-icon-spark,
+  .home-btn:focus-visible .home-action-icon-spark {
+    animation: none;
+  }
+}
+
 .live-panel {
   position: relative;
   overflow: hidden;
