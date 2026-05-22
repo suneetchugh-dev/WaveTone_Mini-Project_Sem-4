@@ -68,7 +68,7 @@
   background: #0F172A;
   border: 1.5px solid #0F172A;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
-  font-weight: 600;
+  /* keep font-weight unchanged to avoid layout shifts on activation */
 }
 
 
