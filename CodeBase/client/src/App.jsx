@@ -126,14 +126,10 @@ function App() {
           </NavLink>
           <NavLink to="/browse" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
             <span className="nav-icon" aria-label="Browse Rooms">
-              <svg className="nav-browse-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <rect x="3" y="7" width="18" height="13" rx="2"/>
-                <path className="nav-browse-antenna" d="M16 3v4M8 3v4"/>
-                <g className="nav-browse-windows">
-                  <line x1="10" y1="7" x2="10" y2="20"/>
-                  <line x1="14" y1="7" x2="14" y2="20"/>
-                  <line x1="3" y1="13" x2="21" y2="13"/>
-                </g>
+              <svg className="nav-browse-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle className="nav-browse-lens" cx="11" cy="11" r="8"/>
+                <path className="nav-browse-handle" d="M21 21l-4.35-4.35"/>
+                <path className="nav-browse-spark" d="M8.7 8.7h4.6"/>
               </svg>
             </span>
             Browse Rooms
