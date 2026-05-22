@@ -544,6 +544,11 @@ body[data-route='create-room'] .home-btn-solid {
 .create-room-submit-icon {
   flex: 0 0 auto;
   transform-origin: center;
+  transform: translate(1px, 1px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }
 
 .create-room-submit-icon-ring,
@@ -568,8 +573,8 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 }
 
 @keyframes createRoomSubmitIconLift {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  42% { transform: translateY(-1px) rotate(8deg); }
+  0%, 100% { transform: translate(1px, 1px) translateY(0) rotate(0deg); }
+  42% { transform: translate(1px, 1px) translateY(-1px) rotate(8deg); }
 }
 
 @keyframes createRoomSubmitRingPulse {
