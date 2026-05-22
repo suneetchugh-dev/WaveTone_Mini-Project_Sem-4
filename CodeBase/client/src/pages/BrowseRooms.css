@@ -236,6 +236,52 @@
   transform: translateY(0);
 }
 
+/* Arrow animation on room join button hover */
+@keyframes arrowSlide {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.room-join-link:hover .room-join-arrow {
+  animation: arrowSlide 0.6s ease-in-out infinite;
+}
+
+/* Dark mode room join button styling (matches home-btn-solid from "Paste room link" button) */
+[data-theme="dark"] .room-join-link {
+  background: var(--speaking) !important;
+  color: #fff !important;
+  font-size: 0.8rem;
+  font-weight: 700 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none !important;
+  cursor: pointer;
+  text-decoration: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .room-join-link:hover {
+  background: #0ea5e9 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .room-join-link:active {
+  transform: translateY(0);
+}
+
 /* ===== LIGHT THEME ===== */
 [data-theme="light"] .browse-search-box {
   background: #ffffff;
