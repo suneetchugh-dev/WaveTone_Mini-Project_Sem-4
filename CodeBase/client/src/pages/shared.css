@@ -211,11 +211,11 @@
 /* Mic icon animation for Join Voice Room button */
 @keyframes micPulse {
   0%, 100% {
-    transform: scale(1) translateY(1px);
+    transform: scale(1) translate(1px, 2px);
     opacity: 1;
   }
   50% {
-    transform: scale(1.08) translateY(1px);
+    transform: scale(1.08) translate(1px, 2px);
     opacity: 0.9;
   }
 }
@@ -246,7 +246,7 @@
   height: 18px;
   width: 18px;
   transition: transform 0.3s ease-in-out;
-  transform: translate(0px, 1px);
+  transform: translate(1px, 2px);
 }
 
 .home-btn:hover .join-room-mic-icon {
