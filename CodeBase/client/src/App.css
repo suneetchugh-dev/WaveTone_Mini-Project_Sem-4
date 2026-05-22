@@ -265,13 +265,31 @@
   }
 }
 
-/* Browse Room nav button - elegant scale and tilt */
-@keyframes navBrowseRoomIconTilt {
+/* Browse Room nav button - revolving magnifying glass */
+@keyframes navBrowseLensRotate {
   0%, 100% {
-    transform: scale(1) rotateY(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes navBrowseHandleRotate {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes navBrowseSparkFade {
+  0%, 100% {
+    opacity: 0;
   }
   50% {
-    transform: scale(1.05) rotateY(10deg);
+    opacity: 1;
   }
 }
 
@@ -305,15 +323,35 @@
   transform-origin: center;
 }
 
+/* Browse nav button sub-elements styling */
+.nav-browse-lens,
+.nav-browse-handle,
+.nav-browse-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.nav-browse-spark {
+  opacity: 0;
+}
+
 /* Create Room button icon animation */
 .nav-cta:hover svg,
 .nav-cta:focus-visible svg {
   animation: navCreateRoomIconLift 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* Browse Room button icon animation - using perspective for 3D effect */
-.nav-link:nth-child(2):hover svg {
-  animation: navBrowseRoomIconTilt 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+/* Browse Room button icon animation - revolving magnifying glass */
+.nav-link:nth-child(2):hover .nav-browse-lens {
+  animation: navBrowseLensRotate 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.nav-link:nth-child(2):hover .nav-browse-handle {
+  animation: navBrowseHandleRotate 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.nav-link:nth-child(2):hover .nav-browse-spark {
+  animation: navBrowseSparkFade 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 /* About button icon animation */
