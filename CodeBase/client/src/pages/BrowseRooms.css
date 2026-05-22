@@ -239,14 +239,23 @@
 /* Arrow animation on room join button hover */
 @keyframes arrowSlide {
   0% {
-    transform: translateX(0);
+    transform: translateX(0) translateY(1px);
   }
   50% {
-    transform: translateX(2px);
+    transform: translateX(2px) translateY(1px);
   }
   100% {
-    transform: translateX(0);
+    transform: translateX(0) translateY(1px);
   }
+}
+
+.room-join-arrow {
+  transform: translate(0px, 1px);
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: transform 0.3s ease-in-out;
 }
 
 .room-join-link:hover .room-join-arrow {
