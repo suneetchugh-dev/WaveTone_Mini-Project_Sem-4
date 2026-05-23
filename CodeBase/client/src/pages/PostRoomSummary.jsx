@@ -204,10 +204,20 @@ function PostRoomSummary() {
       {/* Actions */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <Link to="/browse" className="home-btn home-btn-solid">
+          <div className="bubble-container" aria-hidden="true">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bubble" style={{ '--delay': `${i * 0.05}s` }}></div>
+            ))}
+          </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           Browse Rooms
         </Link>
         <Link to="/" className="home-btn home-btn-outline">
+          <div className="bubble-container" aria-hidden="true">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bubble" style={{ '--delay': `${i * 0.05}s` }}></div>
+            ))}
+          </div>
           Back to Home
         </Link>
       </div>
