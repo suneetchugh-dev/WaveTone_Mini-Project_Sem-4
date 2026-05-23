@@ -82,6 +82,7 @@ body[data-route="home"] .page-container {
 
 .home-actions .home-btn {
   overflow: hidden;
+  position: relative;
 }
 
 .home-action-icon {
@@ -502,4 +503,115 @@ body[data-route="home"] .page-container {
   .home-page {
     width: min(100%, 1200px);
   }
+}
+/* Bubble particle effect for CTA buttons */
+.bubble-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: -1;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+[data-theme="dark"] .bubble {
+  background: radial-gradient(circle at 30% 30%, #06B6D4, #0891B2);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+}
+
+[data-theme="light"] .bubble {
+  background: radial-gradient(circle at 30% 30%, #0284C7, #0369A1);
+  box-shadow: 0 0 15px rgba(2, 132, 199, 0.4);
+}
+
+.home-btn:hover .bubble {
+  animation: bubbleSpreadFade 1.2s ease-out forwards;
+}
+
+.bubble:nth-child(1) { 
+  width: 8px; 
+  height: 8px; 
+  top: 60%; 
+  left: 15%; 
+  animation-delay: calc(var(--delay, 0s) + 0s);
+}
+.bubble:nth-child(2) { 
+  width: 6px; 
+  height: 6px; 
+  top: 55%; 
+  left: 18%; 
+  animation-delay: calc(var(--delay, 0s) + 0.05s);
+}
+.bubble:nth-child(3) { 
+  width: 7px; 
+  height: 7px; 
+  top: 65%; 
+  left: 12%; 
+  animation-delay: calc(var(--delay, 0s) + 0.1s);
+}
+.bubble:nth-child(4) { 
+  width: 5px; 
+  height: 5px; 
+  top: 50%; 
+  left: 20%; 
+  animation-delay: calc(var(--delay, 0s) + 0.15s);
+}
+.bubble:nth-child(5) { 
+  width: 6.5px; 
+  height: 6.5px; 
+  top: 70%; 
+  left: 10%; 
+  animation-delay: calc(var(--delay, 0s) + 0.2s);
+}
+.bubble:nth-child(6) { 
+  width: 6px; 
+  height: 6px; 
+  top: 58%; 
+  left: 16%; 
+  animation-delay: calc(var(--delay, 0s) + 0.25s);
+}
+
+@keyframes bubbleSpreadFade {
+  0% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--tx, 0)), calc(-50% + var(--ty, 0))) scale(2.5);
+  }
+}
+
+.bubble:nth-child(1) {
+  --tx: -50px;
+  --ty: -60px;
+}
+.bubble:nth-child(2) {
+  --tx: -35px;
+  --ty: -80px;
+}
+.bubble:nth-child(3) {
+  --tx: -65px;
+  --ty: -40px;
+}
+.bubble:nth-child(4) {
+  --tx: -20px;
+  --ty: -100px;
+}
+.bubble:nth-child(5) {
+  --tx: -80px;
+  --ty: -20px;
+}
+.bubble:nth-child(6) {
+  --tx: -45px;
+  --ty: -70px;
 }
