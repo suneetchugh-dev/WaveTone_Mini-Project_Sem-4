@@ -3,12 +3,24 @@ import { containsProfanity } from '../utils/profanityFilter.js';
 
 export const getRooms = async (req, res) => {
   try {
-    // Clean up stale rooms: if all participants have left, mark as inactive
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+
+    // Clean up stale rooms: 
+    // 1. If all participants have left.
+    // 2. If it was created over 5 minutes ago and never had any participants.
     await Room.updateMany(
       {
         isActive: true,
-        'participants.0': { $exists: true },
-        participants: { $not: { $elemMatch: { leftAt: { $exists: false } } } }
+        $or: [
+          {
+            'participants.0': { $exists: true },
+            participants: { $not: { $elemMatch: { leftAt: { $exists: false } } } }
+          },
+          {
+            'participants.0': { $exists: false },
+            createdAt: { $lt: fiveMinutesAgo }
+          }
+        ]
       },
       { $set: { isActive: false } }
     );
