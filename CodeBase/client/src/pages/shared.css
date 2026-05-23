@@ -1415,6 +1415,147 @@ body[data-route="about"] .page-container {
     margin-top: 6.5rem; /* Adjusted to ensure the heading is visible */
 }
 
+/* Bubble positioning for Join Room submit button */
+.join-room-submit-btn .bubble-container {
+  overflow: visible;
+}
+
+.join-room-submit-btn .bubble {
+  animation: bubbleRiseFlow 1s ease-in forwards !important;
+}
+
+.join-room-submit-btn:hover .bubble {
+  animation: bubbleRiseFlow 1s ease-in forwards !important;
+}
+
+/* Rocket thrust animation on click */
+.join-room-submit-btn.rocket-thrust .bubble {
+  animation: rocketThrustBubble 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+}
+
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(odd) {
+  animation: rocketThrustBubbleWave1 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+}
+
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(even) {
+  animation: rocketThrustBubbleWave2 2.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards !important;
+}
+
+.join-room-submit-btn .bubble:nth-child(1) { 
+  width: 8px;
+  height: 8px;
+  top: 95%; 
+  left: 10%; 
+  animation-delay: 0s;
+}
+.join-room-submit-btn .bubble:nth-child(2) { 
+  width: 6px;
+  height: 6px;
+  top: 95%; 
+  left: 25%; 
+  animation-delay: 0.08s;
+}
+.join-room-submit-btn .bubble:nth-child(3) { 
+  width: 7px;
+  height: 7px;
+  top: 95%; 
+  left: 40%; 
+  animation-delay: 0.16s;
+}
+.join-room-submit-btn .bubble:nth-child(4) { 
+  width: 5px;
+  height: 5px;
+  top: 95%; 
+  left: 55%; 
+  animation-delay: 0.24s;
+}
+.join-room-submit-btn .bubble:nth-child(5) { 
+  width: 6.5px;
+  height: 6.5px;
+  top: 95%; 
+  left: 70%; 
+  animation-delay: 0.32s;
+}
+.join-room-submit-btn .bubble:nth-child(6) { 
+  width: 6px;
+  height: 6px;
+  top: 95%; 
+  left: 85%; 
+  animation-delay: 0.4s;
+}
+
+/* Additional bubble positions for rocket thrust (7-16) */
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(7) { 
+  width: 5px;
+  height: 5px;
+  top: 95%; 
+  left: 15%; 
+  animation-delay: 0.04s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(8) { 
+  width: 7px;
+  height: 7px;
+  top: 95%; 
+  left: 32%; 
+  animation-delay: 0.12s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(9) { 
+  width: 6px;
+  height: 6px;
+  top: 95%; 
+  left: 48%; 
+  animation-delay: 0.2s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(10) { 
+  width: 8px;
+  height: 8px;
+  top: 95%; 
+  left: 62%; 
+  animation-delay: 0.28s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(11) { 
+  width: 5px;
+  height: 5px;
+  top: 95%; 
+  left: 78%; 
+  animation-delay: 0.36s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(12) { 
+  width: 6.5px;
+  height: 6.5px;
+  top: 95%; 
+  left: 20%; 
+  animation-delay: 0.06s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(13) { 
+  width: 7px;
+  height: 7px;
+  top: 95%; 
+  left: 35%; 
+  animation-delay: 0.14s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(14) { 
+  width: 6px;
+  height: 6px;
+  top: 95%; 
+  left: 52%; 
+  animation-delay: 0.22s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(15) { 
+  width: 5px;
+  height: 5px;
+  top: 95%; 
+  left: 68%; 
+  animation-delay: 0.3s;
+}
+.join-room-submit-btn.rocket-thrust .bubble:nth-child(16) { 
+  width: 7px;
+  height: 7px;
+  top: 95%; 
+  left: 82%; 
+  animation-delay: 0.38s;
+}
+
 /* Bubble positioning for Create Room submit button */
 .create-room-submit-btn .bubble-container {
   overflow: visible;
