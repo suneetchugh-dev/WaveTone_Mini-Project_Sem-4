@@ -1193,7 +1193,7 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 .about-stat-value {
   font-size: 1.4rem;
   font-weight: 800;
-  color: mediumvioletred;
+  color: darkcyan;
   margin-bottom: 0.2rem;
 }
 .about-stat-label {
