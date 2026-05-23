@@ -15,6 +15,7 @@ function CreateRoom() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [customAlias, setCustomAlias] = useState('');
+  const [isBubbling, setIsBubbling] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     document.title = 'Create Room - WaveTone';
@@ -28,6 +29,10 @@ function CreateRoom() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setIsBubbling(true);
+    
+    // Reset bubble animation after it completes
+    setTimeout(() => setIsBubbling(false), 2400);
     
     // Validate topic
     const trimmedTopic = topic.trim();
@@ -150,10 +155,15 @@ function CreateRoom() {
 
         <button
           type="submit"
-          className="home-btn home-btn-solid"
+          className={`home-btn home-btn-solid create-room-submit-btn ${isBubbling ? 'rocket-thrust' : ''}`}
           style={{ width: '100%', justifyContent: 'center' }}
           disabled={loading}
         >
+          <div className="bubble-container" aria-hidden="true">
+            {[...Array(isBubbling ? 16 : 6)].map((_, i) => (
+              <div key={i} className="bubble" style={{ '--delay': `${i * 0.05}s` }}></div>
+            ))}
+          </div>
           <svg className="create-room-submit-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <circle className="create-room-submit-icon-ring" cx="12" cy="12" r="10"/>
             <path className="create-room-submit-icon-plus" d="M12 8v8M8 12h8"/>

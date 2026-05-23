@@ -169,6 +169,8 @@
   will-change: background, color, box-shadow, transform;
   outline: none;
   user-select: none;
+  position: relative;
+  overflow: hidden;
 }
 .home-btn:active {
   background: var(--speaking);
@@ -1411,4 +1413,214 @@ body[data-route="about"] .main-nav {
 }
 body[data-route="about"] .page-container {
     margin-top: 6.5rem; /* Adjusted to ensure the heading is visible */
+}
+
+/* Bubble positioning for Create Room submit button */
+.create-room-submit-btn .bubble-container {
+  overflow: visible;
+}
+
+.create-room-submit-btn .bubble {
+  animation: bubbleRiseFlow 1s ease-in forwards !important;
+}
+
+.create-room-submit-btn:hover .bubble {
+  animation: bubbleRiseFlow 1s ease-in forwards !important;
+}
+
+/* Rocket thrust animation on click */
+.create-room-submit-btn.rocket-thrust .bubble {
+  animation: rocketThrustBubble 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+}
+
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(odd) {
+  animation: rocketThrustBubbleWave1 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+}
+
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(even) {
+  animation: rocketThrustBubbleWave2 2.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards !important;
+}
+
+.create-room-submit-btn .bubble:nth-child(1) { 
+  width: 8px;
+  height: 8px;
+  top: 95%; 
+  left: 10%; 
+  animation-delay: 0s;
+}
+.create-room-submit-btn .bubble:nth-child(2) { 
+  width: 6px;
+  height: 6px;
+  top: 95%; 
+  left: 25%; 
+  animation-delay: 0.08s;
+}
+.create-room-submit-btn .bubble:nth-child(3) { 
+  width: 7px;
+  height: 7px;
+  top: 95%; 
+  left: 40%; 
+  animation-delay: 0.16s;
+}
+.create-room-submit-btn .bubble:nth-child(4) { 
+  width: 5px;
+  height: 5px;
+  top: 95%; 
+  left: 55%; 
+  animation-delay: 0.24s;
+}
+.create-room-submit-btn .bubble:nth-child(5) { 
+  width: 6.5px;
+  height: 6.5px;
+  top: 95%; 
+  left: 70%; 
+  animation-delay: 0.32s;
+}
+.create-room-submit-btn .bubble:nth-child(6) { 
+  width: 6px;
+  height: 6px;
+  top: 95%; 
+  left: 85%; 
+  animation-delay: 0.4s;
+}
+
+/* Additional bubble positions for rocket thrust (7-16) */
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(7) { 
+  width: 5px;
+  height: 5px;
+  top: 95%; 
+  left: 15%; 
+  animation-delay: 0.04s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(8) { 
+  width: 7px;
+  height: 7px;
+  top: 95%; 
+  left: 32%; 
+  animation-delay: 0.12s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(9) { 
+  width: 6px;
+  height: 6px;
+  top: 95%; 
+  left: 48%; 
+  animation-delay: 0.2s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(10) { 
+  width: 8px;
+  height: 8px;
+  top: 95%; 
+  left: 62%; 
+  animation-delay: 0.28s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(11) { 
+  width: 5px;
+  height: 5px;
+  top: 95%; 
+  left: 78%; 
+  animation-delay: 0.36s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(12) { 
+  width: 6.5px;
+  height: 6.5px;
+  top: 95%; 
+  left: 20%; 
+  animation-delay: 0.06s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(13) { 
+  width: 7px;
+  height: 7px;
+  top: 95%; 
+  left: 35%; 
+  animation-delay: 0.14s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(14) { 
+  width: 6px;
+  height: 6px;
+  top: 95%; 
+  left: 52%; 
+  animation-delay: 0.22s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(15) { 
+  width: 5px;
+  height: 5px;
+  top: 95%; 
+  left: 68%; 
+  animation-delay: 0.3s;
+}
+.create-room-submit-btn.rocket-thrust .bubble:nth-child(16) { 
+  width: 7px;
+  height: 7px;
+  top: 95%; 
+  left: 82%; 
+  animation-delay: 0.38s;
+}
+
+@keyframes bubbleRiseFlow {
+  0% {
+    opacity: 0.8;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) scale(0.5);
+  }
+}
+
+@keyframes rocketThrustBubble {
+  0% {
+    opacity: 0.9;
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    opacity: 0.8;
+  }
+  60% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-240px) scale(0.3);
+  }
+}
+
+@keyframes rocketThrustBubbleWave1 {
+  0% {
+    opacity: 0.9;
+    transform: translateY(0) translateX(-20px) scale(1);
+  }
+  25% {
+    opacity: 0.8;
+    transform: translateY(-60px) translateX(-15px) scale(1.05);
+  }
+  60% {
+    opacity: 0.5;
+    transform: translateY(-160px) translateX(-5px) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-240px) translateX(0) scale(0.3);
+  }
+}
+
+@keyframes rocketThrustBubbleWave2 {
+  0% {
+    opacity: 0.9;
+    transform: translateY(0) translateX(20px) scale(1);
+  }
+  30% {
+    opacity: 0.75;
+    transform: translateY(-80px) translateX(10px) scale(0.95);
+  }
+  65% {
+    opacity: 0.4;
+    transform: translateY(-180px) translateX(5px) scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-240px) translateX(0) scale(0.3);
+  }
 }
