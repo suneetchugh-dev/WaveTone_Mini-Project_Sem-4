@@ -1,7 +1,17 @@
-
 {
   "trailingSlash": false,
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "script-src 'self' 'wasm-unsafe-eval' 'inline-speculation-rules' https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: wss: ws://localhost:5000 http://localhost:5000 wss://wave-tone-backend-production.up.railway.app; img-src 'self' data: https:; media-src 'self' blob:; worker-src 'self' blob:;"
+        }
+      ]
+    }
   ]
 }
