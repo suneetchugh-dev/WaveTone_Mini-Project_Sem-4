@@ -191,7 +191,28 @@ io.on('connection', (socket) => {
     socketAliases.set(socket.id, cleanAlias);
 
     // Add new participant to the list BEFORE sending room-users
-    participants.push({ socketId: socket.id, alias: cleanAlias });
+    const newParticipant = { 
+      socketId: socket.id, 
+      alias: cleanAlias,
+      joinedAt: new Date(),
+      leftAt: null
+    };
+    participants.push(newParticipant);
+
+    // Update database with new participant
+    try {
+      await Room.findByIdAndUpdate(roomId, {
+        $push: { 
+          participants: {
+            userId: socket.id,
+            alias: cleanAlias,
+            joinedAt: new Date()
+          }
+        }
+      });
+    } catch (err) {
+      console.error('Failed to update room participants in database:', err);
+    }
     
     // Send complete participant list to the new joiner (including themselves)
     socket.emit('room-users', participants);
@@ -211,8 +232,10 @@ io.on('connection', (socket) => {
       leftAt: p.leftAt 
     })));
     
-    socket.to(roomId).emit('user-joined', { 
-      socketId: socket.id, 
+
+    socket.to(roomId).emit('user-joined', {
+      roomId,
+      socketId: socket.id,
       alias: cleanAlias,
       isHost,
       hostReturnTimeout: HOST_RETURN_TIMEOUT_MS
@@ -567,7 +590,15 @@ io.on('connection', (socket) => {
       const idx = participants.findIndex(p => p.socketId === socket.id);
       if (idx !== -1) {
         participants.splice(idx, 1);
-        socket.to(roomId).emit('user-left', { socketId: socket.id });
+
+        // Update database to mark participant as left
+        Room.findByIdAndUpdate(
+          roomId,
+          { $set: { 'participants.$[elem].leftAt': new Date() } },
+          { arrayFilters: [{ 'elem.userId': socket.id, 'elem.leftAt': { $exists: false } }] }
+        ).catch(err => console.error('Failed to update participant left status:', err));
+
+        socket.to(roomId).emit('user-left', { roomId, socketId: socket.id });
 
         // Cancel active vote if target disconnected
         _cleanupVote(roomId, socket.id);
@@ -664,7 +695,14 @@ function _leaveRoom(socket, roomId) {
       })));
     }
   }
-  socket.to(roomId).emit('user-left', { socketId: socket.id });
+  // Update database to mark participant as left
+  Room.findByIdAndUpdate(
+    roomId,
+    { $set: { 'participants.$[elem].leftAt': new Date() } },
+    { arrayFilters: [{ 'elem.userId': socket.id, 'elem.leftAt': { $exists: false } }] }
+  ).catch(err => console.error('Failed to update participant left status:', err));
+
+  socket.to(roomId).emit('user-left', { roomId, socketId: socket.id });
 }
 
 function _cleanupVote(roomId, disconnectedSocketId) {
