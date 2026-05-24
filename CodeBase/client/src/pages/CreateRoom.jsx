@@ -66,8 +66,10 @@ function CreateRoom() {
       <form onSubmit={handleCreate} className="create-room-form">
         <div className="card create-room-card">
           <div className="form-group">
-            <label className="form-label">Room Topic</label>
+            <label htmlFor="room-topic" className="form-label">Room Topic</label>
             <input
+              id="room-topic"
+              name="topic"
               className="form-input"
               type="text"
               placeholder="e.g. Math Exam Prep, Chill Vibes..."
@@ -78,8 +80,10 @@ function CreateRoom() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Your Alias (optional)</label>
+            <label htmlFor="room-alias" className="form-label">Your Alias (optional)</label>
             <input
+              id="room-alias"
+              name="alias"
               className="form-input"
               type="text"
               placeholder="e.g. DJNova, Host123, ..."
@@ -93,8 +97,8 @@ function CreateRoom() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Category</label>
-            <select className="form-select" aria-label="Category" value={category} onChange={(e) => { setCategory(e.target.value); setError(null); }}>
+            <label htmlFor="room-category" className="form-label">Category</label>
+            <select id="room-category" name="category" className="form-select" aria-label="Category" value={category} onChange={(e) => { setCategory(e.target.value); setError(null); }}>
               {categories.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
@@ -103,8 +107,10 @@ function CreateRoom() {
 
           {category === 'Custom' && (
             <div className="form-group">
-              <label className="form-label">Custom Category</label>
+              <label htmlFor="custom-category" className="form-label">Custom Category</label>
               <input
+                id="custom-category"
+                name="customCategory"
                 className="form-input"
                 type="text"
                 placeholder="e.g. Music, Tech, Philosophy..."
@@ -120,8 +126,10 @@ function CreateRoom() {
           )}
 
           <div className="form-group">
-            <label className="form-label">Max Participants</label>
+            <label htmlFor="max-users" className="form-label">Max Participants</label>
             <select
+              id="max-users"
+              name="maxUsers"
               className="form-select"
               aria-label="Max Participants"
               value={maxUsers}

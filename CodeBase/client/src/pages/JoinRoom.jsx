@@ -106,8 +106,10 @@ function JoinRoom() {
         </div>
         <hr className="divider" />
         <div className="form-group">
-          <label className="form-label">Your Alias (optional)</label>
+          <label htmlFor="join-alias" className="form-label">Your Alias (optional)</label>
           <input
+            id="join-alias"
+            name="alias"
             className="form-input"
             type="text"
             placeholder="Leave blank for random alias"

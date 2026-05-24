@@ -132,7 +132,10 @@ function BrowseRooms() {
           <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
           <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
         </svg>
+        <label htmlFor="join-code" className="sr-only">Room link or ID</label>
         <input
+          id="join-code"
+          name="joinCode"
           className="form-input"
           type="text"
           placeholder="Paste a room link or ID..."
@@ -148,8 +151,12 @@ function BrowseRooms() {
 
       <div className="browse-search-row">
         <div className="browse-search-box">
+          <label htmlFor="search-rooms" className="sr-only">Search rooms</label>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           <input
+            id="search-rooms"
+            name="search"
+            aria-label="Search rooms"
             className="browse-search-input"
             type="text"
             placeholder="Search rooms..."
