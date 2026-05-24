@@ -425,10 +425,12 @@ function VoiceRoom() {
     const speakingTimes = {};
     speakingTimes[alias] = Math.round(speakingTimeRef.current['self'] || 0);
     participants.forEach(p => {
-      speakingTimes[p.alias] = Math.round(speakingTimeRef.current[p.socketId] || 0);
+      if (p.alias !== alias) {
+        speakingTimes[p.alias] = Math.round(speakingTimeRef.current[p.socketId] || 0);
+      }
     });
     navigate(`/summary/${roomId}`, {
-      state: { room: roomData, duration: durationMin, participantCount: participants.length + 1, transcripts, speakingTimes },
+      state: { room: roomData, duration: durationMin, participantCount: participants.length, transcripts, speakingTimes },
     });
   };
 
