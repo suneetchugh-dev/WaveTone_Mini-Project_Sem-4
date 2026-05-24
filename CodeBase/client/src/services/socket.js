@@ -17,16 +17,15 @@ export function getSocket() {
     });
     
     socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
-      console.error('Attempted to connect to:', SOCKET_URL);
+      console.error('Socket connection error:', error.message);
     });
     
     socket.on('connect', () => {
-      console.log('Socket connected successfully to:', SOCKET_URL);
+      // Socket connected successfully
     });
     
     socket.on('disconnect', (reason) => {
-      console.log('Socket disconnected:', reason);
+      // Socket disconnected
     });
   }
   return socket;

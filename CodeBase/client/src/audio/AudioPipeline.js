@@ -48,7 +48,7 @@ export class AudioPipeline {
       // Start speech recognition in parallel
       this._startSpeechRecognition();
 
-      console.log('AudioPipeline: initialized (400ms buffer active)');
+      // AudioPipeline initialized with 400ms buffer
       this.onPipelineReady(this.processedStream);
     } catch (err) {
       console.warn('AudioPipeline: failed to initialize, falling back to raw stream', err.message);
@@ -87,14 +87,7 @@ export class AudioPipeline {
           this._triggerMutePrecise(cleanedTranscript);
           this.onProfanityDetected?.(cleanedTranscript);
           
-          // Enhanced logging
-          console.log('=== PROFANITY DETECTION ===');
-          console.log('Transcript:', cleanedTranscript);
-          console.log('Is Final:', isFinal);
-          console.log('Time:', new Date().toISOString());
-          console.log('Mute Duration (ms):', this._calculateMuteDuration(cleanedTranscript));
-          console.log('Word Count:', cleanedTranscript.trim().split(/\s+/).length);
-          console.log('========================');
+          // Profanity detected - mute triggered
           
           // Send to server for hybrid moderation verification
           if (this.socket) {
@@ -127,7 +120,7 @@ export class AudioPipeline {
 
     try {
       this.recognition.start();
-      console.log('AudioPipeline: SpeechRecognition started');
+      // SpeechRecognition started
     } catch {
       console.warn('AudioPipeline: SpeechRecognition failed to start');
     }
@@ -191,11 +184,7 @@ export class AudioPipeline {
   _sendToServerModeration(transcript) {
     if (!this.socket) return;
     
-    console.log('Sending to server for moderation verification:', {
-      transcript,
-      timestamp: new Date().toISOString(),
-      wordCount: transcript.trim().split(/\s+/).length
-    });
+    // Sending to server for moderation verification
     
     // Emit to server for moderation verification
     this.socket.emit('check-profanity-server', {
@@ -206,22 +195,14 @@ export class AudioPipeline {
     }, (response) => {
       // Handle server response
       if (response && response.isProfane) {
-        console.log('✓ Server confirmed profanity:', {
-          badWords: response.badWords,
-          confidence: response.confidence,
-          actions: 'Warning issued'
-        });
+        // Server confirmed profanity
         this.onServerModerationResult?.({
           confirmed: true,
           badWords: response.badWords,
           confidence: response.confidence
         });
       } else if (response && !response.isProfane) {
-        console.log('⚠ Server disputed client detection - possible false positive:', {
-          transcript,
-          confidence: response.confidence,
-          action: 'Mute still applied (precautionary)'
-        });
+        // Server disputed client detection - possible false positive
         // Server says it's not profane - could trigger recovery
         this.onServerModerationResult?.({
           confirmed: false,
@@ -251,7 +232,7 @@ export class AudioPipeline {
       transcripts.push(fallbackInterim);
     }
 
-    console.log('AudioPipeline: transcript count for summary', transcripts.length);
+    // Retrieved transcripts for summary
     return transcripts;
   }
 
@@ -262,6 +243,6 @@ export class AudioPipeline {
     this.sourceNode?.disconnect();
     this.audioContext?.close().catch(() => {});
     this.recognition = null;
-    console.log('AudioPipeline: destroyed');
+    // AudioPipeline destroyed
   }
 }
