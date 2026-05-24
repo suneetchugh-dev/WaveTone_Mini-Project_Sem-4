@@ -101,12 +101,23 @@ export const getSessionSummary = async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
     if (!room) return res.status(404).json({ error: 'Room not found' });
+
+    // Process participants to include all who were ever in the room
+    const allParticipants = room.participants.map(p => ({
+      userId: p.userId,
+      alias: p.alias,
+      joinedAt: p.joinedAt,
+      leftAt: p.leftAt,
+      isActive: !p.leftAt // Participant is active if they haven't left yet
+    }));
+
     res.json({
       roomId: room._id,
       topic: room.topic,
       category: room.category,
       duration: room.duration,
-      participantCount: room.participants.length,
+      participantCount: allParticipants.length,
+      participants: allParticipants,
       createdAt: room.createdAt,
       isActive: room.isActive,
     });

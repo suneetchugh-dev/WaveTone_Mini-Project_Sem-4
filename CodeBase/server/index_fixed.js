@@ -75,10 +75,10 @@ function _banAndKick(socket, roomId, reason, isGlobalBan = false) {
     globalBannedIPs.add(ip);
     console.log(`IP ${ip} added to global ban list`);
   }
-  
+
   // Professional kick message
   const professionalkickMsg = `You have been removed from the room: ${reason}`;
-  socket.emit('kicked', { 
+  socket.emit('kicked', {
     reason: professionalkickMsg,
     code: 'KICK_REMOVED',
     timestamp: new Date().toISOString()
@@ -89,27 +89,27 @@ function _banAndKick(socket, roomId, reason, isGlobalBan = false) {
 function _promoteSubHostToHost(roomId) {
   console.log(`[DEBUG] _promoteSubHostToHost called for room ${roomId}`);
   console.log(`[DEBUG] roomSubHosts.has(${roomId}): ${roomSubHosts.has(roomId)}`);
-  
+
   if (!roomSubHosts.has(roomId)) {
     console.log(`[DEBUG] No sub-hosts map for room ${roomId}, returning`);
     return;
   }
   const subHosts = roomSubHosts.get(roomId);
   console.log(`[DEBUG] Sub-Hosts in room ${roomId}:`, subHosts);
-  
+
   if (subHosts.length > 0) {
     // Promote highest-ranking (lowest index) sub-host
     const newHost = subHosts[0];
     console.log(`[DEBUG] Promoting ${newHost.alias} to Host in room ${roomId}`);
     roomHosts.set(roomId, { socketId: newHost.socketId, alias: newHost.alias });
     subHosts.shift(); // Remove from sub-hosts list
-    
+
     io.to(roomId).emit('host-promoted', {
       newHostAlias: newHost.alias,
       reason: 'Previous Host left the room',
       subHosts: subHosts
     });
-    
+
     console.log(`Sub-Host ${newHost.alias} promoted to Host in room ${roomId}`);
   } else {
     console.log(`[DEBUG] No sub-hosts available for promotion in room ${roomId}`);
@@ -177,12 +177,12 @@ io.on('connection', (socket) => {
     } else {
       // Validate alias: reject 'Host' claims and use provided alias
       let userAlias = alias ? alias.trim() : 'Guest';
-      
+
       // Prevent non-hosts from claiming Host status
       if (userAlias.toLowerCase() === 'host') {
         userAlias = 'Guest';
       }
-      
+
       // Check profanity on the provided alias
       cleanAlias = containsProfanity(userAlias) ? filterProfanity(userAlias) : userAlias;
     }
@@ -191,8 +191,8 @@ io.on('connection', (socket) => {
     socketAliases.set(socket.id, cleanAlias);
 
     // Add new participant to the list BEFORE sending room-users
-    const newParticipant = { 
-      socketId: socket.id, 
+    const newParticipant = {
+      socketId: socket.id,
       alias: cleanAlias,
       joinedAt: new Date(),
       leftAt: null
@@ -202,7 +202,7 @@ io.on('connection', (socket) => {
     // Update database with new participant
     try {
       await Room.findByIdAndUpdate(roomId, {
-        $push: { 
+        $push: {
           participants: {
             userId: socket.id,
             alias: cleanAlias,
@@ -213,27 +213,27 @@ io.on('connection', (socket) => {
     } catch (err) {
       console.error('Failed to update room participants in database:', err);
     }
-    
+
     // Send complete participant list to the new joiner (including themselves)
     socket.emit('room-users', participants);
-    socket.emit('room-metadata', { 
-      isHost, 
+    socket.emit('room-metadata', {
+      isHost,
       hostInfo: isHost ? { alias: cleanAlias } : roomHosts.get(roomId) || null,
       subHosts: roomSubHosts.get(roomId) || [],
       hostReturnTimeout: HOST_RETURN_TIMEOUT_MS
     });
-    
+
     // Broadcast updated participant list to all other users in the room
     // (socket.to excludes the new joiner, they already got it above)
     const hostInfo = roomHosts.get(roomId);
-    socket.to(roomId).emit('room-users', participants.map(p => ({ 
-      socketId: p.socketId, 
-      alias: p.alias, 
-      joinedAt: p.joinedAt, 
+    socket.to(roomId).emit('room-users', participants.map(p => ({
+      socketId: p.socketId,
+      alias: p.alias,
+      joinedAt: p.joinedAt,
       leftAt: p.leftAt,
       isHost: hostInfo && hostInfo.socketId === p.socketId
     })));
-    
+
 
     socket.to(roomId).emit('user-joined', {
       roomId,
@@ -256,7 +256,7 @@ io.on('connection', (socket) => {
 
     if (!roomSubHosts.has(roomId)) roomSubHosts.set(roomId, []);
     const subHosts = roomSubHosts.get(roomId);
-    
+
     // Check if already a sub-host
     const existing = subHosts.find(s => s.socketId === targetSocketId);
     if (existing) {
@@ -294,7 +294,7 @@ io.on('connection', (socket) => {
 
     if (!roomSubHosts.has(roomId)) return;
     const subHosts = roomSubHosts.get(roomId);
-    
+
     const index = subHosts.findIndex(s => s.socketId === targetSocketId);
     if (index !== -1) {
       subHosts.splice(index, 1);
@@ -317,24 +317,24 @@ io.on('connection', (socket) => {
 
     if (!roomSubHosts.has(roomId)) return;
     const subHosts = roomSubHosts.get(roomId);
-    
+
     const index = subHosts.findIndex(s => s.socketId === targetSocketId);
     if (index !== -1) {
       const newHost = subHosts[index];
       const formerHostAlias = host.alias;
-      
+
       // Update Host
       roomHosts.set(roomId, { socketId: newHost.socketId, alias: newHost.alias });
-      
+
       // Remove from Sub-Hosts and add former Host to Sub-Hosts
       subHosts.splice(index, 1);
-      subHosts.unshift({ 
-        socketId: socket.id, 
-        alias: formerHostAlias, 
+      subHosts.unshift({
+        socketId: socket.id,
+        alias: formerHostAlias,
         rank: 0,
         assignedAt: new Date()
       });
-      
+
       io.to(roomId).emit('sub-host-promoted', {
         newHostAlias: newHost.alias,
         formerHostAlias: formerHostAlias,
@@ -370,12 +370,12 @@ io.on('connection', (socket) => {
       socket.emit('error', { message: 'Only the Host can kick users.' });
       return;
     }
-    
+
     const targetSocket = io.sockets.sockets.get(targetSocketId);
     if (targetSocket) {
       const targetAlias = socketAliases.get(targetSocketId) || 'User';
       _banAndKick(targetSocket, roomId, `You have been removed by the Host (${hostInfo.alias}) for moderation reasons.`);
-      io.to(roomId).emit('user-kicked', { 
+      io.to(roomId).emit('user-kicked', {
         targetAlias,
         hostAlias: hostInfo.alias,
         reason: 'Removed by Host'
@@ -398,7 +398,6 @@ io.on('connection', (socket) => {
 
     record.count += 1;
     record.lastTimestamp = now;
-
     console.log(`Profanity warning #${record.count}/${MAX_WARNINGS} for ${socket.id} in room ${roomId}`);
 
     socket.emit('warning-issued', { count: record.count, maxWarnings: MAX_WARNINGS });
@@ -456,7 +455,7 @@ io.on('connection', (socket) => {
   socket.on('check-profanity-server', ({ transcript, wordTimings, clientDetected, timestamp }, callback) => {
     // Server-side profanity check for hybrid moderation
     // This verifies the client's detection with independent server logic
-    
+
     if (!transcript || transcript.length === 0) {
       callback?.({ isProfane: false, confidence: 0, reason: 'Empty transcript' });
       return;
@@ -464,7 +463,7 @@ io.on('connection', (socket) => {
 
     const hasProfanity = containsProfanity(transcript);
     const badWords = hasProfanity ? extractProfanityWords(transcript) : [];
-    
+
     // Calculate confidence based on word match strength
     const confidence = hasProfanity ? Math.min(1, badWords.length / Math.max(1, transcript.split(/\s+/).length)) : 0;
 
@@ -570,9 +569,9 @@ io.on('connection', (socket) => {
       }
 
       io.to(roomId).emit('vote-kick-ended', {
-        targetSocketId: session.targetSocketId, 
+        targetSocketId: session.targetSocketId,
         targetAlias: session.targetAlias,
-        result: 'passed', 
+        result: 'passed',
         reason: `Vote passed: ${session.votes.size} participants voted to remove ${session.targetAlias}.`,
         voteCount: session.votes.size,
         requiredVotes: requiredVotes
@@ -631,7 +630,7 @@ function _leaveRoom(socket, roomId) {
     const host = roomHosts.get(roomId);
     if (host && host.socketId === socket.id) {
       console.log(`Host ${host.alias} left room ${roomId}`);
-      
+
       // Start timeout to allow Host to return before Sub-Host promotion
       const timeoutHandle = setTimeout(() => {
         console.log(`[DEBUG] Host timeout fired for room ${roomId}. HOST_RETURN_TIMEOUT_MS: ${HOST_RETURN_TIMEOUT_MS}ms`);
@@ -648,9 +647,9 @@ function _leaveRoom(socket, roomId) {
         }
         hostTimeoutHandles.delete(roomId);
       }, HOST_RETURN_TIMEOUT_MS);
-      
+
       hostTimeoutHandles.set(roomId, timeoutHandle);
-      
+
       // Notify room about Host departure
       io.to(roomId).emit('host-left', {
         formerHostAlias: host.alias,
@@ -666,7 +665,7 @@ function _leaveRoom(socket, roomId) {
       if (subHostIdx !== -1) {
         const formerSubHost = subHosts[subHostIdx];
         subHosts.splice(subHostIdx, 1);
-        
+
         io.to(roomId).emit('sub-host-left', {
           formerSubHostAlias: formerSubHost.alias,
           subHosts: subHosts
@@ -690,10 +689,10 @@ function _leaveRoom(socket, roomId) {
     } else {
       // Broadcast updated participant list for Browse page real-time updates
       const hostInfo = roomHosts.get(roomId);
-      io.to(roomId).emit('room-users', participants.map(p => ({ 
-        socketId: p.socketId, 
-        alias: p.alias, 
-        joinedAt: p.joinedAt, 
+      io.to(roomId).emit('room-users', participants.map(p => ({
+        socketId: p.socketId,
+        alias: p.alias,
+        joinedAt: p.joinedAt,
         leftAt: p.leftAt,
         isHost: hostInfo && hostInfo.socketId === p.socketId
       })));
@@ -734,4 +733,3 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
