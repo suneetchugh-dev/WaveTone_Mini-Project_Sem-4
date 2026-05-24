@@ -95,7 +95,7 @@ function App() {
     <div className="app-bg">
       <nav className={`main-nav ${isNavScrolled && location.pathname === '/about' ? 'nav-scrolled' : ''}`}>
         <div className="nav-logo-group">
-          <NavLink to="/" className="nav-logo-link">
+          <NavLink to="/" className="nav-logo-link" data-tooltip={isNavScrolled ? "WaveTone Home" : undefined}>
             <img src={MainLogo} alt="WaveTone Logo" className="nav-logo-img" />
             {!isNavScrolled && <span className="nav-title">WaveTone</span>}
           </NavLink>
@@ -104,7 +104,7 @@ function App() {
               <NavLink 
                 to="/" 
                 className="nav-link nav-home-link"
-                title="Go to Home"
+                data-tooltip="Go to Home"
                 aria-label="Home"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -145,13 +145,13 @@ function App() {
           )}
         </div>
         <div className="nav-links">
-          <NavLink to="/create" className={({ isActive }) => isActive ? 'nav-link nav-cta active' : 'nav-link nav-cta'}>
+          <NavLink to="/create" className={({ isActive }) => isActive ? 'nav-link nav-cta active' : 'nav-link nav-cta'} data-tooltip={isNavScrolled ? "Create Room" : undefined}>
             <span className="nav-icon" aria-label="Create Room">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
             </span>
             {!isNavScrolled && <span>Create Room</span>}
           </NavLink>
-          <NavLink to="/browse" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <NavLink to="/browse" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} data-tooltip={isNavScrolled ? "Browse Rooms" : undefined}>
             <span className="nav-icon" aria-label="Browse Rooms">
               <svg className="nav-browse-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle className="nav-browse-lens" cx="11" cy="11" r="8"/>
@@ -161,7 +161,7 @@ function App() {
             </span>
             {!isNavScrolled && <span>Browse Rooms</span>}
           </NavLink>
-          <NavLink to="/about" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <NavLink to="/about" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} data-tooltip={isNavScrolled ? "About" : undefined}>
             <span className="nav-icon" aria-label="About">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
             </span>
@@ -172,7 +172,7 @@ function App() {
               <NavLink 
                 to="/" 
                 className="nav-link nav-home-link"
-                title="Go to Home"
+                data-tooltip="Go to Home"
                 aria-label="Home"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
