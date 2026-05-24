@@ -65,6 +65,7 @@ function PostRoomSummary() {
           category: data.category,
           duration: data.duration,
           participantCount: data.participantCount,
+          participants: data.participants || [],
         });
         setLoading(false);
       })
@@ -198,6 +199,56 @@ function PostRoomSummary() {
               <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>No audio was recorded or stored.</span>
             </div>
           </div>
+
+          {/* Participants List */}
+          {summary?.participants && summary.participants.length > 0 && (
+            <div className="card" style={{ marginBottom: '1.2rem' }}>
+              <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '0.8rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Session Participants ({summary.participants.length})
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {summary.participants.map((participant, index) => (
+                  <div key={participant.userId || index} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: '0.6rem 0.8rem',
+                    background: 'var(--card-bg)',
+                    borderRadius: '8px',
+                    border: '1px solid var(--card-border)',
+                  }}>
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: 'var(--speaking)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: 600,
+                      fontSize: '0.85rem',
+                    }}>
+                      {participant.alias?.charAt(0).toUpperCase() || '?'}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                        {participant.alias || 'Unknown'}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                        {participant.isActive ? (
+                          <span style={{ color: '#4ade80' }}>● Active</span>
+                        ) : (
+                          <span>Left {participant.leftAt ? new Date(participant.leftAt).toLocaleTimeString() : 'Unknown time'}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </>
       )}
 
