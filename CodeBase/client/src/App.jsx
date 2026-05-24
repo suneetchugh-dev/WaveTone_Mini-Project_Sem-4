@@ -33,10 +33,37 @@ function App() {
   const [theme, setTheme] = useState(initializeTheme);
   const themeBeforeAnimation = useRef(theme);
   const location = useLocation();
+  const [isNavScrolled, setIsNavScrolled] = useState(false);
+  const navScrollTimeoutRef = useRef(null);
 
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
+    setIsNavScrolled(false);
+  }, [location.pathname]);
+
+  // Handle navbar scroll state for About page only
+  useEffect(() => {
+    if (location.pathname !== '/about') {
+      setIsNavScrolled(false);
+      return;
+    }
+
+    const handleScroll = () => {
+      if (navScrollTimeoutRef.current) {
+        clearTimeout(navScrollTimeoutRef.current);
+      }
+
+      const scrollY = window.scrollY;
+      if (scrollY > 80) {
+        setIsNavScrolled(true);
+      } else {
+        setIsNavScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -66,11 +93,11 @@ function App() {
 
   return (
     <div className="app-bg">
-      <nav className="main-nav">
+      <nav className={`main-nav ${isNavScrolled && location.pathname === '/about' ? 'nav-scrolled' : ''}`}>
         <div className="nav-logo-group">
           <NavLink to="/" className="nav-logo-link">
             <img src={MainLogo} alt="WaveTone Logo" className="nav-logo-img" />
-            <span className="nav-title">WaveTone</span>
+            {!isNavScrolled && <span className="nav-title">WaveTone</span>}
           </NavLink>
           {isMobile && (
             <div className="nav-actions nav-actions-mobile">
@@ -122,7 +149,7 @@ function App() {
             <span className="nav-icon" aria-label="Create Room">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
             </span>
-            Create Room
+            {!isNavScrolled && <span>Create Room</span>}
           </NavLink>
           <NavLink to="/browse" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
             <span className="nav-icon" aria-label="Browse Rooms">
@@ -132,13 +159,13 @@ function App() {
                 <path className="nav-browse-spark" d="M8.7 8.7h4.6"/>
               </svg>
             </span>
-            Browse Rooms
+            {!isNavScrolled && <span>Browse Rooms</span>}
           </NavLink>
           <NavLink to="/about" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
             <span className="nav-icon" aria-label="About">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
             </span>
-            About
+            {!isNavScrolled && <span>About</span>}
           </NavLink>
           {!isMobile && (
             <div className="nav-actions">
