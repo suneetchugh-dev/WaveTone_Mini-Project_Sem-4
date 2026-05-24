@@ -395,7 +395,8 @@
   transition: all 0.3s ease;
   z-index: 0;
 }
-.theme-toggle::after {
+.theme-toggle::after,
+.nav-home-link[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
   top: calc(100% + 0.55rem);
@@ -422,7 +423,9 @@
   height: 36px;
 }
 .theme-toggle:hover::after,
-.theme-toggle:focus-visible::after {
+.theme-toggle:focus-visible::after,
+.nav-home-link:hover::after,
+.nav-home-link:focus-visible::after {
   opacity: 1;
   transform: translateY(0);
 }
@@ -800,5 +803,167 @@
     justify-content: center;
     padding: 0.3rem 0.45rem;
     font-size: 0.8rem;
+  }
+}
+
+/* ===== SCROLLED NAVBAR STATE (ABOUT PAGE - DESKTOP ONLY) ===== */
+@media (min-width: 501px) {
+  .main-nav.nav-scrolled {
+    width: 80%;
+    margin: 0 auto;
+    border-radius: 16px;
+    top: 12px;
+    background: rgba(30, 33, 40, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    padding: 0.65rem 1.8rem;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-theme="light"] .main-nav.nav-scrolled {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba(207, 250, 254, 0.5);
+  }
+
+  /* Logo group adjustments for scrolled state */
+  .main-nav.nav-scrolled .nav-logo-group {
+    flex: 0 0 auto;
+  }
+
+  .main-nav.nav-scrolled .nav-logo-link {
+    padding: 0.5rem 1rem;
+    gap: 0.35rem;
+  }
+
+  .main-nav.nav-scrolled .nav-logo-img {
+    width: 40px;
+    height: 40px;
+    margin: 0 0.3rem 0 0;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Hide nav title when scrolled */
+  .main-nav.nav-scrolled .nav-title {
+    display: none;
+  }
+
+  /* Adjust nav-links container for scrolled state */
+  .main-nav.nav-scrolled .nav-links {
+    flex: 1;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: 0;
+  }
+
+  /* Nav link adjustments for scrolled state - icons only */
+  .main-nav.nav-scrolled .nav-link {
+    padding: 0.5rem 0.65rem;
+    gap: 0;
+    min-height: auto;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+  }
+
+  /* Custom tooltip for nav links when scrolled */
+  .main-nav.nav-scrolled .nav-link[data-tooltip]::after,
+  .main-nav.nav-scrolled .nav-logo-link[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    z-index: 20;
+    width: max-content;
+    max-width: 180px;
+    padding: 0.42rem 0.6rem;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    font-size: 0.72rem;
+    line-height: 1.25;
+    font-weight: var(--font-weight-medium);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .main-nav.nav-scrolled .nav-link:hover::after,
+  .main-nav.nav-scrolled .nav-logo-link:hover::after,
+  .main-nav.nav-scrolled .nav-link:focus-visible::after,
+  .main-nav.nav-scrolled .nav-logo-link:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .main-nav.nav-scrolled .nav-logo-link {
+    position: relative;
+  }
+
+  .main-nav.nav-scrolled .nav-link span:not(.nav-icon) {
+    display: none;
+  }
+
+  .main-nav.nav-scrolled .nav-link:hover {
+    color: var(--speaking);
+    background: rgba(56, 189, 248, 0.08);
+    border-color: rgba(56, 189, 248, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .main-nav.nav-scrolled .nav-link.active {
+    color: var(--speaking);
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--speaking);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+  }
+
+  /* Nav actions adjustments for scrolled state */
+  .main-nav.nav-scrolled .nav-actions {
+    flex: 0 0 auto;
+    gap: 0.6rem;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .main-nav.nav-scrolled .nav-actions .nav-link,
+  .main-nav.nav-scrolled .nav-actions .theme-toggle {
+    padding: 0.5rem 0.65rem;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .main-nav.nav-scrolled .nav-home-link:hover,
+  .main-nav.nav-scrolled .theme-toggle:hover {
+    transform: translateY(-2px);
+  }
+
+  [data-theme="light"] .main-nav.nav-scrolled .nav-link:hover {
+    color: #0EA5E9;
+    background: rgba(14, 165, 233, 0.08);
+    border-color: rgba(14, 165, 233, 0.2);
+  }
+
+  [data-theme="light"] .main-nav.nav-scrolled .nav-link.active {
+    color: #0EA5E9;
+    background: rgba(14, 165, 233, 0.15);
+    border-color: #0EA5E9;
+  }
+
+  [data-theme="light"] .main-nav.nav-scrolled .theme-toggle {
+    color: #64748B;
+    border-color: rgba(226, 232, 240, 0.6);
+    background: transparent;
+  }
+
+  [data-theme="light"] .main-nav.nav-scrolled .theme-toggle:hover {
+    color: #0EA5E9;
+    border-color: #0EA5E9;
+    background: rgba(14, 165, 233, 0.06);
+    box-shadow: 0 0 12px rgba(14, 165, 233, 0.15);
   }
 }
