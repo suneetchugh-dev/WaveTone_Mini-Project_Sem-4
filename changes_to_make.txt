@@ -1,0 +1,31 @@
+first analyse what is causing the issue, is the issue caused by the reasons specified below, if you think yes, then i would like to tell you that the issue is still not fixed both the issues still persist look out what could be causing these issues and fix it but first analyse is everything specificed below is correct or not, if you think it is correct then check whether implemented
+
+the participant showing feature works fine now in browse room, but do you logic for showing participant after session summary is also correct since if i am the only particpant left in the room at last when i leave it only shows one participant, but during my voice session there were other people too what about them? do you think this is happening because of us not storing names and thing what do you think? how can we fix this, this is a serious issue right?
+
+
+I've analyzed the code and identified the issue with the host tag not being visible to other normal users.
+
+Problem Analysis
+The issue is in the server/index.js file. When broadcasting the participant list to users in the room, the server sends the room-users event but doesn't include information about which participant is the host.
+
+There are two places where room-users is emitted:
+
+Line 228 - When a new user joins the room
+Line 690 - When a user leaves the room
+In both cases, the participant list is sent with only basic information (socketId, alias, joinedAt, leftAt), but without the isHost property that would identify the host.
+
+Solution
+To fix this issue, you need to modify both locations to include the host information:
+
+Around line 228 (in the join-room handler):
+
+Add: const hostInfo = roomHosts.get(roomId); before the emit
+Add: isHost: hostInfo && hostInfo.socketId === p.socketId to the participant object
+Around line 690 (in the _leaveRoom function):
+
+Add: const hostInfo = roomHosts.get(roomId); before the emit
+Add: isHost: hostInfo && hostInfo.socketId === p.socketId to the participant object
+This will ensure that when the client receives the room-users event, each participant will have an isHost property that indicates whether they are the host or not. The client-side code can then use this property to display the host tag next to the host's name.
+
+The host information is already being tracked in the roomHosts Map, so we just need to include it in the participant list that's broadcast to all users.
+

@@ -24,12 +24,28 @@ function PostRoomSummary() {
 
   useEffect(() => {
     if (stateData.room) {
-      setSummary({
-        topic: stateData.room.topic,
-        category: stateData.room.category,
-        duration: stateData.duration || 1,
-        participantCount: stateData.participantCount || 1,
-      });
+      // Fetch full session data from API to get all participants from DB
+      getSessionSummary(roomId)
+        .then(data => {
+          setSummary({
+            topic: data.topic || stateData.room.topic,
+            category: data.category || stateData.room.category,
+            duration: data.duration || stateData.duration || 1,
+            participantCount: data.participantCount || stateData.participantCount || 1,
+            participants: data.participants || [],
+          });
+          setLoading(false);
+        })
+        .catch(() => {
+          // Fallback to state data if API fails
+          setSummary({
+            topic: stateData.room.topic,
+            category: stateData.room.category,
+            duration: stateData.duration || 1,
+            participantCount: stateData.participantCount || 1,
+          });
+          setLoading(false);
+        });
 
       // Request AI summary if transcripts are available
       const transcripts = stateData.transcripts || [];

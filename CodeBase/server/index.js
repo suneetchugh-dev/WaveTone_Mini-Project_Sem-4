@@ -201,7 +201,7 @@ io.on('connection', (socket) => {
 
     // Update database with new participant
     try {
-      await Room.findByIdAndUpdate(roomId, {
+      const updateResult = await Room.findByIdAndUpdate(roomId, {
         $push: { 
           participants: {
             userId: socket.id,
@@ -209,7 +209,8 @@ io.on('connection', (socket) => {
             joinedAt: new Date()
           }
         }
-      });
+      }, { new: true });
+      console.log(`[JOIN-DB] Pushed participant ${cleanAlias} (${socket.id}). Room now has ${updateResult?.participants?.length || 0} total participants.`);
     } catch (err) {
       console.error('Failed to update room participants in database:', err);
     }
@@ -703,8 +704,10 @@ function _leaveRoom(socket, roomId) {
   Room.findByIdAndUpdate(
     roomId,
     { $set: { 'participants.$[elem].leftAt': new Date() } },
-    { arrayFilters: [{ 'elem.userId': socket.id, 'elem.leftAt': { $exists: false } }] }
-  ).catch(err => console.error('Failed to update participant left status:', err));
+    { arrayFilters: [{ 'elem.userId': socket.id, 'elem.leftAt': { $exists: false } }], new: true }
+  ).then(updatedRoom => {
+    console.log(`[LEAVE-DB] Marked participant ${socket.id} as left. Room now has ${updatedRoom?.participants?.filter(p => !p.leftAt).length || 0} active participants, ${updatedRoom?.participants?.length || 0} total.`);
+  }).catch(err => console.error('Failed to update participant left status:', err));
 
   socket.to(roomId).emit('user-left', { roomId, socketId: socket.id });
 }

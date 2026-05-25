@@ -111,6 +111,11 @@ export const getSessionSummary = async (req, res) => {
       isActive: !p.leftAt // Participant is active if they haven't left yet
     }));
 
+    console.log(`[SUMMARY] Room ${req.params.id} queried. DB participants array: ${room.participants.length} total. Mapped: ${allParticipants.length}`);
+    if (room.participants.length > 0) {
+      console.log(`[SUMMARY] Participants: ${room.participants.map(p => `${p.alias}(${p.userId}, leftAt: ${p.leftAt})`).join(', ')}`);
+    }
+
     res.json({
       roomId: room._id,
       topic: room.topic,
