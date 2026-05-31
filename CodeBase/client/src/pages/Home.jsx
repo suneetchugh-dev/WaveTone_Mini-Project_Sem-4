@@ -2,12 +2,6 @@ import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Home.css';
 
-const roomPreview = [
-  { title: 'Exam prep check-in', category: 'Study', count: '4/8' },
-  { title: 'Product feedback circle', category: 'Feedback', count: '2/6' },
-  { title: 'Open debate table', category: 'Debate', count: '6/10' },
-];
-
 function Home() {
   useEffect(() => {
     document.title = 'WaveTone - Home';
@@ -19,6 +13,21 @@ function Home() {
 
   return (
     <div className="home-page">
+      <div className="home-video-backdrop" aria-hidden="true">
+        <video
+          className="home-bg-video"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster="/videos/wavetone-bg-poster.jpg"
+        >
+          <source src="/videos/wavetone-bg.mp4" type="video/mp4" />
+        </video>
+        <div className="home-video-shade" />
+      </div>
+
       <section className="home-hero">
         <div className="home-hero-content slide-up">
           <h1 className="home-title">Talk without turning every conversation into a profile.</h1>
@@ -53,34 +62,6 @@ function Home() {
             </NavLink>
           </div>
         </div>
-
-        <aside className="live-panel" aria-label="Live rooms preview">
-          <div className="live-panel-header">
-            <div>
-              <span className="live-eyebrow">Live now</span>
-              <h2>Moderated</h2>
-            </div>
-            <span className="live-indicator" aria-hidden="true" />
-          </div>
-
-          <div className="live-wave" aria-hidden="true">
-            {[...Array(20)].map((_, index) => (
-              <span key={index} className={`live-bar bar-${index % 10}`} />
-            ))}
-          </div>
-
-          <div className="preview-list">
-            {roomPreview.map((room) => (
-              <div className="preview-room" key={room.title}>
-                <div>
-                  <strong>{room.title}</strong>
-                  <span>{room.category}</span>
-                </div>
-                {room.count && <span className="room-count">{room.count}</span>}
-              </div>
-            ))}
-          </div>
-        </aside>
       </section>
     </div>
   );
