@@ -117,7 +117,6 @@ function App() {
                     setTimeout(() => setTheme(theme === 'dark' ? 'light' : 'dark'), 400);
                   }
                 }}
-                title={themeToggleLabel}
                 aria-label={themeToggleLabel}
                 data-tooltip={themeToggleLabel}
               >
@@ -185,7 +184,6 @@ function App() {
                     setTimeout(() => setTheme(theme === 'dark' ? 'light' : 'dark'), 400);
                   }
                 }}
-                title={themeToggleLabel}
                 aria-label={themeToggleLabel}
                 data-tooltip={themeToggleLabel}
               >
