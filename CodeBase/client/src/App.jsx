@@ -12,7 +12,7 @@ import NotFound from './pages/NotFound';
 import './App.css';
 import { useEffect, useState, useRef } from 'react';
 import { darkTheme, lightTheme } from './theme';
-import MainLogo from './assets/main-logo.webp';
+import MainLogo from '../../../Assets/Main-Logo/SampleLogo1.png';
 
 
 function App() {

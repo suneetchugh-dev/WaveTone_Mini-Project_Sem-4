@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  server:
+    build: ./CodeBase/server
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "5000:5000"
+
+  client:
+    build: ./CodeBase/client
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+
+networks:
+  default:
+    driver: bridge

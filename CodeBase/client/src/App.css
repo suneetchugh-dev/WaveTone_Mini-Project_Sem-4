@@ -150,7 +150,8 @@
 
 .nav-logo-group {
   display: flex;
-  align-items: center;
+  border: none;
+  box-sizing: border-box;
 }
 
 .nav-logo-link {
@@ -161,19 +162,19 @@
 }
 
 .nav-logo-img {
-  width: 48px;
-  height: 48px;
+  width: 55px;
+  height: 55px;
   margin: 0 0.7rem 0 0.2rem;
   border-radius: 10px;
   object-fit: contain;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-  transition: box-shadow 0.2s ease, filter 0.2s ease, transform 0.2s ease;
+  box-shadow: none;
+  transition: filter 0.2s ease, transform 0.2s ease;
   transform: translateY(-2px);
 }
 .nav-logo-link:hover .nav-logo-img {
-  transform: translateY(-3px);
-  filter: brightness(1.06) contrast(1.02);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+  transform: translateY(-2px);
+  box-shadow: none;
+  /* Intentionally do not change filter on hover to avoid swapping or contrast adjustments */
 }
 
 .nav-title {
@@ -238,7 +239,6 @@
   color: var(--speaking);
   background: rgba(56, 189, 248, 0.06);
   border-color: rgba(56, 189, 248, 0.15);
-  transform: translateY(-1px);
 }
 .nav-link.active {
   color: var(--speaking);
@@ -341,6 +341,13 @@
   animation: navCreateRoomIconLift 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+/* Convert create-room button hover border and shadow to white to match hovered state */
+.nav-cta:hover,
+.nav-cta:focus-visible {
+  border-color: var(--speaking);
+  box-shadow: 0 4px 14px var(--glow);
+}
+
 /* Browse Room button icon animation - revolving magnifying glass */
 .nav-link:nth-child(2):hover .nav-browse-lens {
   animation: navBrowseLensRotate 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -415,7 +422,6 @@
   font-weight: var(--font-weight-medium);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-4px);
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 .theme-toggle:hover::before {
@@ -568,6 +574,9 @@
   align-items: center;
   gap: 0.5rem;
   font-feature-settings: var(--font-features);
+  transform: translateY(0);
+  will-change: transform;
+  transform-origin: center;
 }
 .home-btn-solid {
   background: transparent;
@@ -581,7 +590,6 @@
   color: #0A2E50;
   border-color: #0A2E50;
   box-shadow: 0 8px 32px rgba(10, 46, 80, 0.2), inset 0 0 20px rgba(56, 189, 248, 0.1);
-  transform: translateY(-1px);
 }
 
 /* Light theme button */
@@ -594,8 +602,13 @@
   border-color: var(--speaking);
   color: var(--text-primary);
   background: rgba(56, 189, 248, 0.05);
-  transform: translateY(-1px);
+  /* keep container static to avoid layout shift; icon animates separately */
   z-index: 1;
+}
+
+/* Enlarge Create Room (home action) on hover by 10% without shifting layout */
+[data-theme="dark"] .home-actions .home-btn-solid:hover {
+  transform: scale(1.01);
 }
 
 /* Light theme browse button */
@@ -702,8 +715,8 @@
       }
     }
   .nav-logo-img {
-    width: 56px;
-    height: 56px;
+    width: 55px;
+    height: 55px;
     margin: 0.3rem 0 0.7rem 0;
   }
   .nav-logo-group {
@@ -844,6 +857,8 @@
     height: 40px;
     margin: 0 0.3rem 0 0;
     transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: none;
+    border-radius: 0;
   }
 
   /* Hide nav title when scrolled */

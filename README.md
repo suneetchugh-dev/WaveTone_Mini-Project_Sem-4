@@ -96,6 +96,33 @@ npm run dev
 
 ---
 
+## Docker (Production and Development)
+
+Recommended layout: keep the `client` and `server` folders under `CodeBase/`, and place the production `docker-compose.yml` at the repository root. For development you can use the provided `docker-compose.dev.yml` which uses bind-mounts and runs dev servers inside containers.
+
+Production quick run (from repository root):
+
+```bash
+docker compose up --build
+```
+
+Development quick run (bind-mounts, nodemon, and vite dev server):
+
+```bash
+# from repository root
+docker compose -f docker-compose.dev.yml up --build
+```
+
+Important notes and best practices:
+- Do NOT mount your application source directory into a production container image (i.e. avoid host bind-mounts) — doing so can mask files that were built into the image (for example `node_modules`) and cause missing-dependency errors. The production `docker-compose.yml` intentionally does not include any `volumes:` for this reason.
+- Use `docker-compose.dev.yml` for local iterative development; it mounts source directories and starts `nodemon` / `vite` for live reload.
+- Keep secrets out of your Git repository. Use `.env` files referenced in your compose files or CI/CD secrets.
+- When deploying to a cloud provider, ensure your `MONGO_URI` and any API keys are provided as environment variables.
+
+If you previously had a `docker-compose.yml` inside `CodeBase/`, it has been moved to the repository root to follow common conventions (so `docker compose up` works from the project root).
+
+---
+
 ## Deployment
 
 ### Frontend

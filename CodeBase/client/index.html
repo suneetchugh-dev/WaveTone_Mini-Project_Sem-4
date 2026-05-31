@@ -7,7 +7,7 @@
     <meta http-equiv="Permissions-Policy" content="accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), xr-spatial-tracking=(), browsing-topics=(), run-ad-auction=(), join-ad-interest-group=(), private-state-token-redemption=(), private-state-token-issuance=(), private-aggregation=(), attribution-reporting=()" />
     <meta name="description" content="WaveTone - Create and join voice rooms effortlessly. Engage in discussions, debates, and chill sessions with ease." />
     <title>WaveTone</title>
-    <link rel="icon" type="image/webp" href="./src/assets/main-logo.webp">
+    <link rel="icon" type="image/png" href="./src/assets/main-logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400&family=Spectral:wght@400;700&display=optional" rel="stylesheet">
@@ -60,20 +60,18 @@
       }
 
       .nav-logo-img {
-        width: 48px;
-        height: 48px;
+        width: 55px;
+        height: 55px;
         margin: 0 0.7rem 0 0.2rem;
-        border-radius: 10px;
         object-fit: contain;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-        transition: box-shadow 0.2s ease, filter 0.2s ease, transform 0.2s ease;
-        transform: translateY(-2px);
+        /* Default: no filter. Theme-specific inversion handled via data-theme attribute. */
+        filter: none;
       }
-      .nav-logo-link:hover .nav-logo-img {
-        transform: translateY(-3px);
-        filter: brightness(1.06) contrast(1.02);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+      /* Apply inversion only when the document data-theme is light */
+      [data-theme="light"] .nav-logo-img {
+        filter: invert(1);
       }
+
     </style>
   </head>
   <body>
