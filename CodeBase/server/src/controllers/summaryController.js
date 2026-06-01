@@ -116,11 +116,21 @@ export const getSessionSummary = async (req, res) => {
       console.log(`[SUMMARY] Participants: ${room.participants.map(p => `${p.alias}(${p.userId}, leftAt: ${p.leftAt})`).join(', ')}`);
     }
 
+    // Calculate actual elapsed duration in minutes
+    let actualDuration = room.duration; // Fallback to configured duration
+    if (allParticipants.length > 0) {
+      const earliestJoin = Math.min(...allParticipants.map(p => new Date(p.joinedAt).getTime()));
+      const latestLeave = Math.max(...allParticipants.map(p => p.leftAt ? new Date(p.leftAt).getTime() : Date.now()));
+      if (earliestJoin && latestLeave && latestLeave > earliestJoin) {
+        actualDuration = Math.max(1, Math.round((latestLeave - earliestJoin) / 60000));
+      }
+    }
+
     res.json({
       roomId: room._id,
       topic: room.topic,
       category: room.category,
-      duration: room.duration,
+      duration: actualDuration,
       participantCount: allParticipants.length,
       participants: allParticipants,
       createdAt: room.createdAt,

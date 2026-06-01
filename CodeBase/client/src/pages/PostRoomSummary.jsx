@@ -30,7 +30,7 @@ function PostRoomSummary() {
           setSummary({
             topic: data.topic || stateData.room.topic,
             category: data.category || stateData.room.category,
-            duration: data.duration || stateData.duration || 1,
+            duration: stateData.duration || data.duration || 1,
             participantCount: data.participantCount || stateData.participantCount || 1,
             participants: data.participants || [],
           });
