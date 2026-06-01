@@ -43,9 +43,9 @@ function App() {
     setIsNavScrolled(false);
   }, [location.pathname]);
 
-  // Handle navbar scroll state for About page only
+  // Handle navbar scroll state for About and Browse pages
   useEffect(() => {
-    if (location.pathname !== '/about') {
+    if (location.pathname !== '/about' && location.pathname !== '/browse') {
       setIsNavScrolled(false);
       return;
     }
@@ -94,7 +94,7 @@ function App() {
 
   return (
     <div className="app-bg">
-      <nav className={`main-nav ${isNavScrolled && location.pathname === '/about' ? 'nav-scrolled' : ''}`}>
+      <nav className={`main-nav ${isNavScrolled && (location.pathname === '/about' || location.pathname === '/browse') ? 'nav-scrolled' : ''}`}>
         <div className="nav-logo-group">
           <NavLink to="/" className="nav-logo-link" data-tooltip={isNavScrolled ? "WaveTone Home" : undefined}>
             <img src={MainLogo} alt="WaveTone Logo" className="nav-logo-img" />
