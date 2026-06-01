@@ -60,16 +60,12 @@
       }
 
       .nav-logo-img {
-        width: 55px;
+        width: 145px;
         height: 55px;
-        margin: 0 0.7rem 0 0.2rem;
         object-fit: contain;
-        /* Default: no filter. Theme-specific inversion handled via data-theme attribute. */
-        filter: none;
-      }
-      /* Apply inversion only when the document data-theme is light */
-      [data-theme="light"] .nav-logo-img {
-        filter: invert(1);
+        box-shadow: none;
+        transition: filter 0.2s ease, transform 0.2s ease;
+        transform: translateY(-5px);
       }
 
     </style>

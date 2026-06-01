@@ -12,7 +12,7 @@ import NotFound from './pages/NotFound';
 import './App.css';
 import { useEffect, useState, useRef } from 'react';
 import { darkTheme, lightTheme } from './theme';
-import MainLogo from '../../../Assets/Main-Logo/SampleLogo1.png';
+import MainLogo from '../../../Assets/Main-Logo/SampleLogo3.png';
 
 
 function App() {
@@ -146,7 +146,10 @@ function App() {
         <div className="nav-links">
           <NavLink to="/create" className={({ isActive }) => isActive ? 'nav-link nav-cta active' : 'nav-link nav-cta'} data-tooltip={isNavScrolled ? "Create Room" : undefined}>
             <span className="nav-icon" aria-label="Create Room">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+              <svg className="nav-create-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle className="nav-create-icon-ring" cx="12" cy="12" r="10"/>
+                <path className="nav-create-icon-plus" d="M12 8v8M8 12h8"/>
+              </svg>
             </span>
             {!isNavScrolled && <span>Create Room</span>}
           </NavLink>
