@@ -1424,13 +1424,16 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
     padding: 1.2rem;
   }
 }
-body[data-route="about"] .main-nav {
+body[data-route="about"] .main-nav,
+body[data-route="browse-rooms"] .main-nav {
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 100;
 }
-body[data-route="about"] .page-container {
+
+body[data-route="about"] .page-container,
+body[data-route="browse-rooms"] .page-container {
     margin-top: 6.5rem; /* Adjusted to ensure the heading is visible */
 }
 

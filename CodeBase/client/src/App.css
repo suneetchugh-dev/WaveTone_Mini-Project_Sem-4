@@ -943,7 +943,7 @@
   }
 }
 
-/* ===== SCROLLED NAVBAR STATE (ABOUT PAGE - DESKTOP ONLY) ===== */
+/* ===== SCROLLED NAVBAR STATE (ABOUT PAGE AND BROWSE PAGE - DESKTOP ONLY) ===== */
 @media (min-width: 501px) {
   .main-nav.nav-scrolled {
     width: 80%;
