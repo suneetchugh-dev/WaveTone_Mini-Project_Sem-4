@@ -125,7 +125,8 @@ function BrowseRooms() {
   return (
     <section className="page-section-wide">
       <AmbientVideoBackground variant="audio-only" showToggleButton={false} />
-      <p className="page-subtitle">Find a conversation that interests you.</p>
+        <h1 className="page-title">Browse Rooms</h1>
+        <p className="page-subtitle">Find a conversation that interests you.</p>
 
       {/* Join by Code */}
       <form onSubmit={handleJoinByCode} className="card" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>

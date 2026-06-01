@@ -125,7 +125,8 @@
 .ambient-video-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  /* ensure the ambient backdrop stays behind page content */
+  z-index: -1;
   overflow: hidden;
   pointer-events: none;
   background: #13161B;
