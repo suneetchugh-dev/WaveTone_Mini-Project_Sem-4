@@ -14,7 +14,7 @@ function Home() {
 
   return (
     <div className="home-page">
-      <AmbientVideoBackground variant="hero" />
+      <AmbientVideoBackground variant="hero" showToggleButton={true} />
 
       <section className="home-hero">
         <div className="home-hero-content slide-up">
