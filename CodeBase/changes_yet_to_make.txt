@@ -1,0 +1,5 @@
+- [ ] Add testing utilities for profanity detection validation
+- [ ] Improve error messaging clarity
+- [ ] Consider integrating TensorFlow.js toxicity model for more robust detection
+- [ ] Add language and accent support improvements
+- [ ] Implement pre-muting before detected words when possible
