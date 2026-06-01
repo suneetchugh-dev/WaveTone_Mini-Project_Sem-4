@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import './Home.css';
 
 function Home() {
@@ -13,20 +14,7 @@ function Home() {
 
   return (
     <div className="home-page">
-      <div className="home-video-backdrop" aria-hidden="true">
-        <video
-          className="home-bg-video"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          poster="/videos/wavetone-bg-poster.jpg"
-        >
-          <source src="/videos/wavetone-bg.mp4" type="video/mp4" />
-        </video>
-        <div className="home-video-shade" />
-      </div>
+      <AmbientVideoBackground variant="hero" />
 
       <section className="home-hero">
         <div className="home-hero-content slide-up">

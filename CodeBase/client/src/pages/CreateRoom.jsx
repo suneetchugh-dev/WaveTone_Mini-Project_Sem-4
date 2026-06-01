@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import './shared.css';
 import { createRoom } from '../services/api';
 
@@ -59,7 +60,9 @@ function CreateRoom() {
   };
 
   return (
-    <section className="page-section">
+    <>
+      <AmbientVideoBackground variant="subtle create" />
+      <section className="page-section">
       <h2 className="page-title">Create a Room</h2>
       <p className="page-subtitle">Set up your anonymous voice room in seconds.</p>
 
@@ -179,7 +182,8 @@ function CreateRoom() {
           {loading ? 'Creating...' : 'Create Room'}
         </button>
       </form>
-    </section>
+      </section>
+    </>
   );
 }
 

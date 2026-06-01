@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import './shared.css';
 
 function About() {
@@ -44,7 +45,9 @@ function About() {
   ];
 
   return (
-    <section className="page-section">
+    <>
+      <AmbientVideoBackground variant="subtle" />
+      <section className="page-section">
       <h2 className="page-title">About WaveTone</h2>
       <p className="page-subtitle">Privacy-first, anonymous voice conversations.</p>
 
@@ -117,7 +120,8 @@ function About() {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }
 

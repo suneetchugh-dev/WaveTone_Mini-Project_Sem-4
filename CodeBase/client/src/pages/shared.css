@@ -284,6 +284,8 @@
 
 /* Page section wrapper */
 .page-section {
+  position: relative;
+  z-index: 1;
   max-width: 850px;
   margin: 0 auto;
     padding: 0.2rem 1.25rem;
@@ -375,6 +377,8 @@
 }
 
 .page-section-wide {
+  position: relative;
+  z-index: 1;
   max-width: 1000px;
   margin: 0 auto;
   padding: 2.5rem 2rem;
