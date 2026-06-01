@@ -342,3 +342,7 @@
   box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
   transform: translateY(-2px);
 }
+/* Audio-only background: hide video but keep audio */
+.ambient-video-backdrop--audio-only {
+  display: none;
+}

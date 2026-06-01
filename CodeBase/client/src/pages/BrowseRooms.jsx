@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './BrowseRooms.css';
 import './shared.css';
+import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import { getRooms } from '../services/api';
 import { connectSocket } from '../services/socket';
 
@@ -123,7 +124,7 @@ function BrowseRooms() {
 
   return (
     <section className="page-section-wide">
-      <h2 className="page-title">Browse Rooms</h2>
+      <AmbientVideoBackground variant="audio-only" showToggleButton={false} />
       <p className="page-subtitle">Find a conversation that interests you.</p>
 
       {/* Join by Code */}

@@ -13,6 +13,7 @@ import './App.css';
 import { useEffect, useState, useRef } from 'react';
 import { darkTheme, lightTheme } from './theme';
 import MainLogo from '../../../Assets/Main-Logo/SampleLogo3.png';
+import { AudioProvider } from './context/AudioContext';
 
 
 function App() {
@@ -233,4 +234,12 @@ function App() {
   );
 }
 
-export default App;
+function AppWithAudio() {
+  return (
+    <AudioProvider>
+      <App />
+    </AudioProvider>
+  );
+}
+
+export default AppWithAudio;
