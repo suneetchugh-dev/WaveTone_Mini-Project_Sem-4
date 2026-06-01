@@ -92,7 +92,7 @@ function About() {
         <div className="about-values">
           <span>Focused rooms, minimal noise</span>
           <span>Safety-first moderation</span>
-          <span>Designed for short, meaningful sessions</span>
+          <span>Designed for short sessions</span>
         </div>
       </div>
 

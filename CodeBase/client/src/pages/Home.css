@@ -65,7 +65,7 @@ body[data-route="home"] .page-container {
 
 .home-title {
   max-width: 780px;
-  margin: 0 0 1rem 0;
+  margin: 0 0 1.3rem 0;
   color: #F8FAFC;
   font-size: 5rem;
   line-height: 0.98;
@@ -410,6 +410,89 @@ body[data-route="home"] .page-container {
   position: absolute;
   border-radius: 50%;
   opacity: 0;
+}
+
+/* Ambient Sound Toggle Button */
+.ambient-sound-toggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  box-shadow: 1px 1px white;
+}
+
+.ambient-sound-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ambient-sound-toggle:focus-visible {
+  outline: 2px solid var(--speaking);
+  outline-offset: 2px;
+}
+
+.ambient-sound-toggle svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
+/* Light theme variant */
+[data-theme="light"] .ambient-sound-toggle {
+    border-color: black;
+    color: #0f172a;
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 2px 2px black;
+}
+
+[data-theme="light"] .ambient-sound-toggle:hover {
+  border-color: rgba(15, 23, 42, 0.25);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 2px 2px black;
+}
+
+@media (max-width: 768px) {
+  .ambient-sound-toggle {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 32px;
+    height: 32px;
+    border-width: 1px;
+  }
+
+  .ambient-sound-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 500px) {
+  .ambient-sound-toggle {
+    bottom: 1rem;
+    right: 1rem;
+    width: 28px;
+    height: 28px;
+    border-width: 1px;
+  }
+
+  .ambient-sound-toggle svg {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 [data-theme="dark"] .bubble {
