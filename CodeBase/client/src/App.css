@@ -453,8 +453,11 @@
 /* Convert create-room button hover border and shadow to white to match hovered state */
 .nav-cta:hover,
 .nav-cta:focus-visible {
-  border-color: var(--speaking);
-  box-shadow: 0 4px 14px var(--glow);
+  color: var(--speaking);
+  background: rgba(56, 189, 248, 0.06);
+  border-color: rgba(56, 189, 248, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
 }
 
 /* Browse Room button icon animation - revolving magnifying glass */
