@@ -3,18 +3,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 function AmbientVideoBackground({ variant = 'subtle', showToggleButton = false }) {
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
-  const isMountedRef = useRef(false);
 
-  // Set up the video element on mount
-  useEffect(() => {
-    isMountedRef.current = true;
-
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
-  // Sync muted state to video element
+  // Sync muted state to video element via DOM (React's muted prop is unreliable)
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
@@ -23,9 +13,18 @@ function AmbientVideoBackground({ variant = 'subtle', showToggleButton = false }
     }
   }, [isMuted]);
 
+  // Ensure video starts muted on mount (React muted prop can be flaky)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = true;
+      video.volume = 1.0;
+    }
+  }, []);
+
   const toggleSound = useCallback(async () => {
     const video = videoRef.current;
-    if (!video || !isMountedRef.current) return;
+    if (!video) return;
 
     if (isMuted) {
       // Currently muted -> try to unmute
@@ -38,23 +37,17 @@ function AmbientVideoBackground({ variant = 'subtle', showToggleButton = false }
           await video.play();
         }
 
-        if (isMountedRef.current) {
-          setIsMuted(false);
-        }
+        setIsMuted(false);
       } catch (error) {
         console.warn('Could not unmute video:', error);
         // Re-mute if browser blocks it
         video.muted = true;
-        if (isMountedRef.current) {
-          setIsMuted(true);
-        }
+        setIsMuted(true);
       }
     } else {
       // Currently unmuted -> mute
       video.muted = true;
-      if (isMountedRef.current) {
-        setIsMuted(true);
-      }
+      setIsMuted(true);
     }
   }, [isMuted]);
 
@@ -66,7 +59,7 @@ function AmbientVideoBackground({ variant = 'subtle', showToggleButton = false }
           className="ambient-bg-video"
           autoPlay
           loop
-          muted
+          muted={isMuted}
           playsInline
           preload="auto"
           volume={1.0}
