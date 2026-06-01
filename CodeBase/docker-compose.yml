@@ -1,8 +1,0 @@
-## Deprecated: moved to repository root
-
-This file has been intentionally left as a placeholder to avoid accidental usage.
-Use the production compose file at the repository root: `../docker-compose.yml` (run from repository root).
-
-If you need a development compose file that mounts source code for live reload, use `../docker-compose.dev.yml`.
-
-DO NOT use host bind-mounts in production compose, as they can mask files installed during image build (for example: `node_modules`).
