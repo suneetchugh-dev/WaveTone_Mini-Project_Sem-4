@@ -2,6 +2,18 @@
   .browse-search-row {
     margin-bottom: 1.2rem;
   }
+  .join-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .join-form .home-btn {
+    margin-top: 0.8rem;
+    width: 100%;
+    justify-content: center;
+  }
+  .join-form .form-input {
+    margin-bottom: 0;
+  }
   .browse-tabs {
     gap: 0.5rem;
     font-size: 0.85rem;
