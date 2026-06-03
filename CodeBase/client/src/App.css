@@ -610,7 +610,6 @@
 .nav-home-link:hover {
   background: rgba(56, 189, 248, 0.15) !important;
   color: var(--speaking) !important;
-  transform: translateY(-1px);
   box-shadow: 0 0 12px rgba(56, 189, 248, 0.15) !important;
 }
 .nav-home-link.active {
