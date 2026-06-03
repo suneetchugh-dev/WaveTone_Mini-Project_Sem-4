@@ -308,6 +308,9 @@
   .create-room-mobile-font {
     font-size: 1.02rem;
   }
+  body[data-route='browse-rooms'] .page-title {
+    margin-top: 3rem;
+  }
   body[data-route='create-room'] .page-title,
   body[data-route='browse-rooms'] .page-title,
   body[data-route='about'] .page-title,
