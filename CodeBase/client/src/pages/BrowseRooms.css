@@ -339,19 +339,25 @@
 }
 
 [data-theme="light"] .room-join-link {
-  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
-  color: #ffffff !important;
+  background: transparent !important;
+  color: var(--text-primary) !important;
   font-weight: 700 !important;
   padding: 0.5rem 1rem !important;
-  border: none !important;
-  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.4);
+  border: 1px solid rgba(10, 46, 80, 0.3) !important;
+  box-shadow:
+    0 0 16px rgba(10, 46, 80, 0.08),
+    inset 0 0 16px rgba(10, 46, 80, 0.02);
   text-decoration: none !important;
   border-radius: 8px !important;
 }
 
 [data-theme="light"] .room-join-link:hover {
-  background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
-  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
+  background: #0a2e50 !important;
+  color: #ffffff !important;
+  border-color: #0a2e50 !important;
+  box-shadow:
+    0 8px 24px rgba(10, 46, 80, 0.24),
+    inset 0 0 18px rgba(56, 189, 248, 0.12);
   transform: translateY(-2px);
 }
 /* Audio-only background: hide video but keep audio */
