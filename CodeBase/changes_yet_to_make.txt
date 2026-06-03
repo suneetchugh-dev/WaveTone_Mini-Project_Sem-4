@@ -3,3 +3,8 @@
 - [ ] Consider integrating TensorFlow.js toxicity model for more robust detection
 - [ ] Add language and accent support improvements
 - [ ] Implement pre-muting before detected words when possible
+
+
+
+#Self Noted
+Remove Border Around Home Button And Theme Toggle Button, so that it makes it more minimalistic and modern.

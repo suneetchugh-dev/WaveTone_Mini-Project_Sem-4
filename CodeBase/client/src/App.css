@@ -456,7 +456,6 @@
   color: var(--speaking);
   background: rgba(56, 189, 248, 0.06);
   border-color: rgba(56, 189, 248, 0.15);
-  transform: translateY(-1px);
   box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
 }
 
