@@ -274,6 +274,19 @@
   animation: arrowSlide 0.6s ease-in-out infinite;
 }
 
+.join-form-arrow {
+  transform: translate(0px, 1px);
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: transform 0.3s ease-in-out;
+}
+
+.join-form .home-btn-solid:hover .join-form-arrow,
+.join-form .home-btn-solid:focus-visible .join-form-arrow {
+  animation: arrowSlide 0.6s ease-in-out infinite;
+}
+
 /* Dark mode room join button styling (matches home-btn-solid from "Paste room link" button) */
 [data-theme="dark"] .room-join-link {
   background: var(--speaking) !important;
@@ -336,6 +349,26 @@
   border-color: rgba(10, 46, 80, 0.2);
   box-shadow: 0 8px 24px rgba(10, 46, 80, 0.1);
   transform: translateY(-4px);
+}
+
+[data-theme="light"] .join-form .home-btn-solid {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: rgba(10, 46, 80, 0.3);
+  box-shadow:
+    0 0 16px rgba(10, 46, 80, 0.08),
+    inset 0 0 16px rgba(10, 46, 80, 0.02);
+}
+
+[data-theme="light"] .join-form .home-btn-solid:hover,
+[data-theme="light"] .join-form .home-btn-solid:focus-visible {
+  background: #0a2e50;
+  color: #ffffff;
+  border-color: #0a2e50;
+  box-shadow:
+    0 8px 24px rgba(10, 46, 80, 0.24),
+    inset 0 0 18px rgba(56, 189, 248, 0.12);
+  transform: translateY(-1px);
 }
 
 [data-theme="light"] .room-join-link {

@@ -147,6 +147,9 @@ function BrowseRooms() {
         />
         <button type="submit" className="home-btn home-btn-solid" style={{ padding: '0.55rem 1.2rem', fontSize: '0.88rem' }}>
           Join
+          <svg className="join-form-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
         </button>
         {joinError && <span style={{ color: 'var(--warning)', fontSize: '0.8rem', width: '100%' }}>{joinError}</span>}
       </form>
