@@ -233,9 +233,10 @@
 
 .nav-logo-link {
   display: flex;
-  padding: 0.9rem 2.25rem;
+  padding: 0.9rem 0.25rem;
   gap: 0.65rem;
   text-decoration: none;
+  align-items: center;
 }
 
 .nav-logo-img {
@@ -300,6 +301,7 @@
   border: 1.5px solid transparent;
   padding-bottom: 0.35rem;
   font-feature-settings: var(--font-features);
+  white-space: nowrap;
 }
 .nav-link:hover {
   color: var(--speaking);
@@ -744,10 +746,29 @@
   box-shadow: 0 8px 32px rgba(10, 46, 80, 0.25);
 }
 
+
 /* ===== RESPONSIVE ===== */
+
+/* ===== HUB MAX (1280x800) ===== */
+@media (max-width: 1280px) {
+  .nav-logo-link {
+    display: flex;
+    padding: 0.9rem 0.25rem;
+    gap: 0.65rem;
+    text-decoration: none;
+  }
+}
+
+/* ===== NEST HUB (1024x600) ===== */
 @media (max-width: 1024px) {
   .main-nav {
     padding: 0.65rem 1.25rem;
+  }
+  .nav-logo-link {
+    align-items: center;
+    padding: 0.9rem 0rem;
+    gap: 0.65rem;
+    margin-left: -1rem;
   }
   .nav-links {
     gap: 0.8rem;
@@ -759,6 +780,28 @@
   }
 }
 
+/* ===== IPAD AIR (820px) — hide WaveTone text, prevent nav text wrap ===== */
+@media (min-width: 769px) and (max-width: 900px) {
+  .nav-title {
+    display: none;
+  }
+  .nav-link {
+    white-space: nowrap;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  .nav-links {
+    gap: 0.55rem;
+  }
+  .nav-actions {
+    gap: 0.6rem;
+    margin-left: 0.6rem;
+  }
+  .nav-logo-link {
+    padding: 0.75rem 0.25rem;
+  }
+}
+
 @media (max-width: 768px) {
   .main-nav {
     flex-wrap: wrap;
@@ -766,17 +809,30 @@
     padding: 0.55rem 0.85rem;
   }
   .nav-logo-group {
-    flex: 1 1 auto;
+    width: 100%;
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .nav-title {
+    display: none;
   }
   .nav-links {
     width: 100%;
-    justify-content: space-between;
-    gap: 0.35rem;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-items: center;
+    align-items: center;
+    column-gap: 0.35rem;
+    row-gap: 0.5rem;
     order: 2;
   }
   .nav-actions {
-    width: 100%;
+    grid-column: 1 / -1;
+    justify-self: end;
+    width: auto;
     justify-content: flex-end;
     margin-left: 0;
     margin-right: 0;
@@ -847,7 +903,12 @@
   .nav-logo-img {
     width: 145px;
     height: 55px;
-    margin: 0.3rem 0 0.7rem 0;
+    margin: 0.3rem -3.5rem 0.7rem 0;
+  }
+  /* iPhone 14 Pro Max — center the logo accounting for absolute nav-actions on right */
+  .nav-logo-link {
+    padding: 0.5rem 0;
+    justify-content: center;
   }
   .nav-logo-group {
     width: 100%;
@@ -884,8 +945,8 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     box-sizing: border-box;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 49%;
+    transform: translateX(-51%);
     position: relative;
     padding: 0 0.5rem;
   }
