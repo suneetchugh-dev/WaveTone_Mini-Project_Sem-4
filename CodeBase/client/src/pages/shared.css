@@ -298,6 +298,19 @@
   }
 }
 
+/* ===== IPAD MINI (768px) & SURFACE DUO (540px) — browse heading clears navbar ===== */
+@media (min-width: 501px) and (max-width: 768px) {
+  body[data-route='browse-rooms'] .page-title {
+    margin-top: 2.5rem;
+  }
+  body[data-route='create-room'] .page-title,
+  body[data-route='join-room'] .page-title,
+  body[data-route='about'] .page-title,
+  body[data-route='post-room-summary'] .page-title {
+    margin-top: 1.5rem;
+  }
+}
+
 @media (max-width: 500px) {
   body[data-route='create-room'] .page-section,
   body[data-route='browse-rooms'] .page-section,

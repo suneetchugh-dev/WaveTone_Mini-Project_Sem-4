@@ -81,10 +81,10 @@ function App() {
     }
   }, [theme]);
 
-  // Helper to detect small screens (max-width: 500px)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 500);
+  // Helper to detect mobile/tablet screens (max-width: 768px) — iPad Mini, Surface Duo, iPhone etc.
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   React.useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 500);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);

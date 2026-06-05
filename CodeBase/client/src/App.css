@@ -816,6 +816,39 @@
     align-items: center;
     position: relative;
   }
+  /* nav-actions-mobile: home + theme toggle pinned to right of logo row */
+  .nav-actions-mobile {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0;
+  }
+  .nav-actions-mobile .nav-home-link {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    padding: 0.35rem;
+    border: 1.5px solid rgba(56, 189, 248, 0.28);
+    border-radius: 999px;
+  }
+  .nav-actions-mobile .nav-home-link::before {
+    display: none;
+  }
+  [data-theme="light"] .nav-actions-mobile .nav-home-link {
+    border-color: rgba(10, 46, 80, 0.18);
+  }
+  [data-theme="light"] .nav-actions-mobile .nav-home-link:hover,
+  [data-theme="light"] .nav-actions-mobile .nav-home-link.active {
+    border-color: rgba(14, 165, 233, 0.45);
+  }
+  .nav-actions-mobile .theme-toggle {
+    display: inline-flex;
+  }
   .nav-title {
     display: none;
   }
@@ -828,16 +861,6 @@
     column-gap: 0.35rem;
     row-gap: 0.5rem;
     order: 2;
-  }
-  .nav-actions {
-    grid-column: 1 / -1;
-    justify-self: end;
-    width: auto;
-    justify-content: flex-end;
-    margin-left: 0;
-    margin-right: 0;
-    gap: 0.5rem;
-    order: 3;
   }
   .nav-link {
     font-size: 0.82rem;
@@ -884,32 +907,7 @@
   .nav-actions-mobile .theme-toggle {
     display: inline-flex;
   }
-  .nav-actions {
-    display: flex !important;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0 0.2rem 0 auto;
-  }
-  /* Hide home button in nav-actions-mobile for mobile only */
-  .nav-actions-mobile .nav-home-link {
-    display: inline-flex;
-  }
-  @media (min-width: 501px) {
-    .nav-actions-mobile .nav-home-link {
-      display: none !important;
-    }
-  }
-  .nav-logo-img {
-    width: 145px;
-    height: 55px;
-    margin: 0.3rem -3.5rem 0.7rem 0;
-  }
-  /* iPhone 14 Pro Max — center the logo accounting for absolute nav-actions on right */
-  .nav-logo-link {
-    padding: 0.5rem 0;
-    justify-content: center;
-  }
+  /* Logo group: full-width row, logo centered, actions absolute on right */
   .nav-logo-group {
     width: 100%;
     display: flex;
@@ -919,11 +917,26 @@
     margin-bottom: 0.2rem;
     position: relative;
   }
+  /* nav-logo-link fills the full row and truly centers the image */
+  .nav-logo-link {
+    width: 100%;
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .nav-logo-img {
+    width: 145px;
+    height: 55px;
+    margin: 0.3rem -1rem 0.7rem 0;
+  }
+  /* nav-actions positioned absolute so it does not shift logo center */
   .nav-actions {
     position: absolute;
     right: 0.5rem;
     top: 50%;
     transform: translateY(-50%);
+    display: flex !important;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
@@ -945,26 +958,10 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     box-sizing: border-box;
-    left: 49%;
-    transform: translateX(-51%);
+    left: 50%;
+    transform: translateX(-50%);
     position: relative;
     padding: 0 0.5rem;
-  }
-  .nav-link {
-    flex: 1 1 0;
-    min-width: 0;
-    max-width: 120px;
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
-    outline-offset: 4px;
-    border: 2px solid transparent;
-    /* ...existing nav-link styles... */
-  }
-  .nav-link:active,
-  .nav-link:focus,
-  .nav-link.active {
-    outline-offset: 4px;
-    border-color: var(--accent);
   }
   .nav-links::-webkit-scrollbar {
     display: none;
@@ -977,12 +974,12 @@
     box-sizing: border-box;
     min-width: 38px;
     min-height: 38px;
+    border: 1.5px solid transparent;
+    outline: none;
     transition:
       background 0.15s,
-      border 0.15s,
+      border-color 0.15s,
       color 0.15s;
-    outline: none;
-    outline-offset: 2px;
   }
   .nav-link:active,
   .nav-link:focus,
@@ -990,16 +987,6 @@
     border-color: var(--accent);
     background: var(--glow);
     z-index: 1;
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  .nav-actions {
-    width: auto;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0 0.2rem 0 auto;
   }
 }
 
