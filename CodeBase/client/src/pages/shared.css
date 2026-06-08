@@ -87,19 +87,6 @@
   }
 }
 @media (max-width: 700px) {
-  .create-room-card {
-    grid-template-columns: 1fr;
-  }
-
-  .create-room-toggle {
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .create-room-toggle .toggle-switch {
-    flex: 0 0 auto;
-  }
-
   .home-btn {
     font-size: 0.88rem;
     padding: 0.5rem 0.9rem;
@@ -123,11 +110,7 @@
     margin-bottom: 0.8rem;
   }
 
-  .create-room-card {
-    gap: 0.8rem;
-    padding: 0.9rem;
-    margin-bottom: 0.85rem;
-  }
+  /* create-room-card mobile styles handled in consolidated media queries */
 
   .home-btn {
     font-size: 0.8rem;
@@ -288,26 +271,20 @@
   z-index: 1;
   max-width: 850px;
   margin: 0 auto;
-    padding: 0.2rem 1.25rem;
+  padding: 1.8rem 1.25rem;
   animation: fadeIn 0.5s ease forwards;
 }
 
-@media (max-width: 768px) {
-  body[data-route='about'] .page-section {
-    margin-top: 5rem;
-  }
-}
+/* Removed duplicate about page-section margin override */
 
-/* ===== IPAD MINI (768px) & SURFACE DUO (540px) — browse heading clears navbar ===== */
+/* ===== IPAD MINI (768px) & SURFACE DUO (540px) — heading clears navbar ===== */
 @media (min-width: 501px) and (max-width: 768px) {
-  body[data-route='browse-rooms'] .page-title {
-    margin-top: 2.5rem;
-  }
+  body[data-route='browse-rooms'] .page-title,
   body[data-route='create-room'] .page-title,
   body[data-route='join-room'] .page-title,
   body[data-route='about'] .page-title,
   body[data-route='post-room-summary'] .page-title {
-    margin-top: 1.5rem;
+    margin-top: 1.2rem;
   }
 }
 
@@ -321,16 +298,14 @@
   .create-room-mobile-font {
     font-size: 1.02rem;
   }
-  body[data-route='browse-rooms'] .page-title {
-    margin-top: 3rem;
-  }
-  body[data-route='create-room'] .page-title,
   body[data-route='browse-rooms'] .page-title,
+  body[data-route='create-room'] .page-title,
   body[data-route='about'] .page-title,
   body[data-route='join-room'] .page-title,
   body[data-route='voice-room'] .page-title,
   body[data-route='post-room-summary'] .page-title {
     font-size: 1.35rem;
+    margin-top: 1.5rem;
   }
   body[data-route='create-room'] .page-subtitle,
   body[data-route='browse-rooms'] .page-subtitle,
@@ -360,7 +335,11 @@
   body[data-route='post-room-summary'] .form-select {
     font-size: 0.98rem;
   }
-  body[data-route='create-room'] .page-container {
+  body[data-route='create-room'] .page-container,
+  body[data-route='browse-rooms'] .page-container,
+  body[data-route='about'] .page-container,
+  body[data-route='join-room'] .page-container,
+  body[data-route='post-room-summary'] .page-container {
     padding-top: 0.5rem;
   }
   body[data-route='create-room'] .page-section {
@@ -369,15 +348,7 @@
   body[data-route='create-room'] .page-subtitle {
     margin-bottom: 1.5rem;
   }
-  body[data-route='create-room'] .page-title {
-    margin-top: 2.2rem;
-    margin-bottom: 0.25rem;
-  }
-  .create-room-card {
-    gap: 0.8rem;
-    padding: 0.9rem;
-    margin-bottom: 0.85rem;
-  }
+  /* create-room-card mobile styles handled in consolidated media queries */
   .about-step-item {
     font-size: 0.9rem;
     padding: 0.7rem 0.3rem;
@@ -397,7 +368,7 @@
   z-index: 2;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 2.5rem 2rem;
+  padding: 1.8rem 2rem;
   animation: fadeIn 0.5s ease forwards;
 }
 
@@ -406,6 +377,7 @@
   font-size: 1.8rem;
   font-weight: 800;
   letter-spacing: -0.01em;
+  margin-top: 1.2rem;
   margin-bottom: 0.4rem;
   background: linear-gradient(135deg, var(--text-primary) 30%, var(--speaking) 100%);
   -webkit-background-clip: text;
@@ -472,53 +444,21 @@
   margin-bottom: 1rem;
 }
 
-body[data-route='create-room'] .page-container {
-  padding-top: clamp(0.5rem, 1.6vw, 1rem);
-  padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
+body[data-route='create-room'] .page-container,
+body[data-route='browse-rooms'] .page-container,
+body[data-route='about'] .page-container,
+body[data-route='join-room'] .page-container,
+body[data-route='post-room-summary'] .page-container {
+  padding-top: 1.0rem;
+  padding-bottom: 1.25rem;
 }
 
 body[data-route='create-room'] .page-section {
   width: min(100%, 900px);
-  padding-block: 0;
-}
-
-body[data-route='create-room'] .page-title {
-  margin-top: 1.2rem;
-  margin-bottom: 0.25rem;
 }
 
 body[data-route='create-room'] .page-subtitle {
   margin-bottom: 1.5rem;
-}
-
-/* Create Room Mobile Responsiveness */
-@media (max-width: 768px) {
-  .create-room-card {
-    grid-template-columns: 1fr;
-    gap: 1.5rem 1rem;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-}
-
-/* About Page Responsiveness */
-body[data-route='about'] .page-container {
-  padding-top: clamp(0.4rem, 1.6vw, 1rem);
-  padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
-}
-
-@media (max-width: 768px) {
-  body[data-route='about'] .page-container {
-    margin-top: 5rem;
-    padding-top: 1rem;
-  }
-}
-
-@media (max-width: 640px) {
-  body[data-route='about'] .page-container {
-    margin-top: 5.5rem;
-    padding-top: 1.5rem;
-  }
 }
 
 .create-room-card {
@@ -539,21 +479,83 @@ body[data-route='about'] .page-container {
   grid-column: 1 / -1;
 }
 
+.create-room-toggle {
+  display: flex;
+  justify-content: space-between !important;
+  align-items: center;
+  width: 100%;
+  border-top: 1px solid var(--card-border);
+  padding-top: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Consolidated Create Room Form Responsiveness */
 @media (max-width: 768px) {
   .create-room-form {
     width: 100%;
     padding: 0rem;
   }
 
+  /* Keep 2-column layout on tablets (down to 600px) for better visual balance */
   .create-room-card {
-    grid-template-columns: 1fr;
-    gap: 1.25rem 1rem;
-    margin-bottom: 1.25rem;
-    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 1.25rem;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
   }
 
   .create-room-toggle {
+    display: flex;
+    justify-content: space-between !important;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Switch to single-column layout on mobile landscape / narrow screens */
+  .create-room-card {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Portrait mobile optimization */
+  .create-room-card {
+    padding: 1.1rem;
+    gap: 1.1rem;
+    margin-bottom: 1.1rem;
+    border-radius: 10px;
+  }
+  .create-room-toggle {
     gap: 0.8rem;
+    padding-top: 1.1rem;
+  }
+  .create-room-toggle span {
+    font-size: 0.88rem !important;
+  }
+  .create-room-toggle p {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Ultra-small mobile devices */
+  .create-room-card {
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+  .create-room-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+  .create-room-toggle .toggle-switch {
+    align-self: flex-end;
   }
 }
 
@@ -1540,18 +1542,7 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
     padding: 1.2rem;
   }
 }
-body[data-route="about"] .main-nav,
-body[data-route="browse-rooms"] .main-nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-}
-
-body[data-route="about"] .page-container,
-body[data-route="browse-rooms"] .page-container {
-    margin-top: 6.5rem; /* Adjusted to ensure the heading is visible */
-}
+/* Removed fixed nav and container margin overrides to keep spacing consistent with create-room */
 
 /* Bubble positioning for Join Room submit button */
 .join-room-submit-btn .bubble-container {
