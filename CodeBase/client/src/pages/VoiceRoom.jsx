@@ -28,6 +28,22 @@ function VoiceRoom() {
       };
     }, [roomId]);
 
+    useEffect(() => {
+      localStorage.setItem('wavetone-active-room', roomId);
+      const handleUnload = () => {
+        if (localStorage.getItem('wavetone-active-room') === roomId) {
+          localStorage.removeItem('wavetone-active-room');
+        }
+      };
+      window.addEventListener('beforeunload', handleUnload);
+      return () => {
+        window.removeEventListener('beforeunload', handleUnload);
+        if (localStorage.getItem('wavetone-active-room') === roomId) {
+          localStorage.removeItem('wavetone-active-room');
+        }
+      };
+    }, [roomId]);
+
   const [participants, setParticipants] = useState([]);
   const [muted, setMuted] = useState(true);
   const [showManage, setShowManage] = useState(false);
@@ -146,6 +162,12 @@ function VoiceRoom() {
   // --- Main effect: mic + pipeline + socket + signaling ---
   useEffect(() => {
     let active = true;
+
+    const currentActiveRoom = localStorage.getItem('wavetone-active-room');
+    if (currentActiveRoom && currentActiveRoom !== roomId) {
+      navigate(`/join/${roomId}`);
+      return;
+    }
 
     const init = async () => {
       // Request microphone
@@ -415,7 +437,7 @@ function VoiceRoom() {
     });
   };
 
-  const handleLeave = () => {
+  const handleLeave = useCallback(() => {
     const durationMin = Math.max(1, Math.round((Date.now() - joinTimeRef.current) / 60000));
     const transcripts = audioPipelineRef.current?.getTranscripts() || [];
     socketRef.current?.emit('leave-room', { roomId });
@@ -432,7 +454,20 @@ function VoiceRoom() {
     navigate(`/summary/${roomId}`, {
       state: { room: roomData, duration: durationMin, participantCount: participants.length, transcripts, speakingTimes },
     });
-  };
+  }, [roomId, roomData, alias, participants, navigate]);
+
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'wavetone-leave-room-signal' && e.newValue === roomId) {
+        localStorage.removeItem('wavetone-leave-room-signal');
+        handleLeave();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [roomId, handleLeave]);
 
   const handleCopyLink = () => {
     const link = `${window.location.origin}/join/${roomId}`;

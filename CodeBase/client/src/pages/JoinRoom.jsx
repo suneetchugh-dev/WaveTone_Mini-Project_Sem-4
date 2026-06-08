@@ -14,6 +14,7 @@ function JoinRoom() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isBubbling, setIsBubbling] = useState(false);
+  const [activeRoomId, setActiveRoomId] = useState(null);
 
   useEffect(() => {
     getRoomById(roomId)
@@ -21,16 +22,34 @@ function JoinRoom() {
       .catch(err => { setError(err.message); setLoading(false); });
   }, [roomId]);
 
-    useEffect(() => {
-      document.title = room ? `Join ${room.topic} - WaveTone` : 'Join Room - WaveTone';
-      document.body.setAttribute('data-route', 'join-room');
-      return () => {
-        document.body.removeAttribute('data-route');
-      };
-    }, [room]);
+  useEffect(() => {
+    setActiveRoomId(localStorage.getItem('wavetone-active-room'));
+    const handleStorage = () => {
+      setActiveRoomId(localStorage.getItem('wavetone-active-room'));
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  useEffect(() => {
+    document.title = room ? `Join ${room.topic} - WaveTone` : 'Join Room - WaveTone';
+    document.body.setAttribute('data-route', 'join-room');
+    return () => {
+      document.body.removeAttribute('data-route');
+    };
+  }, [room]);
 
   const activeCount = room ? room.participants.filter(p => !p.leftAt).length : 0;
   const isFull = room && activeCount >= room.maxUsers;
+  const hasActiveRoom = activeRoomId && activeRoomId !== roomId;
+
+  const handleForceDisconnect = () => {
+    if (activeRoomId) {
+      localStorage.setItem('wavetone-leave-room-signal', activeRoomId);
+      localStorage.removeItem('wavetone-active-room');
+      setActiveRoomId(null);
+    }
+  };
 
   const handleJoin = () => {
     setIsBubbling(true);
@@ -129,11 +148,47 @@ function JoinRoom() {
         </div>
       </div>
 
+      {hasActiveRoom && (
+        <div className="card active-room-warning-card" style={{ marginBottom: '1.2rem', border: '1.5px solid var(--warning)', background: 'rgba(248,113,113,0.05)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="warning-icon">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <h4 style={{ margin: 0, color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem' }}>
+              Already in a Voice Room
+            </h4>
+          </div>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: 1.4 }}>
+            You are currently active in another voice room. You must leave that room before joining this one.
+          </p>
+          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <button 
+              type="button"
+              className="home-btn home-btn-solid"
+              style={{ flex: 1, minWidth: '140px', padding: '0.5rem 1rem', fontSize: '0.82rem', justifyContent: 'center' }}
+              onClick={() => navigate(`/room/${activeRoomId}`)}
+            >
+              Return to Active Room
+            </button>
+            <button 
+              type="button"
+              className="home-btn"
+              style={{ flex: 1, minWidth: '140px', padding: '0.5rem 1rem', fontSize: '0.82rem', justifyContent: 'center', background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', color: 'var(--warning)' }}
+              onClick={handleForceDisconnect}
+            >
+              Disconnect & Join
+            </button>
+          </div>
+        </div>
+      )}
+
       <button
         className={`home-btn home-btn-solid join-room-submit-btn ${isBubbling ? 'rocket-thrust' : ''}`}
-        style={{ width: '100%', justifyContent: 'center', opacity: isFull ? 0.5 : 1 }}
+        style={{ width: '100%', justifyContent: 'center', opacity: (isFull || hasActiveRoom) ? 0.5 : 1 }}
         onClick={handleJoin}
-        disabled={isFull}
+        disabled={isFull || hasActiveRoom}
       >
         <div className="bubble-container" aria-hidden="true">
           {[...Array(isBubbling ? 16 : 6)].map((_, i) => (
@@ -141,7 +196,7 @@ function JoinRoom() {
           ))}
         </div>
         <svg className="join-room-mic-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-        {isFull ? 'Room is Full' : 'Join Voice Room'}
+        {isFull ? 'Room is Full' : hasActiveRoom ? 'Already in a Room' : 'Join Voice Room'}
       </button>
       </section>
     </>

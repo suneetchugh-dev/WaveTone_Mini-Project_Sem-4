@@ -17,7 +17,9 @@ function CreateRoom() {
   const [error, setError] = useState(null);
   const [customAlias, setCustomAlias] = useState('');
   const [isBubbling, setIsBubbling] = useState(false);
+  const [activeRoomId, setActiveRoomId] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     document.title = 'Create Room - WaveTone';
     document.body.setAttribute('data-route', 'create-room');
@@ -26,8 +28,28 @@ function CreateRoom() {
     };
   }, []);
 
+  useEffect(() => {
+    setActiveRoomId(localStorage.getItem('wavetone-active-room'));
+    const handleStorage = () => {
+      setActiveRoomId(localStorage.getItem('wavetone-active-room'));
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  const hasActiveRoom = !!activeRoomId;
+
+  const handleForceDisconnect = () => {
+    if (activeRoomId) {
+      localStorage.setItem('wavetone-leave-room-signal', activeRoomId);
+      localStorage.removeItem('wavetone-active-room');
+      setActiveRoomId(null);
+    }
+  };
+
   const handleCreate = async (e) => {
     e.preventDefault();
+    if (hasActiveRoom) return;
     setLoading(true);
     setError(null);
     setIsBubbling(true);
@@ -164,23 +186,59 @@ function CreateRoom() {
           )}
         </div>
 
-        <button
-          type="submit"
-          className={`home-btn home-btn-solid create-room-submit-btn ${isBubbling ? 'rocket-thrust' : ''}`}
-          style={{ width: '100%', justifyContent: 'center' }}
-          disabled={loading}
-        >
-          <div className="bubble-container" aria-hidden="true">
-            {[...Array(isBubbling ? 16 : 6)].map((_, i) => (
-              <div key={i} className="bubble" style={{ '--delay': `${i * 0.05}s` }}></div>
-            ))}
+      {hasActiveRoom && (
+        <div className="card active-room-warning-card" style={{ marginBottom: '1.2rem', border: '1.5px solid var(--warning)', background: 'rgba(248,113,113,0.05)', padding: '1.2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="warning-icon">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <h4 style={{ margin: 0, color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem' }}>
+              Already in a Voice Room
+            </h4>
           </div>
-          <svg className="create-room-submit-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <circle className="create-room-submit-icon-ring" cx="12" cy="12" r="10"/>
-            <path className="create-room-submit-icon-plus" d="M12 8v8M8 12h8"/>
-          </svg>
-          {loading ? 'Creating...' : 'Create Room'}
-        </button>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: 1.4 }}>
+            You are currently active in another voice room. You must leave that room before creating a new one.
+          </p>
+          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <button 
+              type="button"
+              className="home-btn home-btn-solid"
+              style={{ flex: 1, minWidth: '140px', padding: '0.5rem 1rem', fontSize: '0.82rem', justifyContent: 'center' }}
+              onClick={() => navigate(`/room/${activeRoomId}`)}
+            >
+              Return to Active Room
+            </button>
+            <button 
+              type="button"
+              className="home-btn"
+              style={{ flex: 1, minWidth: '140px', padding: '0.5rem 1rem', fontSize: '0.82rem', justifyContent: 'center', background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', color: 'var(--warning)' }}
+              onClick={handleForceDisconnect}
+            >
+              Disconnect & Create
+            </button>
+          </div>
+        </div>
+      )}
+
+      <button
+        type="submit"
+        className={`home-btn home-btn-solid create-room-submit-btn ${isBubbling ? 'rocket-thrust' : ''}`}
+        style={{ width: '100%', justifyContent: 'center', opacity: (loading || hasActiveRoom) ? 0.5 : 1 }}
+        disabled={loading || hasActiveRoom}
+      >
+        <div className="bubble-container" aria-hidden="true">
+          {[...Array(isBubbling ? 16 : 6)].map((_, i) => (
+            <div key={i} className="bubble" style={{ '--delay': `${i * 0.05}s` }}></div>
+          ))}
+        </div>
+        <svg className="create-room-submit-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle className="create-room-submit-icon-ring" cx="12" cy="12" r="10"/>
+          <path className="create-room-submit-icon-plus" d="M12 8v8M8 12h8"/>
+        </svg>
+        {loading ? 'Creating...' : hasActiveRoom ? 'Already in a Room' : 'Create Room'}
+      </button>
       </form>
       </section>
     </>
