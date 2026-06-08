@@ -206,7 +206,7 @@ body[data-route="home"] .page-container {
   overflow: hidden;
   margin-bottom: clamp(2rem, 5vw, 4rem);
   border: 1px solid var(--card-border);
-  border-radius: 14px;
+  border-radius: 25px;
   background: var(--card-border);
   width: 100%;
 }

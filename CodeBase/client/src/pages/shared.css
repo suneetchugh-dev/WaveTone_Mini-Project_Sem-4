@@ -155,7 +155,7 @@
   font-size: 0.95rem;
   font-weight: 600;
   padding: 0.6rem 1.2rem;
-  border-radius: 8px;
+  border-radius: 40px;
   /* reserve border space to avoid layout shift when hover changes border color */
   border: 1.5px solid transparent;
   background: var(--card-border);
@@ -411,7 +411,7 @@
 .card {
   background: var(--bg);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
+  border-radius: 25px;
   padding: 1.2rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -666,7 +666,7 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   font-size: 0.9rem;
   background: var(--bg);
   border: 1.5px solid var(--card-border);
-  border-radius: 10px;
+  border-radius: 40px;
   color: var(--text-primary);
   outline: none;
   transition: all 0.2s ease;

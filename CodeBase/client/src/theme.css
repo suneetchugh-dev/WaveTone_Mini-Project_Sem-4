@@ -34,7 +34,7 @@
   background: linear-gradient(135deg, var(--accent) 0%, var(--speaking) 100%);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 40px;
   padding: 0.75rem 2rem;
   font-family: var(--font-family-body);
   font-size: 1rem;
@@ -85,7 +85,7 @@
   background: transparent;
   color: var(--text-secondary);
   border: 1.5px solid var(--card-border);
-  border-radius: 10px;
+  border-radius: 40px;
   padding: 0.75rem 2rem;
   font-family: var(--font-family-body);
   font-size: 1rem;
