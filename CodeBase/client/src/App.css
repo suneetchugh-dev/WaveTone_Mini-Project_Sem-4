@@ -142,15 +142,19 @@
 }
 
 .ambient-video-backdrop--subtle .ambient-bg-video {
-  opacity: 0.34;
-  filter: saturate(0.95) contrast(1) blur(4px);
+  opacity: 0.52;
+  filter: saturate(1.0) contrast(1.05) blur(3px);
   transform: scale(1.06);
 }
 
 .ambient-video-backdrop--subtle .ambient-video-shade {
   background:
-    radial-gradient(circle at 52% 38%, rgba(19, 22, 27, 0.26) 0%, rgba(19, 22, 27, 0.72) 54%, rgba(19, 22, 27, 0.94) 100%),
-    linear-gradient(180deg, rgba(19, 22, 27, 0.76) 0%, rgba(19, 22, 27, 0.93) 100%);
+    radial-gradient(circle at 52% 38%, rgba(19, 22, 27, 0.15) 0%, rgba(19, 22, 27, 0.55) 54%, rgba(19, 22, 27, 0.80) 100%),
+    linear-gradient(180deg, rgba(19, 22, 27, 0.55) 0%, rgba(19, 22, 27, 0.80) 100%);
+}
+
+[data-theme="light"] .ambient-video-backdrop {
+  background: var(--bg);
 }
 
 [data-theme="light"] .ambient-video-backdrop--hero {

@@ -283,7 +283,8 @@
   body[data-route='create-room'] .page-title,
   body[data-route='join-room'] .page-title,
   body[data-route='about'] .page-title,
-  body[data-route='post-room-summary'] .page-title {
+  body[data-route='post-room-summary'] .page-title,
+  body[data-route='not-found'] .page-title {
     margin-top: 1.2rem;
   }
 }
@@ -295,6 +296,7 @@
   body[data-route='join-room'] .page-section,
   body[data-route='voice-room'] .page-section,
   body[data-route='post-room-summary'] .page-section,
+  body[data-route='not-found'] .page-section,
   .create-room-mobile-font {
     font-size: 1.02rem;
   }
@@ -303,7 +305,8 @@
   body[data-route='about'] .page-title,
   body[data-route='join-room'] .page-title,
   body[data-route='voice-room'] .page-title,
-  body[data-route='post-room-summary'] .page-title {
+  body[data-route='post-room-summary'] .page-title,
+  body[data-route='not-found'] .page-title {
     font-size: 1.35rem;
     margin-top: 1.5rem;
   }
@@ -312,7 +315,8 @@
   body[data-route='about'] .page-subtitle,
   body[data-route='join-room'] .page-subtitle,
   body[data-route='voice-room'] .page-subtitle,
-  body[data-route='post-room-summary'] .page-subtitle {
+  body[data-route='post-room-summary'] .page-subtitle,
+  body[data-route='not-found'] .page-subtitle {
     font-size: 1rem;
   }
   body[data-route='create-room'] .form-label,
@@ -339,7 +343,8 @@
   body[data-route='browse-rooms'] .page-container,
   body[data-route='about'] .page-container,
   body[data-route='join-room'] .page-container,
-  body[data-route='post-room-summary'] .page-container {
+  body[data-route='post-room-summary'] .page-container,
+  body[data-route='not-found'] .page-container {
     padding-top: 0.5rem;
   }
   body[data-route='create-room'] .page-section {
@@ -448,7 +453,8 @@ body[data-route='create-room'] .page-container,
 body[data-route='browse-rooms'] .page-container,
 body[data-route='about'] .page-container,
 body[data-route='join-room'] .page-container,
-body[data-route='post-room-summary'] .page-container {
+body[data-route='post-room-summary'] .page-container,
+body[data-route='not-found'] .page-container {
   padding-top: 1.0rem;
   padding-bottom: 1.25rem;
 }
@@ -1893,4 +1899,20 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
     opacity: 0;
     transform: translateY(-240px) translateX(0) scale(0.3);
   }
+}
+
+/* 404 Error Code styling */
+.error-code-404 {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  opacity: 0.3;
+}
+
+[data-theme="dark"] .error-code-404 {
+  color: cyan;
+}
+
+[data-theme="light"] .error-code-404 {
+  color: darkcyan;
 }
