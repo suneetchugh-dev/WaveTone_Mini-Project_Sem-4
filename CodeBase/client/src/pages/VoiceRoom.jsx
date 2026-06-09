@@ -536,7 +536,7 @@ function VoiceRoom() {
         </div>
         <button
           onClick={handleCopyLink}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', background: linkCopied ? 'rgba(56,189,248,0.15)' : 'transparent', border: `1.5px solid ${linkCopied ? 'var(--speaking)' : 'var(--card-border)'}`, borderRadius: '8px', color: linkCopied ? 'var(--speaking)' : 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, transition: 'all 0.2s ease' }}
+          className={`copy-link-btn${linkCopied ? ' copied' : ''}`}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             {linkCopied

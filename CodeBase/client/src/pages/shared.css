@@ -148,6 +148,54 @@
   background: #e53935 !important;
   color: #fff !important;
 }
+
+/* Copy Link Button styles for light and dark themes */
+.copy-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: 1.5px solid var(--card-border);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.copy-link-btn:hover {
+  border-color: var(--speaking);
+  color: var(--speaking);
+  background: rgba(56, 189, 248, 0.05);
+}
+
+.copy-link-btn.copied {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--speaking);
+  color: var(--speaking);
+}
+
+/* Light theme copy link button overrides */
+[data-theme="light"] .copy-link-btn {
+  border-color: rgba(10, 46, 80, 0.18);
+  color: #475569;
+}
+
+[data-theme="light"] .copy-link-btn:hover {
+  border-color: #0ea5e9;
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.06);
+}
+
+[data-theme="light"] .copy-link-btn.copied {
+  background: rgba(14, 165, 233, 0.12);
+  border-color: #0ea5e9;
+  color: #0ea5e9;
+}
+
 /* Home button styles for better INP */
 .home-btn {
   display: inline-flex;
