@@ -1345,7 +1345,7 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   padding: 0.6rem 0.75rem;
   background: rgba(56, 189, 248, 0.08);
   border: 1px solid rgba(56, 189, 248, 0.16);
-  border-radius: 10px;
+  border-radius: 40px;
   color: var(--text-secondary);
   font-size: 0.88rem;
   font-weight: 600;
@@ -1388,7 +1388,7 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 .about-stat {
   background: rgba(56, 189, 248, 0.06);
   border: 1px solid rgba(56, 189, 248, 0.16);
-  border-radius: 12px;
+  border-radius: 40px;
   padding: 0.9rem 1rem;
   text-align: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
