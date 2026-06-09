@@ -136,6 +136,7 @@
 [data-theme="light"] .mic-btn-voiceroom.active {
   background: linear-gradient(135deg, #b6e0fe 0%, #6ec6ff 100%) !important;
   color: #fff !important;
+  border-color: #a0d8ff !important;
 }
 [data-theme="light"] .exit-btn-voiceroom {
   background: linear-gradient(135deg, #ffe0e0 0%, #ffb3b3 100%) !important;
@@ -1039,7 +1040,6 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 
 .control-btn:hover {
   background: var(--text-tertiary);
-  transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
@@ -1053,7 +1053,6 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   background: var(--warning);
   border-color: var(--warning);
   color: #fff;
-  transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(248, 113, 113, 0.4);
 }
 
