@@ -191,29 +191,7 @@ io.on('connection', (socket) => {
     socketAliases.set(socket.id, cleanAlias);
 
     // Add new participant to the list BEFORE sending room-users
-    const newParticipant = { 
-      socketId: socket.id, 
-      alias: cleanAlias,
-      joinedAt: new Date(),
-      leftAt: null
-    };
-    participants.push(newParticipant);
-
-    // Update database with new participant
-    try {
-      const updateResult = await Room.findByIdAndUpdate(roomId, {
-        $push: { 
-          participants: {
-            userId: socket.id,
-            alias: cleanAlias,
-            joinedAt: new Date()
-          }
-        }
-      }, { new: true });
-      console.log(`[JOIN-DB] Pushed participant ${cleanAlias} (${socket.id}). Room now has ${updateResult?.participants?.length || 0} total participants.`);
-    } catch (err) {
-      console.error('Failed to update room participants in database:', err);
-    }
+    participants.push({ socketId: socket.id, alias: cleanAlias });
     
     // Send complete participant list to the new joiner (including themselves)
     socket.emit('room-users', participants);
@@ -226,19 +204,15 @@ io.on('connection', (socket) => {
     
     // Broadcast updated participant list to all other users in the room
     // (socket.to excludes the new joiner, they already got it above)
-    const hostInfo = roomHosts.get(roomId);
     socket.to(roomId).emit('room-users', participants.map(p => ({ 
       socketId: p.socketId, 
       alias: p.alias, 
       joinedAt: p.joinedAt, 
-      leftAt: p.leftAt,
-      isHost: hostInfo && hostInfo.socketId === p.socketId
+      leftAt: p.leftAt 
     })));
     
-
-    socket.to(roomId).emit('user-joined', {
-      roomId,
-      socketId: socket.id,
+    socket.to(roomId).emit('user-joined', { 
+      socketId: socket.id, 
       alias: cleanAlias,
       isHost,
       hostReturnTimeout: HOST_RETURN_TIMEOUT_MS
@@ -593,15 +567,7 @@ io.on('connection', (socket) => {
       const idx = participants.findIndex(p => p.socketId === socket.id);
       if (idx !== -1) {
         participants.splice(idx, 1);
-
-        // Update database to mark participant as left
-        Room.findByIdAndUpdate(
-          roomId,
-          { $set: { 'participants.$[elem].leftAt': new Date() } },
-          { arrayFilters: [{ 'elem.userId': socket.id, 'elem.leftAt': { $exists: false } }] }
-        ).catch(err => console.error('Failed to update participant left status:', err));
-
-        socket.to(roomId).emit('user-left', { roomId, socketId: socket.id });
+        socket.to(roomId).emit('user-left', { socketId: socket.id });
 
         // Cancel active vote if target disconnected
         _cleanupVote(roomId, socket.id);
@@ -690,26 +656,15 @@ function _leaveRoom(socket, roomId) {
       console.log(`Room ${roomId} closed — no participants remain`);
     } else {
       // Broadcast updated participant list for Browse page real-time updates
-      const hostInfo = roomHosts.get(roomId);
       io.to(roomId).emit('room-users', participants.map(p => ({ 
         socketId: p.socketId, 
         alias: p.alias, 
         joinedAt: p.joinedAt, 
-        leftAt: p.leftAt,
-        isHost: hostInfo && hostInfo.socketId === p.socketId
+        leftAt: p.leftAt 
       })));
     }
   }
-  // Update database to mark participant as left
-  Room.findByIdAndUpdate(
-    roomId,
-    { $set: { 'participants.$[elem].leftAt': new Date() } },
-    { arrayFilters: [{ 'elem.userId': socket.id, 'elem.leftAt': { $exists: false } }], new: true }
-  ).then(updatedRoom => {
-    console.log(`[LEAVE-DB] Marked participant ${socket.id} as left. Room now has ${updatedRoom?.participants?.filter(p => !p.leftAt).length || 0} active participants, ${updatedRoom?.participants?.length || 0} total.`);
-  }).catch(err => console.error('Failed to update participant left status:', err));
-
-  socket.to(roomId).emit('user-left', { roomId, socketId: socket.id });
+  socket.to(roomId).emit('user-left', { socketId: socket.id });
 }
 
 function _cleanupVote(roomId, disconnectedSocketId) {
@@ -737,4 +692,3 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-

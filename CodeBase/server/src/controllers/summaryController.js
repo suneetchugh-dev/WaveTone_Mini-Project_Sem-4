@@ -101,38 +101,12 @@ export const getSessionSummary = async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
     if (!room) return res.status(404).json({ error: 'Room not found' });
-
-    // Process participants to include all who were ever in the room
-    const allParticipants = room.participants.map(p => ({
-      userId: p.userId,
-      alias: p.alias,
-      joinedAt: p.joinedAt,
-      leftAt: p.leftAt,
-      isActive: !p.leftAt // Participant is active if they haven't left yet
-    }));
-
-    console.log(`[SUMMARY] Room ${req.params.id} queried. DB participants array: ${room.participants.length} total. Mapped: ${allParticipants.length}`);
-    if (room.participants.length > 0) {
-      console.log(`[SUMMARY] Participants: ${room.participants.map(p => `${p.alias}(${p.userId}, leftAt: ${p.leftAt})`).join(', ')}`);
-    }
-
-    // Calculate actual elapsed duration in minutes
-    let actualDuration = room.duration; // Fallback to configured duration
-    if (allParticipants.length > 0) {
-      const earliestJoin = Math.min(...allParticipants.map(p => new Date(p.joinedAt).getTime()));
-      const latestLeave = Math.max(...allParticipants.map(p => p.leftAt ? new Date(p.leftAt).getTime() : Date.now()));
-      if (earliestJoin && latestLeave && latestLeave > earliestJoin) {
-        actualDuration = Math.max(1, Math.round((latestLeave - earliestJoin) / 60000));
-      }
-    }
-
     res.json({
       roomId: room._id,
       topic: room.topic,
       category: room.category,
-      duration: actualDuration,
-      participantCount: allParticipants.length,
-      participants: allParticipants,
+      duration: room.duration,
+      participantCount: room.participants.length,
       createdAt: room.createdAt,
       isActive: room.isActive,
     });
