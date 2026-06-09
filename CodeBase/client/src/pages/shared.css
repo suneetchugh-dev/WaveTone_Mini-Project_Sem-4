@@ -996,7 +996,6 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 [data-theme="light"] .participant-card.speaking {
   border-color: #0369A1;
   background: rgba(3, 105, 161, 0.12);
-  box-shadow: 0 2px 8px rgba(3, 105, 161, 0.15);
 }
 
 /* Participant text styling */
@@ -1005,12 +1004,12 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 }
 
 .participant-text.speaking {
-  color: var(--speaking);
+  color: lightseagreen;
 }
 
 /* Light theme participant text */
 [data-theme="light"] .participant-text.speaking {
-  color: #0369A1;
+  color: steelblue;
 }
 
 /* Participant name with dynamic horizontal expansion */
@@ -1029,18 +1028,29 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   background: rgba(10, 46, 80, 0.15);
   border-color: #0A2E50;
   color: #0A2E50;
-  box-shadow: none;
-  animation: speaking-pulse-once-light 0.5s cubic-bezier(0.4,0,0.2,1) 1;
+  animation: speaking-concentric-pulse-light 1.8s ease-in-out infinite;
 }
 @keyframes speaking-pulse-once {
   0% { box-shadow: 0 0 8px 2px rgba(56, 189, 248, 0.25); }
   50% { box-shadow: 0 0 24px 8px rgba(56, 189, 248, 0.45); }
   100% { box-shadow: 0 0 8px 2px rgba(56, 189, 248, 0.25); }
 }
-@keyframes speaking-pulse-once-light {
-  0% { box-shadow: 0 0 8px 2px rgba(3, 105, 161, 0.25); }
-  50% { box-shadow: 0 0 24px 8px rgba(3, 105, 161, 0.45); }
-  100% { box-shadow: 0 0 8px 2px rgba(3, 105, 161, 0.25); }
+@keyframes speaking-concentric-pulse-light {
+  0% {
+    box-shadow: 
+      0 0 0 0px rgba(0, 0, 0, 0.12),
+      0 0 0 0px rgba(0, 0, 0, 0.06);
+  }
+  50% {
+    box-shadow: 
+      0 0 0 4px rgba(0, 0, 0, 0.12),
+      0 0 0 8px rgba(0, 0, 0, 0.06);
+  }
+  100% {
+    box-shadow: 
+      0 0 0 0px rgba(0, 0, 0, 0.12),
+      0 0 0 0px rgba(0, 0, 0, 0.06);
+  }
 }
 
 
