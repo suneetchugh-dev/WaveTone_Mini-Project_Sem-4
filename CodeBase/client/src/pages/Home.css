@@ -67,7 +67,7 @@ body[data-route="home"] .page-container {
   max-width: 780px;
   margin: 0 0 1.4rem 0;
   color: #F8FAFC;
-  font-size: 4.5rem;
+  font-size: 3.9rem;
   line-height: 0.98;
   font-weight: 500;
   letter-spacing: 0;
@@ -293,10 +293,6 @@ body[data-route="home"] .page-container {
 }
 
 @media (max-height: 760px) and (min-width: 901px) {
-  .home-title {
-    font-size: 4.1rem;
-  }
-
   .home-subtext {
     margin-top: 0.8rem;
   }
