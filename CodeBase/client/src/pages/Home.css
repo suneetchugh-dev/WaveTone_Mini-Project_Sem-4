@@ -396,6 +396,12 @@ body[data-route="home"] .page-container {
     width: min(100%, 1200px);
   }
 }
+
+@media (min-width: 901px) {
+  .home-title {
+    font-family: 'Geist', 'Spectral' !important;
+  }
+}
 /* Bubble particle effect for CTA buttons */
 .bubble-container {
   position: absolute;
