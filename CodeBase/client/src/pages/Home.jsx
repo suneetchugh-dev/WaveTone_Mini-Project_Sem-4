@@ -20,7 +20,8 @@ function Home() {
         <div className="home-hero-content slide-up">
           <h1 className="home-title">Talk without turning every conversation into a profile.</h1>
           <p className="home-subtext">
-            WaveTone lets people open temporary voice rooms, join with an alias, and keep sessions focused with live moderation.
+            <span className="home-subtext-full">WaveTone lets people open temporary voice rooms, join with an alias, and keep sessions focused with live moderation.</span>
+            <span className="home-subtext-short">Anonymous voice rooms. No sign-up, no recordings.</span>
           </p>
           <div className="home-actions">
             <NavLink to="/create" className="home-btn home-btn-solid">
