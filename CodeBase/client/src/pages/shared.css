@@ -2054,3 +2054,130 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 [data-theme="light"] .error-code-404 {
   color: darkcyan;
 }
+
+/* Device-specific overrides for iPhone SE and Samsung Galaxy S8+ */
+@media (width: 360px) and (height: 740px) {
+  body[data-route='create-room'] .page-title {
+    margin-top: 1.5rem !important;
+  }
+}
+
+/* iPhone SE 1st Gen (320x568) */
+@media (width: 320px) and (height: 568px) {
+  body[data-route='create-room'] .page-container {
+    padding-top: 0.1rem !important;
+    padding-bottom: 0.1rem !important;
+  }
+  body[data-route='create-room'] .page-section {
+    padding: 0.15rem 0.5rem !important;
+  }
+  body[data-route='create-room'] .page-title {
+    margin-top: 2.6rem !important;
+    margin-bottom: 0.05rem !important;
+    font-size: 1.05rem !important;
+  }
+  body[data-route='create-room'] .page-subtitle {
+    margin-bottom: 0.2rem !important;
+    font-size: 0.72rem !important;
+  }
+  body[data-route='create-room'] .create-room-form {
+    margin-top: 0.5rem !important;
+  }
+  .create-room-card {
+    padding: 0.5rem 0.7rem !important;
+    gap: 0.35rem !important;
+    margin-bottom: 0.3rem !important;
+    border-radius: 10px !important;
+  }
+  .form-group {
+    margin-bottom: 0.2rem !important;
+  }
+  body[data-route='create-room'] .form-label {
+    margin-bottom: 0.05rem !important;
+    font-size: 0.62rem !important;
+  }
+  body[data-route='create-room'] .form-input,
+  body[data-route='create-room'] .form-select {
+    padding-block: 0.35rem !important;
+    font-size: 0.78rem !important;
+  }
+  .field-hint {
+    margin-top: 0.05rem !important;
+    font-size: 0.6rem !important;
+  }
+  .create-room-toggle {
+    padding-top: 0.35rem !important;
+    margin-top: 0.1rem !important;
+  }
+  .create-room-toggle span {
+    font-size: 0.76rem !important;
+  }
+  .create-room-toggle p {
+    font-size: 0.62rem !important;
+  }
+  body[data-route='create-room'] .create-room-submit-btn {
+    padding: 0.6rem 1.2rem !important;
+    margin-top: 0.1rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* iPhone SE 2nd & 3rd Gen (375x667) */
+@media (width: 375px) and (height: 667px) {
+  body[data-route='create-room'] .page-container {
+    padding-top: 0.2rem !important;
+    padding-bottom: 0.2rem !important;
+  }
+  body[data-route='create-room'] .page-section {
+    padding: 0.25rem 0.6rem !important;
+  }
+  body[data-route='create-room'] .page-title {
+    margin-top: 3.0rem !important;
+    margin-bottom: 0.1rem !important;
+    font-size: 1.15rem !important;
+  }
+  body[data-route='create-room'] .page-subtitle {
+    margin-bottom: 0.3rem !important;
+    font-size: 0.78rem !important;
+  }
+  body[data-route='create-room'] .create-room-form {
+    margin-top: 0.8rem !important;
+  }
+  .create-room-card {
+    padding: 0.7rem 0.9rem !important;
+    gap: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    border-radius: 12px !important;
+  }
+  .form-group {
+    margin-bottom: 0.3rem !important;
+  }
+  body[data-route='create-room'] .form-label {
+    margin-bottom: 0.1rem !important;
+    font-size: 0.68rem !important;
+  }
+  body[data-route='create-room'] .form-input,
+  body[data-route='create-room'] .form-select {
+    padding-block: 0.45rem !important;
+    font-size: 0.82rem !important;
+  }
+  .field-hint {
+    margin-top: 0.05rem !important;
+    font-size: 0.64rem !important;
+  }
+  .create-room-toggle {
+    padding-top: 0.45rem !important;
+    margin-top: 0.15rem !important;
+  }
+  .create-room-toggle span {
+    font-size: 0.82rem !important;
+  }
+  .create-room-toggle p {
+    font-size: 0.68rem !important;
+  }
+  body[data-route='create-room'] .create-room-submit-btn {
+    padding: 0.75rem 1.5rem !important;
+    margin-top: 0.2rem !important;
+    font-size: 0.92rem !important;
+  }
+}
