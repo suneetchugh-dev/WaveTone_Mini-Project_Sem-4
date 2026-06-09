@@ -155,7 +155,7 @@ function BrowseRooms() {
       </form>
 
       <div className="browse-search-row">
-        <div className="browse-search-box">
+        <div className={`browse-search-box${search ? ' searching' : ''}`}>
           <label htmlFor="search-rooms" className="sr-only">Search rooms</label>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           <input
@@ -222,7 +222,7 @@ function BrowseRooms() {
             const count = activeCount(room);
             const isFull = count >= room.maxUsers;
             return (
-              <div className="room-card" key={room._id}>
+              <div className={`room-card${search ? ' search-match' : ''}`} key={room._id}>
                 <div className="room-card-header">
                   <span className="badge badge-live">
                     <span className="live-dot" />
