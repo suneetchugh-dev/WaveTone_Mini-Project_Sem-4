@@ -14,7 +14,16 @@ export const getRooms = async (req, res) => {
         $or: [
           {
             'participants.0': { $exists: true },
-            participants: { $not: { $elemMatch: { leftAt: { $exists: false } } } }
+            participants: {
+              $not: {
+                $elemMatch: {
+                  $or: [
+                    { leftAt: { $exists: false } },
+                    { leftAt: null }
+                  ]
+                }
+              }
+            }
           },
           {
             'participants.0': { $exists: false },
