@@ -13,6 +13,7 @@ function CreateRoom() {
   const [customCategory, setCustomCategory] = useState('');
   const [maxUsers, setMaxUsers] = useState(10);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [profanityFilter, setProfanityFilter] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [customAlias, setCustomAlias] = useState('');
@@ -68,7 +69,7 @@ function CreateRoom() {
     const finalCategory = category === 'Custom' ? customCategory.trim() : category;
     if (!finalCategory) { setError('Please enter a custom category.'); setLoading(false); return; }
     try {
-      const room = await createRoom({ topic: trimmedTopic, category: finalCategory, maxUsers, isPrivate });
+      const room = await createRoom({ topic: trimmedTopic, category: finalCategory, maxUsers, isPrivate, profanityFilter });
       // Use custom alias if provided, else random
       let alias = customAlias.trim();
       if (!alias) {
@@ -90,7 +91,7 @@ function CreateRoom() {
 
       <form onSubmit={handleCreate} className="create-room-form">
         <div className="card create-room-card">
-          <div className="form-group">
+          <div className="form-group full-width-mobile">
             <label htmlFor="room-topic" className="form-label">Room Topic</label>
             <input
               id="room-topic"
@@ -104,7 +105,7 @@ function CreateRoom() {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group full-width-mobile">
             <label htmlFor="room-alias" className="form-label">Your Alias (optional)</label>
             <input
               id="room-alias"
@@ -131,7 +132,7 @@ function CreateRoom() {
           </div>
 
           {category === 'Custom' && (
-            <div className="form-group">
+            <div className="form-group full-width-mobile">
               <label htmlFor="custom-category" className="form-label">Custom Category</label>
               <input
                 id="custom-category"
@@ -176,6 +177,19 @@ function CreateRoom() {
               className={`toggle-switch${isPrivate ? ' active' : ''}`}
               aria-label={isPrivate ? 'Set room to public' : 'Set room to private'}
               onClick={() => setIsPrivate(!isPrivate)}
+            />
+          </div>
+
+          <div className="toggle-row create-room-toggle" style={{ marginTop: '1rem' }}>
+            <div>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.92rem' }}>Profanity Filter</span>
+              <p style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem', margin: 0 }}>Automatically mute offensive language</p>
+            </div>
+            <button
+              type="button"
+              className={`toggle-switch${profanityFilter ? ' active' : ''}`}
+              aria-label={profanityFilter ? 'Disable profanity filter' : 'Enable profanity filter'}
+              onClick={() => setProfanityFilter(!profanityFilter)}
             />
           </div>
 

@@ -316,6 +316,15 @@ function VoiceRoom() {
         setTimeout(() => setWarningToast(null), 4000);
       });
 
+      // Server detected profanity (trigger retroactive mute)
+      socket.on('server-detected-profanity', ({ transcript }) => {
+        if (!active) return;
+        console.log('Server detected profanity, muting locally...', transcript);
+        if (audioPipelineRef.current) {
+          audioPipelineRef.current.triggerServerMute();
+        }
+      });
+
       // Vote-kick events
       socket.on('vote-kick-active', (data) => {
         if (!active) return;
@@ -416,6 +425,7 @@ function VoiceRoom() {
       socketRef.current?.off('user-left');
       socketRef.current?.off('kicked');
       socketRef.current?.off('warning-issued');
+      socketRef.current?.off('server-detected-profanity');
       socketRef.current?.off('vote-kick-active');
       socketRef.current?.off('vote-kick-update');
       socketRef.current?.off('vote-kick-ended');

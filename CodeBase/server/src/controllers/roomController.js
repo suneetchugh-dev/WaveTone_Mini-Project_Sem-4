@@ -35,11 +35,11 @@ export const getRooms = async (req, res) => {
 
 export const createRoom = async (req, res) => {
   try {
-    const { topic, category, maxUsers, isPrivate } = req.body;
+    const { topic, category, maxUsers, isPrivate, profanityFilter } = req.body;
     if (containsProfanity(topic) || containsProfanity(category)) {
       return res.status(400).json({ error: 'Room topic or category contains inappropriate language.' });
     }
-    const room = new Room({ topic, category, maxUsers, isPrivate });
+    const room = new Room({ topic, category, maxUsers, isPrivate, profanityFilter });
     await room.save();
     res.status(201).json(room);
   } catch (err) {

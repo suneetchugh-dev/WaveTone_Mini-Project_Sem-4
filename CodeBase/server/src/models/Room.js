@@ -7,7 +7,7 @@ const RoomSchema = new mongoose.Schema({
   maxUsers: { type: Number, default: 8 },
   duration: { type: Number, default: 30 }, // in minutes
   isPrivate: { type: Boolean, default: false },
-  profanityFilter: { type: Boolean, default: true },
+  profanityFilter: { type: Boolean, default: false },
   rejoinAllowed: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   isActive: { type: Boolean, default: true },

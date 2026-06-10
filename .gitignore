@@ -39,3 +39,7 @@ build/
 
 ./Assets/Z+ Suggestion Images
 Documents
+
+# Whisper binaries and models
+CodeBase/server/bin/
+CodeBase/server/models/*.bin

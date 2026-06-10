@@ -16,6 +16,16 @@ class ProfanityGateProcessor extends AudioWorkletProcessor {
     this.totalSamples = 0;
     this.mutedSegments = []; // track muted segments for better buffering logic
 
+    // Downsampling state (Target 16kHz for whisper)
+    this.targetSampleRate = 16000;
+    this.downsampleRatio = sampleRate / this.targetSampleRate;
+    this.downsampleCounter = 0;
+    
+    // Chunking state for sending to main thread
+    this.chunkSize = 16000; // 1 second chunks at 16kHz
+    this.chunkBuffer = new Int16Array(this.chunkSize);
+    this.chunkIndex = 0;
+
     // Listen for mute commands from main thread
     this.port.onmessage = (event) => {
       if (event.data.type === 'mute') {
@@ -78,6 +88,28 @@ class ProfanityGateProcessor extends AudioWorkletProcessor {
       } else {
         // Buffer still filling — output silence during initial delay
         outputChannel[i] = 0;
+      }
+      
+      // Downsampling logic for server-side processing
+      this.downsampleCounter += 1;
+      if (this.downsampleCounter >= this.downsampleRatio) {
+        this.downsampleCounter -= this.downsampleRatio;
+        
+        // Convert Float32 to Int16
+        let sample = inputChannel[i];
+        // Clamp
+        sample = Math.max(-1, Math.min(1, sample));
+        // Scale to 16-bit integer
+        this.chunkBuffer[this.chunkIndex++] = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+        
+        if (this.chunkIndex >= this.chunkSize) {
+          // Send chunk to main thread
+          this.port.postMessage({
+            type: 'audio-chunk',
+            data: this.chunkBuffer.buffer.slice(0) // copy buffer
+          });
+          this.chunkIndex = 0;
+        }
       }
     }
 
