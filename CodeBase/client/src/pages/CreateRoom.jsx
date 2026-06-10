@@ -186,7 +186,7 @@ function CreateRoom() {
               onChange={(e) => setLanguage(e.target.value)}
             >
               <option value="en">English (Standard)</option>
-              <option value="auto">English (Accented / Multilingual Auto)</option>
+              <option value="auto">Multilingual Auto</option>
               <option value="es">Spanish (Español)</option>
               <option value="fr">French (Français)</option>
               <option value="de">German (Deutsch)</option>
