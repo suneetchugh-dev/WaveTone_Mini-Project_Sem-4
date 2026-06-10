@@ -50,5 +50,8 @@ export const getFlaggedLogs = () => request('/moderation/flagged');
 export const testTextModeration = (data) =>
   request('/moderation/test-text', { method: 'POST', body: JSON.stringify(data) });
 
+export const testAudioModeration = (data) =>
+  request('/moderation/test-audio', { method: 'POST', body: JSON.stringify(data) });
+
 export const submitModerationFeedback = (id, isCorrect) =>
   request(`/moderation/flagged/${id}/feedback`, { method: 'PUT', body: JSON.stringify({ isCorrect }) });

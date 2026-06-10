@@ -2,6 +2,12 @@ import express from 'express';
 import FlaggedContent from '../models/FlaggedContent.js';
 import { containsProfanity, extractProfanityWords } from '../utils/profanityFilter.js';
 import { getToxicityDetails } from '../utils/toxicityModerator.js';
+import { runWhisper } from '../utils/whisperRunner.js';
+import Groq from 'groq-sdk';
+
+const groq = process.env.GROQ_API_KEY
+  ? new Groq({ apiKey: process.env.GROQ_API_KEY })
+  : null;
 
 const router = express.Router();
 
@@ -125,6 +131,91 @@ router.post('/test-text', async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: 'Evaluation failed' });
+  }
+});
+
+// POST /api/moderation/test-audio
+// Transcribe audio using Whisper, summarize with Groq, and run moderation filters
+router.post('/test-audio', async (req, res) => {
+  try {
+    const { audio, language } = req.body;
+    if (!audio) {
+      return res.status(400).json({ error: 'No audio data provided' });
+    }
+
+    const fileBuffer = Buffer.from(audio, 'base64');
+    let pcmBuffer = fileBuffer;
+    
+    // Extract raw PCM if it is a WAV file
+    if (fileBuffer.toString('ascii', 0, 4) === 'RIFF') {
+      pcmBuffer = fileBuffer.slice(44);
+    }
+
+    const startTime = Date.now();
+    const targetLang = language || 'en';
+
+    // 1. Run Whisper Transcription
+    const transcript = await runWhisper(pcmBuffer, targetLang);
+    if (!transcript) {
+      return res.json({
+        transcript: '',
+        summary: 'No transcript captured to summarize.',
+        isFlagged: false,
+        detectedBy: null,
+        dictionary: { hasProfanity: false, matchedWords: [] },
+        toxicity: [],
+        latency: Date.now() - startTime,
+        warning: 'Whisper could not transcribe the audio. Ensure it is a 16kHz Mono WAV file with clear speech.'
+      });
+    }
+
+    // 2. Run Groq Summary
+    let summary = 'Groq SDK is not configured.';
+    if (groq) {
+      try {
+        const prompt = `You are summarizing a short audio snippet transcribed from WaveTone.
+Transcript: "${transcript}"
+Provide a brief 1-2 sentence summary of what was said. Do not include any meta-commentary or identifiers.`;
+        const message = await groq.chat.completions.create({
+          messages: [{ role: 'user', content: prompt }],
+          model: 'llama-3.3-70b-versatile',
+          max_tokens: 150,
+          temperature: 0.5,
+        });
+        summary = message.choices?.[0]?.message?.content?.trim() || 'Summary empty.';
+      } catch (groqErr) {
+        summary = `Groq failed: ${groqErr.message}`;
+      }
+    }
+
+    // 3. Dictionary checks
+    const hasProfanity = containsProfanity(transcript, targetLang);
+    const matchedWords = extractProfanityWords(transcript, targetLang);
+
+    // 4. TF.js Toxicity model checks
+    const toxicityDetails = await getToxicityDetails(transcript);
+    const hasToxicity = toxicityDetails ? toxicityDetails.some(t => t.match) : false;
+
+    const latency = Date.now() - startTime;
+    const isFlagged = hasProfanity || hasToxicity;
+    const detectedBy = hasProfanity && hasToxicity ? 'both' : hasProfanity ? 'dictionary' : hasToxicity ? 'tfjs' : null;
+
+    res.json({
+      transcript,
+      summary,
+      language: targetLang,
+      isFlagged,
+      detectedBy,
+      dictionary: {
+        hasProfanity,
+        matchedWords
+      },
+      toxicity: toxicityDetails || [],
+      latency
+    });
+  } catch (err) {
+    console.error('Audio evaluation failed:', err);
+    res.status(500).json({ error: 'Audio evaluation failed', details: err.message });
   }
 });
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import AmbientVideoBackground from '../components/AmbientVideoBackground';
-import { getModerationMetrics, getFlaggedLogs, testTextModeration, submitModerationFeedback } from '../services/api';
+import { getModerationMetrics, getFlaggedLogs, testTextModeration, testAudioModeration, submitModerationFeedback } from '../services/api';
 import './shared.css';
 
 const BENCHMARK_SUITE = [
@@ -53,8 +53,10 @@ function About() {
   const exitTimeoutRef = useRef(null);
 
   // Moderation Engine State
+  const [sandboxTab, setSandboxTab] = useState('text'); // 'text' or 'audio'
   const [sandboxText, setSandboxText] = useState('');
   const [sandboxLang, setSandboxLang] = useState('en');
+  const [audioFile, setAudioFile] = useState(null);
   const [sandboxResult, setSandboxResult] = useState(null);
   const [sandboxLoading, setSandboxLoading] = useState(false);
 
@@ -136,6 +138,27 @@ function About() {
     } finally {
       setSandboxLoading(false);
     }
+  };
+
+  const handleAudioSandboxSubmit = async (e) => {
+    e.preventDefault();
+    if (!audioFile) return;
+    setSandboxLoading(true);
+    setSandboxResult(null);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(audioFile);
+    reader.onloadend = async () => {
+      try {
+        const base64Data = reader.result.split(',')[1];
+        const data = await testAudioModeration({ audio: base64Data, language: sandboxLang });
+        setSandboxResult(data);
+      } catch (err) {
+        console.error('Audio sandbox test failed:', err);
+      } finally {
+        setSandboxLoading(false);
+      }
+    };
   };
 
   const handleFeedback = async (logId, isCorrect) => {
@@ -323,51 +346,120 @@ function About() {
             {/* Sandbox Card */}
             <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Interactive Sandbox</h3>
-              <form onSubmit={handleSandboxSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label htmlFor="sandbox-text" className="form-label" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Text to Evaluate</label>
-                  <textarea
-                    id="sandbox-text"
-                    rows="3"
-                    className="form-input"
-                    placeholder="Type something to check profanity/toxicity..."
-                    value={sandboxText}
-                    onChange={(e) => setSandboxText(e.target.value)}
-                    style={{ resize: 'none', borderRadius: '12px', fontSize: '0.88rem', padding: '0.75rem', fontFamily: 'inherit' }}
-                    required
-                  />
-                </div>
-                
-                <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                  <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
-                    <label htmlFor="sandbox-lang" className="sr-only">Language Context</label>
-                    <select
-                      id="sandbox-lang"
-                      className="form-select"
-                      value={sandboxLang}
-                      onChange={(e) => setSandboxLang(e.target.value)}
-                      style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem' }}
-                    >
-                      <option value="en">English (Standard)</option>
-                      <option value="auto">English (Accented / Auto)</option>
-                      <option value="es">Spanish (Español)</option>
-                      <option value="fr">French (Français)</option>
-                      <option value="de">German (Deutsch)</option>
-                      <option value="hi">Hindi (हिंदी)</option>
-                      <option value="pt">Portuguese (Português)</option>
-                    </select>
+              
+              {/* Tab Selector */}
+              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.2rem', borderBottom: '1px solid var(--card-border)', paddingBottom: '0.5rem' }}>
+                <button
+                  onClick={() => { setSandboxTab('text'); setSandboxResult(null); }}
+                  className={`tab-btn ${sandboxTab === 'text' ? 'active' : ''}`}
+                  style={{ background: 'none', border: 'none', color: sandboxTab === 'text' ? 'lightseagreen' : 'var(--text-secondary)', fontWeight: 600, fontSize: '0.82rem', padding: '0.3rem 0.6rem', cursor: 'pointer', borderBottom: sandboxTab === 'text' ? '2px solid lightseagreen' : 'none' }}
+                >
+                  Text Sandbox
+                </button>
+                <button
+                  onClick={() => { setSandboxTab('audio'); setSandboxResult(null); }}
+                  className={`tab-btn ${sandboxTab === 'audio' ? 'active' : ''}`}
+                  style={{ background: 'none', border: 'none', color: sandboxTab === 'audio' ? 'lightseagreen' : 'var(--text-secondary)', fontWeight: 600, fontSize: '0.82rem', padding: '0.3rem 0.6rem', cursor: 'pointer', borderBottom: sandboxTab === 'audio' ? '2px solid lightseagreen' : 'none' }}
+                >
+                  Audio Sandbox (Whisper)
+                </button>
+              </div>
+
+              {sandboxTab === 'text' ? (
+                <form onSubmit={handleSandboxSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label htmlFor="sandbox-text" className="form-label" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Text to Evaluate</label>
+                    <textarea
+                      id="sandbox-text"
+                      rows="3"
+                      className="form-input"
+                      placeholder="Type something to check profanity/toxicity..."
+                      value={sandboxText}
+                      onChange={(e) => setSandboxText(e.target.value)}
+                      style={{ resize: 'none', borderRadius: '12px', fontSize: '0.88rem', padding: '0.75rem', fontFamily: 'inherit' }}
+                      required
+                    />
                   </div>
                   
-                  <button
-                    type="submit"
-                    disabled={sandboxLoading}
-                    className="home-btn home-btn-solid"
-                    style={{ padding: '0.55rem 1.5rem', fontSize: '0.85rem' }}
-                  >
-                    {sandboxLoading ? 'Analyzing...' : 'Analyze'}
-                  </button>
-                </div>
-              </form>
+                  <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+                    <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                      <label htmlFor="sandbox-lang" className="sr-only">Language Context</label>
+                      <select
+                        id="sandbox-lang"
+                        className="form-select"
+                        value={sandboxLang}
+                        onChange={(e) => setSandboxLang(e.target.value)}
+                        style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem' }}
+                      >
+                        <option value="en">English (Standard)</option>
+                        <option value="auto">English (Accented / Auto)</option>
+                        <option value="es">Spanish (Español)</option>
+                        <option value="fr">French (Français)</option>
+                        <option value="de">German (Deutsch)</option>
+                        <option value="hi">Hindi (हिंदी)</option>
+                        <option value="pt">Portuguese (Português)</option>
+                      </select>
+                    </div>
+                    
+                    <button
+                      type="submit"
+                      disabled={sandboxLoading}
+                      className="home-btn home-btn-solid"
+                      style={{ padding: '0.55rem 1.5rem', fontSize: '0.85rem' }}
+                    >
+                      {sandboxLoading ? 'Analyzing...' : 'Analyze'}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <form onSubmit={handleAudioSandboxSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label htmlFor="sandbox-audio" className="form-label" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Select 16kHz Mono WAV File</label>
+                    <input
+                      id="sandbox-audio"
+                      type="file"
+                      accept=".wav"
+                      onChange={(e) => setAudioFile(e.target.files[0])}
+                      className="form-input"
+                      style={{ borderRadius: '12px', fontSize: '0.88rem', padding: '0.5rem', color: 'var(--text-secondary)' }}
+                      required
+                    />
+                    <p style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', margin: '0.2rem 0 0 0' }}>
+                      Try uploading the <strong>jfk.wav</strong> quote file from the server folder!
+                    </p>
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+                    <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                      <label htmlFor="sandbox-lang-audio" className="sr-only">Language Context</label>
+                      <select
+                        id="sandbox-lang-audio"
+                        className="form-select"
+                        value={sandboxLang}
+                        onChange={(e) => setSandboxLang(e.target.value)}
+                        style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem' }}
+                      >
+                        <option value="en">English (Standard)</option>
+                        <option value="auto">English (Accented / Auto)</option>
+                        <option value="es">Spanish (Español)</option>
+                        <option value="fr">French (Français)</option>
+                        <option value="de">German (Deutsch)</option>
+                        <option value="hi">Hindi (हिंदी)</option>
+                        <option value="pt">Portuguese (Português)</option>
+                      </select>
+                    </div>
+                    
+                    <button
+                      type="submit"
+                      disabled={sandboxLoading}
+                      className="home-btn home-btn-solid"
+                      style={{ padding: '0.55rem 1.5rem', fontSize: '0.85rem' }}
+                    >
+                      {sandboxLoading ? 'Transcribing...' : 'Upload & Transcribe'}
+                    </button>
+                  </div>
+                </form>
+              )}
 
               {sandboxResult && (
                 <div style={{ marginTop: '1.2rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--card-border)', borderRadius: '12px' }}>
@@ -377,6 +469,28 @@ function About() {
                       {sandboxResult.isFlagged ? 'FLAGGED (Profane/Toxic)' : 'CLEAN'}
                     </span>
                   </div>
+
+                  {sandboxResult.transcript !== undefined && (
+                    <div style={{ fontSize: '0.82rem', marginBottom: '0.8rem', paddingBottom: '0.8rem', borderBottom: '1px solid var(--card-border)' }}>
+                      <strong style={{ display: 'block', marginBottom: '0.2rem', color: 'var(--text-primary)' }}>📝 Speech-to-Text Transcript:</strong>
+                      <span style={{ color: 'lightseagreen', fontStyle: 'italic' }}>
+                        {sandboxResult.transcript ? `"${sandboxResult.transcript}"` : '(No speech detected)'}
+                      </span>
+                    </div>
+                  )}
+
+                  {sandboxResult.summary !== undefined && sandboxResult.transcript && (
+                    <div style={{ fontSize: '0.82rem', marginBottom: '0.8rem', paddingBottom: '0.8rem', borderBottom: '1px solid var(--card-border)' }}>
+                      <strong style={{ display: 'block', marginBottom: '0.2rem', color: 'var(--text-primary)' }}>🤖 Groq AI Summary:</strong>
+                      <span style={{ color: 'lightseagreen' }}>{sandboxResult.summary}</span>
+                    </div>
+                  )}
+
+                  {sandboxResult.warning && (
+                    <div style={{ fontSize: '0.82rem', color: 'var(--warning)', marginBottom: '0.8rem' }}>
+                      ⚠️ {sandboxResult.warning}
+                    </div>
+                  )}
                   
                   <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                     <div><strong>Latency:</strong> <span style={{ color: 'lightseagreen' }}>{sandboxResult.latency}ms</span></div>
