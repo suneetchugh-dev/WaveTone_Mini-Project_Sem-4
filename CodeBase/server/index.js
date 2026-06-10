@@ -468,9 +468,8 @@ io.on('connection', (socket) => {
 
   // ==================== AUDIO STREAMING FOR WHISPER ====================
   socket.on('audio-stream-chunk', ({ chunk, roomId }) => {
-    // Check if room has profanity filter enabled
     Room.findById(roomId).then(room => {
-      if (!room || room.profanityFilter === false) return; // Skip processing if filter is off
+      if (!room) return;
 
       if (!socketAudioBuffers.has(socket.id)) {
         socketAudioBuffers.set(socket.id, []);
@@ -498,39 +497,34 @@ io.on('connection', (socket) => {
               text: transcript
             });
 
-            const isBad = await isToxicOrProfane(transcript, room.language || 'en');
-            if (isBad) {
-              console.log(`SERVER DETECTED PROFANITY/TOXICITY from ${socket.id}: "${transcript}"`);
-              socket.emit('server-detected-profanity', { transcript });
-              
-              // Log the flagged content to MongoDB
-              const hasDict = containsProfanity(transcript, room.language || 'en');
-              const flaggedLog = new FlaggedContent({
-                transcript,
-                detectedBy: hasDict ? 'dictionary' : 'tfjs',
-                confidence: hasDict ? 1.0 : 0.8,
-                roomId: roomId,
-                language: room.language || 'en'
-              });
-              flaggedLog.save().catch(err => console.error('Failed to log flagged content:', err));
-              
-              // Increment warning using existing warning logic
-              // Emit fake 'profanity-warning' event locally to trigger existing handlers
-              socket.emit('profanity-warning', { roomId }); // Emitting to client so client can re-emit, or just process it directly:
-              
-              // Process warning directly:
-              const now = Date.now();
-              if (!socketWarnings.has(socket.id)) socketWarnings.set(socket.id, { count: 0, lastTimestamp: 0 });
-              const record = socketWarnings.get(socket.id);
-              if (now - record.lastTimestamp >= WARNING_RATE_LIMIT_MS) {
-                record.count += 1;
-                record.lastTimestamp = now;
-                socket.emit('warning-issued', { count: record.count, maxWarnings: MAX_WARNINGS });
+            // Only perform toxicity/profanity checks if profanity filter is enabled
+            if (room.profanityFilter !== false) {
+              const isBad = await isToxicOrProfane(transcript, room.language || 'en');
+              if (isBad) {
+                console.log(`SERVER DETECTED PROFANITY/TOXICITY from ${socket.id}: "${transcript}"`);
+                socket.emit('server-detected-profanity', { transcript });
                 
-                // (Omitted auto-vote logic for brevity here, assuming it's handled by existing 'profanity-warning' event)
-                // Actually, let's just trigger the 'profanity-warning' logic directly:
-                // Since 'profanity-warning' relies on 'socket' in its closure, we can't easily call it.
-                // We'll rely on the client emitting 'profanity-warning' when it receives 'server-detected-profanity'.
+                // Log the flagged content to MongoDB
+                const hasDict = containsProfanity(transcript, room.language || 'en');
+                const flaggedLog = new FlaggedContent({
+                  transcript,
+                  detectedBy: hasDict ? 'dictionary' : 'tfjs',
+                  confidence: hasDict ? 1.0 : 0.8,
+                  roomId: roomId,
+                  language: room.language || 'en'
+                });
+                flaggedLog.save().catch(err => console.error('Failed to log flagged content:', err));
+                
+                // Increment warning using existing warning logic
+                // Process warning directly:
+                const now = Date.now();
+                if (!socketWarnings.has(socket.id)) socketWarnings.set(socket.id, { count: 0, lastTimestamp: 0 });
+                const record = socketWarnings.get(socket.id);
+                if (now - record.lastTimestamp >= WARNING_RATE_LIMIT_MS) {
+                  record.count += 1;
+                  record.lastTimestamp = now;
+                  socket.emit('warning-issued', { count: record.count, maxWarnings: MAX_WARNINGS });
+                }
               }
             }
           }
@@ -682,6 +676,13 @@ io.on('connection', (socket) => {
 
 function _leaveRoom(socket, roomId) {
   socket.leave(roomId);
+
+  // Cleanup audio processing interval and buffers
+  if (socketAudioIntervals.has(socket.id)) {
+    clearInterval(socketAudioIntervals.get(socket.id));
+    socketAudioIntervals.delete(socket.id);
+  }
+  socketAudioBuffers.delete(socket.id);
   const participants = roomParticipants.get(roomId);
   if (participants) {
     const idx = participants.findIndex(p => p.socketId === socket.id);

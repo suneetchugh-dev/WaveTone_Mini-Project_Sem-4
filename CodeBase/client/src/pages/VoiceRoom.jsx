@@ -179,35 +179,34 @@ function VoiceRoom() {
         stream.getAudioTracks().forEach(track => { track.enabled = false; });
         setupVolumeDetection('self', stream, setSelfSpeaking);
 
-        // Set up audio profanity pipeline if room has filter enabled
-        const filterEnabled = roomData.profanityFilter !== false;
-        if (filterEnabled) {
-          const pipeline = new AudioPipeline({
-            rawStream: stream,
-            onProfanityDetected: () => {
+        // Set up audio pipeline (always initialized for transcription/Whisper/AI summaries)
+        const pipeline = new AudioPipeline({
+          rawStream: stream,
+          onProfanityDetected: () => {
+            if (roomData.profanityFilter !== false) {
               socketRef.current?.emit('profanity-warning', { roomId });
-            },
-            onServerModerationResult: (result) => {
+            }
+          },
+          onServerModerationResult: (result) => {
+            if (roomData.profanityFilter !== false) {
               // Handle server moderation response
               if (result.confirmed) {
                 console.log('Profanity confirmed by server:', result.badWords);
               } else {
                 console.log('Server rejected profanity detection - false positive recovered');
               }
-            },
-            onPipelineReady: (processed) => {
-              processedStreamRef.current = processed;
-            },
-            onError: () => {
-              processedStreamRef.current = stream;
-            },
-            socket: socketRef.current // pass socket for hybrid moderation
-          });
-          audioPipelineRef.current = pipeline;
-          await pipeline.init();
-        } else {
-          processedStreamRef.current = stream;
-        }
+            }
+          },
+          onPipelineReady: (processed) => {
+            processedStreamRef.current = processed;
+          },
+          onError: () => {
+            processedStreamRef.current = stream;
+          },
+          socket: socketRef.current // pass socket for hybrid moderation
+        });
+        audioPipelineRef.current = pipeline;
+        await pipeline.init();
       } catch {
         setMicError('Microphone access denied — you can still listen.');
       }

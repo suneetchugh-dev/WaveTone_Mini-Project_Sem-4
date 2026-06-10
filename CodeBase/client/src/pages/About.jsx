@@ -283,13 +283,14 @@ function About() {
         </div>
 
         <div style={{ borderTop: '1px solid var(--card-border)', paddingTop: '3rem', marginTop: '3rem' }}>
-          <h2 className="page-title">Try the Moderation Engine</h2>
-          <p className="page-subtitle" style={{ marginBottom: '2rem' }}>
-            WaveTone uses an on-device/in-browser TF.js model paired with multingual Whisper processing to actively detect and block toxic behavior. You can test our moderation filters below.
-          </p>
+          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <h2 className="page-title">Try the Moderation Engine</h2>
+            <p className="page-subtitle" style={{ marginBottom: '2rem' }}>
+              WaveTone uses an on-device/in-browser TF.js model paired with multingual Whisper processing to actively detect and block toxic behavior. You can test our moderation filters below.
+            </p>
 
-          {/* Metrics Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+            {/* Metrics Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '1rem', marginBottom: '2rem' }}>
             <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Total Flagged Items</span>
               <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--speaking)' }}>{metrics.totalFlagged}</span>
@@ -318,7 +319,7 @@ function About() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
             {/* Sandbox Card */}
             <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Interactive Sandbox</h3>
@@ -564,6 +565,7 @@ function About() {
                 </tbody>
               </table>
             )}
+          </div>
           </div>
         </div>
       </section>
