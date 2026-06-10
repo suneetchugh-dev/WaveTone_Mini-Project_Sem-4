@@ -98,8 +98,10 @@ function VoiceRoom() {
   const createPeerConnection = useCallback((targetSocketId) => {
     const pc = new RTCPeerConnection(ICE_SERVERS);
 
-    // Use processed stream (through profanity gate) or raw stream as fallback
-    const streamToSend = processedStreamRef.current || localStreamRef.current;
+    // Use raw stream directly if profanity filter is disabled, ensuring maximum audio reliability
+    const useRawStream = roomData.profanityFilter === false;
+    const streamToSend = useRawStream ? localStreamRef.current : (processedStreamRef.current || localStreamRef.current);
+    
     if (streamToSend) {
       streamToSend.getTracks().forEach(track =>
         pc.addTrack(track, streamToSend)
@@ -130,7 +132,7 @@ function VoiceRoom() {
 
     peerConnectionsRef.current[targetSocketId] = pc;
     return pc;
-  }, []);
+  }, [roomData.profanityFilter]);
 
   // --- Cleanup a peer connection ---
   const cleanupPeer = (socketId) => {
@@ -460,8 +462,10 @@ function VoiceRoom() {
     setMuted(m => {
       const newMuted = !m;
       localStreamRef.current?.getAudioTracks().forEach(t => { t.enabled = !newMuted; });
-      // Sync client-side speech recognition state
-      audioPipelineRef.current?.toggleSpeechRecognition(newMuted);
+      // Sync client-side speech recognition state (only if profanity filter is active)
+      if (roomData.profanityFilter !== false) {
+        audioPipelineRef.current?.toggleSpeechRecognition(newMuted);
+      }
       return newMuted;
     });
   };
