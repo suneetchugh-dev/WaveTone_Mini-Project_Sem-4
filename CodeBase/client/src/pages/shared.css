@@ -2464,3 +2464,10 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
     margin-top: 3rem !important;
   }
 }
+
+/* Custom form validation input error styling */
+.form-input.input-error, .form-select.input-error {
+  border-color: var(--warning) !important;
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2) !important;
+}
+

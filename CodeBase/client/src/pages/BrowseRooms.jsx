@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import './BrowseRooms.css';
 import './shared.css';
 import AmbientVideoBackground from '../components/AmbientVideoBackground';
@@ -16,8 +16,19 @@ function BrowseRooms() {
   const [error, setError] = useState(null);
   const [joinCode, setJoinCode] = useState('');
   const [joinError, setJoinError] = useState('');
+  const [toastMessage, setToastMessage] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const socket = connectSocket();
+
+  useEffect(() => {
+    if (location.state?.error) {
+      setToastMessage(location.state.error);
+      window.history.replaceState({}, document.title);
+      const timer = setTimeout(() => setToastMessage(null), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   const handleJoinByCode = (e) => {
     e.preventDefault();
@@ -127,6 +138,30 @@ function BrowseRooms() {
       <AmbientVideoBackground variant="audio-only" showToggleButton={false} />
         <h1 className="page-title">Browse Rooms</h1>
         <p className="page-subtitle">Find a conversation that interests you.</p>
+
+      {toastMessage && (
+        <div style={{
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1.5px solid #ef4444',
+          borderRadius: '12px',
+          padding: '0.8rem 1.2rem',
+          marginBottom: '1.5rem',
+          color: '#ef4444',
+          fontSize: '0.88rem',
+          fontWeight: 600,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.6rem',
+          animation: 'fadeIn 0.3s ease'
+        }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
       {/* Join by Code */}
       <form onSubmit={handleJoinByCode} className="card join-form" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'nowrap' }}>

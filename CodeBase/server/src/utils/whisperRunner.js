@@ -1,6 +1,7 @@
 import { execFile } from 'child_process';
 import path from 'path';
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 
@@ -11,7 +12,8 @@ const BIN_DIR = path.join(__dirname, '..', '..', 'bin');
 const MODEL_DIR = path.join(__dirname, '..', '..', 'models');
 
 const WHISPER_BIN = path.join(BIN_DIR, 'main.exe');
-const WHISPER_MODEL = path.join(MODEL_DIR, 'ggml-tiny.en.bin');
+const WHISPER_MODEL_EN = path.join(MODEL_DIR, 'ggml-tiny.en.bin');
+const WHISPER_MODEL_MULTI = path.join(MODEL_DIR, 'ggml-tiny.bin');
 const TEMP_DIR = path.join(__dirname, '..', '..', 'temp');
 
 // Ensure temp dir exists
@@ -59,22 +61,39 @@ function createWavHeader(pcmData) {
 /**
  * Runs whisper.cpp on a buffer of 16-bit 16kHz Mono PCM data.
  * @param {Buffer} pcmBuffer - Raw PCM data
+ * @param {string} [language='en'] - Target transcription language
  * @returns {Promise<string>} Transcribed text
  */
-export async function runWhisper(pcmBuffer) {
+export async function runWhisper(pcmBuffer, language = 'en') {
   if (!pcmBuffer || pcmBuffer.length === 0) return '';
   
   const wavBuffer = createWavHeader(pcmBuffer);
   const tempId = crypto.randomBytes(16).toString('hex');
   const tempWavPath = path.join(TEMP_DIR, `${tempId}.wav`);
   
+  // Choose correct model file
+  let modelPath = WHISPER_MODEL_MULTI;
+  if (language === 'en' && fsSync.existsSync(WHISPER_MODEL_EN)) {
+    modelPath = WHISPER_MODEL_EN;
+  } else if (!fsSync.existsSync(WHISPER_MODEL_MULTI)) {
+    // Fallback if multilingual model is not available
+    modelPath = WHISPER_MODEL_EN;
+  }
+
   try {
     await fs.writeFile(tempWavPath, wavBuffer);
     
     // Spawn whisper
     // Arguments: -m model.bin -f file.wav -nt (no timestamps)
+    const args = ['-m', modelPath, '-f', tempWavPath, '-nt'];
+    
+    // If using multilingual model, pass language parameter
+    if (modelPath === WHISPER_MODEL_MULTI && language) {
+      args.push('-l', language);
+    }
+
     return new Promise((resolve, reject) => {
-      execFile(WHISPER_BIN, ['-m', WHISPER_MODEL, '-f', tempWavPath, '-nt'], (error, stdout, stderr) => {
+      execFile(WHISPER_BIN, args, (error, stdout, stderr) => {
         // Clean up the temp file
         fs.unlink(tempWavPath).catch(() => {});
         

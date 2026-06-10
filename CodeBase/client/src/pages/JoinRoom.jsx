@@ -95,10 +95,26 @@ function JoinRoom() {
     return (
       <>
         <AmbientVideoBackground variant="subtle" />
-        <section className="page-section">
-          <h2 className="page-title">Join Room</h2>
-          <div className="card">
-            <p style={{ color: 'var(--warning)' }}>Room not found or unavailable.</p>
+        <section className="page-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+          <div className="card" style={{ maxWidth: '420px', width: '100%', textAlign: 'center', padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1.5px solid rgba(248,113,113,0.3)', background: 'rgba(248,113,113,0.02)' }}>
+            <div style={{ background: 'rgba(248,113,113,0.1)', padding: '1rem', borderRadius: '50%', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" strokeWidth="2.0" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem' }}>Room Unavailable</h3>
+            <p style={{ margin: '0 0 1.5rem 0', color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>
+              The room you are trying to join does not exist, has already been closed, or the link has expired.
+            </p>
+            <button 
+              onClick={() => navigate('/browse')} 
+              className="home-btn home-btn-solid"
+              style={{ width: '100%', justifyContent: 'center' }}
+            >
+              Browse Active Rooms
+            </button>
           </div>
         </section>
       </>

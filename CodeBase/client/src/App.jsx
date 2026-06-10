@@ -9,7 +9,9 @@ import VoiceRoom from './pages/VoiceRoom';
 import PostRoomSummary from './pages/PostRoomSummary';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
+import ProfanityValidation from './pages/ProfanityValidation';
 import './App.css';
+
 import { useEffect, useState, useRef } from 'react';
 import { darkTheme, lightTheme } from './theme';
 import MainLogo from '../../../Assets/Main-Logo/SampleLogo3.png';
@@ -170,6 +172,15 @@ function App() {
             </span>
             {!isNavScrolled && <span>About</span>}
           </NavLink>
+          <NavLink to="/moderation" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} data-tooltip={isNavScrolled ? "Moderation" : undefined}>
+            <span className="nav-icon" aria-label="Moderation">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            {!isNavScrolled && <span>Moderation</span>}
+          </NavLink>
           {!isMobile && (
             <div className="nav-actions">
               <NavLink 
@@ -226,6 +237,7 @@ function App() {
             <Route path="/room/:roomId" element={<VoiceRoom />} />
             <Route path="/summary/:roomId" element={<PostRoomSummary />} />
             <Route path="/about" element={<About />} />
+            <Route path="/moderation" element={<ProfanityValidation />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

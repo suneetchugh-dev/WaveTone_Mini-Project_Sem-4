@@ -14,8 +14,10 @@ function CreateRoom() {
   const [maxUsers, setMaxUsers] = useState(10);
   const [isPrivate, setIsPrivate] = useState(false);
   const [profanityFilter, setProfanityFilter] = useState(false);
+  const [language, setLanguage] = useState('en');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [errorField, setErrorField] = useState(null); // 'topic' or 'category'
   const [customAlias, setCustomAlias] = useState('');
   const [isBubbling, setIsBubbling] = useState(false);
   const [activeRoomId, setActiveRoomId] = useState(null);
@@ -53,6 +55,7 @@ function CreateRoom() {
     if (hasActiveRoom) return;
     setLoading(true);
     setError(null);
+    setErrorField(null);
     setIsBubbling(true);
     
     // Reset bubble animation after it completes
@@ -62,14 +65,23 @@ function CreateRoom() {
     const trimmedTopic = topic.trim();
     if (!trimmedTopic) {
       setError('Please enter a room topic.');
+      setErrorField('topic');
       setLoading(false);
+      document.getElementById('room-topic')?.focus();
       return;
     }
     
     const finalCategory = category === 'Custom' ? customCategory.trim() : category;
-    if (!finalCategory) { setError('Please enter a custom category.'); setLoading(false); return; }
+    if (!finalCategory) { 
+      setError('Please enter a custom category.'); 
+      setErrorField('category'); 
+      setLoading(false); 
+      document.getElementById('custom-category')?.focus();
+      return; 
+    }
+
     try {
-      const room = await createRoom({ topic: trimmedTopic, category: finalCategory, maxUsers, isPrivate, profanityFilter });
+      const room = await createRoom({ topic: trimmedTopic, category: finalCategory, maxUsers, isPrivate, profanityFilter, language });
       // Use custom alias if provided, else random
       let alias = customAlias.trim();
       if (!alias) {
@@ -78,7 +90,19 @@ function CreateRoom() {
       navigate(`/room/${room._id}`, { state: { alias, room } });
     } catch (err) {
       setError(err.message);
+      setErrorField(err.field);
       setLoading(false);
+      
+      // Auto-focus field that failed
+      if (err.field === 'topic') {
+        document.getElementById('room-topic')?.focus();
+      } else if (err.field === 'category') {
+        if (category === 'Custom') {
+          document.getElementById('custom-category')?.focus();
+        } else {
+          document.getElementById('room-category')?.focus();
+        }
+      }
     }
   };
 
@@ -96,11 +120,11 @@ function CreateRoom() {
             <input
               id="room-topic"
               name="topic"
-              className="form-input"
+              className={`form-input${errorField === 'topic' ? ' input-error' : ''}`}
               type="text"
               placeholder="e.g. Math Exam Prep, Chill Vibes..."
               value={topic}
-              onChange={(e) => setTopic(e.target.value)}
+              onChange={(e) => { setTopic(e.target.value); setError(null); setErrorField(null); }}
               required
             />
           </div>
@@ -124,7 +148,7 @@ function CreateRoom() {
 
           <div className="form-group">
             <label htmlFor="room-category" className="form-label">Category</label>
-            <select id="room-category" name="category" className="form-select" aria-label="Category" value={category} onChange={(e) => { setCategory(e.target.value); setError(null); }}>
+            <select id="room-category" name="category" className={`form-select${errorField === 'category' ? ' input-error' : ''}`} aria-label="Category" value={category} onChange={(e) => { setCategory(e.target.value); setError(null); setErrorField(null); }}>
               {categories.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
@@ -137,11 +161,11 @@ function CreateRoom() {
               <input
                 id="custom-category"
                 name="customCategory"
-                className="form-input"
+                className={`form-input${errorField === 'category' ? ' input-error' : ''}`}
                 type="text"
                 placeholder="e.g. Music, Tech, Philosophy..."
                 value={customCategory}
-                onChange={(e) => setCustomCategory(e.target.value.slice(0, 20))}
+                onChange={(e) => { setCustomCategory(e.target.value.slice(0, 20)); setError(null); setErrorField(null); }}
                 maxLength={20}
                 required
               />
@@ -150,6 +174,26 @@ function CreateRoom() {
               </span>
             </div>
           )}
+
+          <div className="form-group">
+            <label htmlFor="room-language" className="form-label">Speech Language / Accent</label>
+            <select
+              id="room-language"
+              name="language"
+              className="form-select"
+              aria-label="Language / Accent"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            >
+              <option value="en">English (Standard)</option>
+              <option value="auto">English (Accented / Multilingual Auto)</option>
+              <option value="es">Spanish (Español)</option>
+              <option value="fr">French (Français)</option>
+              <option value="de">German (Deutsch)</option>
+              <option value="hi">Hindi (हिंदी)</option>
+              <option value="pt">Portuguese (Português)</option>
+            </select>
+          </div>
 
           <div className="form-group">
             <label htmlFor="max-users" className="form-label">Max Participants</label>

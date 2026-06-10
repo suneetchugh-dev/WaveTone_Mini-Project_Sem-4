@@ -18,13 +18,14 @@ toxicity.load(threshold).then(mod => {
 /**
  * Checks if the text contains profanity or is highly toxic.
  * @param {string} text - The transcribed text to check
+ * @param {string} [language='en'] - The language of the room
  * @returns {Promise<boolean>} true if profane/toxic, false otherwise
  */
-export async function isToxicOrProfane(text) {
+export async function isToxicOrProfane(text, language = 'en') {
   if (!text || text.trim().length === 0) return false;
   
   // 1. Fast path: check against our existing profanity word list
-  if (containsProfanity(text)) {
+  if (containsProfanity(text, language)) {
     return true;
   }
   
@@ -51,4 +52,24 @@ export async function isToxicOrProfane(text) {
   }
 
   return false;
+}
+
+/**
+ * Gets detailed toxicity classification probabilities for validation tools.
+ * @param {string} text - The transcribed text to check
+ * @returns {Promise<Array<{label: string, match: boolean, probability: number}>|null>} Classification details
+ */
+export async function getToxicityDetails(text) {
+  if (!text || !model) return null;
+  try {
+    const predictions = await model.classify([text]);
+    return predictions.map(p => ({
+      label: p.label,
+      match: p.results[0].match,
+      probability: p.results[0].probabilities[1] // Probability of positive classification (index 1 is 'true')
+    }));
+  } catch (err) {
+    console.error('Error getting toxicity details:', err);
+    return null;
+  }
 }

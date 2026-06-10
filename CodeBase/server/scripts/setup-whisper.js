@@ -18,6 +18,11 @@ const WHISPER_ZIP_PATH = path.join(BIN_DIR, 'whisper-bin-x64.zip');
 const MODEL_URL = 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin';
 const MODEL_PATH = path.join(MODEL_DIR, 'ggml-tiny.en.bin');
 
+// ggml-tiny.bin (multilingual model)
+const MULTI_MODEL_URL = 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin';
+const MULTI_MODEL_PATH = path.join(MODEL_DIR, 'ggml-tiny.bin');
+
+
 // Create directories
 if (!fs.existsSync(BIN_DIR)) {
   fs.mkdirSync(BIN_DIR, { recursive: true });
@@ -64,12 +69,20 @@ function extractZip(zipPath, destDir) {
 
 async function setup() {
   try {
-    // 1. Download Model
+    // 1. Download English Model
     if (!fs.existsSync(MODEL_PATH)) {
       await downloadFile(MODEL_URL, MODEL_PATH);
-      console.log('Model downloaded successfully.');
+      console.log('English model downloaded successfully.');
     } else {
-      console.log('Model already exists, skipping.');
+      console.log('English model already exists, skipping.');
+    }
+
+    // 1b. Download Multilingual Model
+    if (!fs.existsSync(MULTI_MODEL_PATH)) {
+      await downloadFile(MULTI_MODEL_URL, MULTI_MODEL_PATH);
+      console.log('Multilingual model downloaded successfully.');
+    } else {
+      console.log('Multilingual model already exists, skipping.');
     }
 
     // 2. Download and extract whisper.cpp binary

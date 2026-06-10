@@ -7,7 +7,9 @@ import dotenv from 'dotenv';
 import roomRoutes from './src/routes/roomRoutes.js';
 import roomDetailsRoutes from './src/routes/roomDetailsRoutes.js';
 import summaryRoutes from './src/routes/summaryRoutes.js';
+import moderationRoutes from './src/routes/moderationRoutes.js';
 import Room from './src/models/Room.js';
+import FlaggedContent from './src/models/FlaggedContent.js';
 import { containsProfanity, filterProfanity, extractProfanityWords, getProfanityWords } from './src/utils/profanityFilter.js';
 import { runWhisper } from './src/utils/whisperRunner.js';
 import { isToxicOrProfane } from './src/utils/toxicityModerator.js';
@@ -43,6 +45,7 @@ app.get('/', (req, res) => res.send('WaveTone backend running'));
 app.use('/api/rooms', roomRoutes);
 app.use('/api/rooms', roomDetailsRoutes);
 app.use('/api/sessions', summaryRoutes);
+app.use('/api/moderation', moderationRoutes);
 
 // --- Socket.io in-memory state ---
 const roomParticipants = new Map();  // roomId → [{socketId, alias}]
@@ -485,7 +488,7 @@ io.on('connection', (socket) => {
           // Ignore very short bursts
           if (combinedBuffer.length < 16000 * 2 * 0.5) return; // less than 0.5 sec of audio
           
-          const transcript = await runWhisper(combinedBuffer);
+          const transcript = await runWhisper(combinedBuffer, room.language || 'en');
           if (transcript) {
             console.log(`[Whisper ${socketAliases.get(socket.id) || socket.id}]: ${transcript}`);
             
@@ -495,10 +498,21 @@ io.on('connection', (socket) => {
               text: transcript
             });
 
-            const isBad = await isToxicOrProfane(transcript);
+            const isBad = await isToxicOrProfane(transcript, room.language || 'en');
             if (isBad) {
               console.log(`SERVER DETECTED PROFANITY/TOXICITY from ${socket.id}: "${transcript}"`);
               socket.emit('server-detected-profanity', { transcript });
+              
+              // Log the flagged content to MongoDB
+              const hasDict = containsProfanity(transcript, room.language || 'en');
+              const flaggedLog = new FlaggedContent({
+                transcript,
+                detectedBy: hasDict ? 'dictionary' : 'tfjs',
+                confidence: hasDict ? 1.0 : 0.8,
+                roomId: roomId,
+                language: room.language || 'en'
+              });
+              flaggedLog.save().catch(err => console.error('Failed to log flagged content:', err));
               
               // Increment warning using existing warning logic
               // Emit fake 'profanity-warning' event locally to trigger existing handlers

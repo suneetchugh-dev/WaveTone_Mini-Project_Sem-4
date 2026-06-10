@@ -560,8 +560,23 @@ function VoiceRoom() {
 
       {/* Mic error */}
       {micError && (
-        <div style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', borderRadius: '8px', padding: '0.6rem 1rem', marginBottom: '1rem', color: 'var(--warning)', fontSize: '0.82rem' }}>
-          {micError}
+        <div style={{ background: 'rgba(248,113,113,0.06)', border: '1.5px solid var(--warning)', borderRadius: '15px', padding: '1.2rem', marginBottom: '1.5rem', color: 'var(--text-primary)', animation: 'fadeIn 0.3s ease' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem', color: 'var(--warning)' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+              <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
+              <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .67-.1 1.32-.27 1.94"/>
+            </svg>
+            <strong style={{ fontSize: '0.92rem', fontWeight: 700 }}>{micError}</strong>
+          </div>
+          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            <p style={{ margin: '0 0 0.6rem 0', fontWeight: 600 }}>To enable your microphone and start speaking, please follow these steps:</p>
+            <ul style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <li><strong>Chrome:</strong> Click the lock icon 🔒 next to the URL, find <em>Microphone</em>, and toggle it to <strong>Allow</strong>. Refresh the page.</li>
+              <li><strong>Safari:</strong> Open <em>Settings for This Website...</em> (Safari menu) and change <em>Microphone</em> access to <strong>Allow</strong>.</li>
+              <li><strong>Firefox:</strong> Click the microphone permission block icon in the URL bar, clear the blocked status, and reload the page.</li>
+            </ul>
+          </div>
         </div>
       )}
 

@@ -35,11 +35,23 @@ export const getRooms = async (req, res) => {
 
 export const createRoom = async (req, res) => {
   try {
-    const { topic, category, maxUsers, isPrivate, profanityFilter } = req.body;
-    if (containsProfanity(topic) || containsProfanity(category)) {
-      return res.status(400).json({ error: 'Room topic or category contains inappropriate language.' });
+    const { topic, category, maxUsers, isPrivate, profanityFilter, language } = req.body;
+    
+    if (containsProfanity(topic, language)) {
+      return res.status(400).json({ 
+        error: 'Room topic contains inappropriate language. Please choose a cleaner topic.', 
+        field: 'topic' 
+      });
     }
-    const room = new Room({ topic, category, maxUsers, isPrivate, profanityFilter });
+    
+    if (containsProfanity(category, language)) {
+      return res.status(400).json({ 
+        error: 'Room category contains inappropriate language. Please choose a cleaner category.', 
+        field: 'category' 
+      });
+    }
+
+    const room = new Room({ topic, category, maxUsers, isPrivate, profanityFilter, language });
     await room.save();
     res.status(201).json(room);
   } catch (err) {

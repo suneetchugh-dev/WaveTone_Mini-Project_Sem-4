@@ -9,6 +9,7 @@ const RoomSchema = new mongoose.Schema({
   isPrivate: { type: Boolean, default: false },
   profanityFilter: { type: Boolean, default: false },
   rejoinAllowed: { type: Boolean, default: false },
+  language: { type: String, default: 'en' }, // 'en', 'auto', 'es', 'fr', 'de', 'hi', 'pt'
   createdAt: { type: Date, default: Date.now },
   isActive: { type: Boolean, default: true },
   hostId: { type: String, default: null }, // socketId of Host

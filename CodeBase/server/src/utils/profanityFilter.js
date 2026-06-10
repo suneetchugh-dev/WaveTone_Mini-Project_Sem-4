@@ -1,9 +1,24 @@
-// Basic profanity word list — extend as needed
-const BLOCKED_WORDS = [
-  'fuck', 'shit', 'bitch', 'ass', 'asshole', 'bastard',
-  'dick', 'pussy', 'cunt', 'slut', 'whore', 'fag', 'nigger',
-  'nigga', 'retard', 'rape', 'molest', 'porn', 'sex',
-];
+// Multilingual profanity word lists
+const BLOCKED_WORDS_BY_LANG = {
+  en: [
+    'fuck', 'shit', 'bitch', 'ass', 'asshole', 'bastard', 'dick', 'pussy', 'cunt',
+    'slut', 'whore', 'fag', 'nigger', 'nigga', 'retard', 'rape', 'molest', 'porn', 'sex'
+  ],
+  es: [
+    'mierda', 'puta', 'puto', 'cabron', 'cabrona', 'pendejo', 'pendeja', 'joder',
+    'maricon', 'hijo de puta', 'hija de puta', 'singao', 'singada'
+  ],
+  fr: [
+    'merde', 'putain', 'connard', 'connarde', 'salope', 'cul', 'encule', 'batard'
+  ],
+  de: [
+    'scheisse', 'arschloch', 'schlampe', 'hurensohn', 'wichser', 'fotze', 'miststuck'
+  ],
+  hi: [
+    'bhenchod', 'bharchod', 'madarchod', 'chutiya', 'saala', 'saali', 'kamina',
+    'harami', 'randi', 'bhadwa', 'gandu'
+  ]
+};
 
 // Build regex: match whole words, case-insensitive
 // Also catches leet-speak variants like f*ck, sh1t, a$$
@@ -19,32 +34,61 @@ function buildRegex(word) {
   return new RegExp(`\\b${pattern}\\b`, 'i');
 }
 
-const BLOCKED_REGEXES = BLOCKED_WORDS.map(buildRegex);
+// Compile regex caches for each language
+const REGEX_CACHE = {};
+const WORDS_CACHE = {};
 
-export function containsProfanity(text) {
-  if (!text) return false;
-  return BLOCKED_REGEXES.some(regex => regex.test(text));
+Object.keys(BLOCKED_WORDS_BY_LANG).forEach(lang => {
+  const words = lang === 'en'
+    ? BLOCKED_WORDS_BY_LANG.en
+    : [...BLOCKED_WORDS_BY_LANG.en, ...BLOCKED_WORDS_BY_LANG[lang]];
+  WORDS_CACHE[lang] = words;
+  REGEX_CACHE[lang] = words.map(buildRegex);
+});
+
+// Compile 'auto' (all languages combined)
+const allWords = Array.from(new Set(Object.values(BLOCKED_WORDS_BY_LANG).flat()));
+WORDS_CACHE['auto'] = allWords;
+REGEX_CACHE['auto'] = allWords.map(buildRegex);
+
+function getRegexes(language = 'en') {
+  const lang = (language || 'en').toLowerCase();
+  return REGEX_CACHE[lang] || REGEX_CACHE['en'];
 }
 
-export function filterProfanity(text) {
+function getWords(language = 'en') {
+  const lang = (language || 'en').toLowerCase();
+  return WORDS_CACHE[lang] || WORDS_CACHE['en'];
+}
+
+export function containsProfanity(text, language = 'en') {
+  if (!text) return false;
+  const regexes = getRegexes(language);
+  return regexes.some(regex => regex.test(text));
+}
+
+export function filterProfanity(text, language = 'en') {
   if (!text) return text;
   let filtered = text;
-  for (const regex of BLOCKED_REGEXES) {
+  const regexes = getRegexes(language);
+  for (const regex of regexes) {
     filtered = filtered.replace(regex, (match) => match[0] + '*'.repeat(match.length - 1));
   }
   return filtered;
 }
 
 // Extract profanity words found in text for hybrid moderation
-export function extractProfanityWords(text) {
+export function extractProfanityWords(text, language = 'en') {
   if (!text) return [];
   const words = text.toLowerCase().split(/\s+/);
   const foundWords = [];
+  const regexes = getRegexes(language);
+  const wordList = getWords(language);
   
   words.forEach(word => {
-    BLOCKED_REGEXES.forEach((regex, index) => {
-      if (regex.test(word) && !foundWords.includes(BLOCKED_WORDS[index])) {
-        foundWords.push(BLOCKED_WORDS[index]);
+    regexes.forEach((regex, index) => {
+      if (regex.test(word) && !foundWords.includes(wordList[index])) {
+        foundWords.push(wordList[index]);
       }
     });
   });
@@ -53,6 +97,6 @@ export function extractProfanityWords(text) {
 }
 
 // Get the profanity words list for server moderation
-export function getProfanityWords() {
-  return BLOCKED_WORDS;
+export function getProfanityWords(language = 'en') {
+  return getWords(language);
 }

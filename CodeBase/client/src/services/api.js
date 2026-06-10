@@ -5,15 +5,24 @@ const BASE = import.meta.env.VITE_API_URL
   : '/api';
 
 async function request(path, options = {}) {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error || 'Request failed');
+  try {
+    const res = await fetch(`${BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      ...options,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      const errorObj = new Error(err.error || 'Request failed');
+      errorObj.field = err.field; // preserve field flag for frontend validation highlighting
+      throw errorObj;
+    }
+    return await res.json();
+  } catch (err) {
+    if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+      throw new Error('WaveTone server is offline or unreachable. Please check your internet connection or try again shortly.');
+    }
+    throw err;
   }
-  return res.json();
 }
 
 export const getRooms = () => request('/rooms');
