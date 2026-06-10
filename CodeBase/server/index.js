@@ -209,21 +209,33 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Assign Host status
-    let cleanAlias;
-    let isHost = false;
-
     // Check if the rejoining user is the Host (via deviceId match)
     const hostInfo = roomHosts.get(roomId);
     const isRejoiningHost = hostInfo && hostInfo.deviceId === deviceId;
 
+    // Validate alias: reject 'Host' claims and use provided alias
+    let userAlias = alias ? alias.trim() : 'Guest';
+    
+    // Prevent non-hosts from claiming Host status
+    if (userAlias.toLowerCase() === 'host') {
+      userAlias = 'Guest';
+    }
+    
+    // Check profanity on the provided alias
+    let cleanAlias = containsProfanity(userAlias) ? filterProfanity(userAlias) : userAlias;
+
+    // Make sure same alias is not assigned to new joining users in the room
+    let finalAlias = cleanAlias;
+    let suffix = 2;
+    while (participants.some(p => p.alias.toLowerCase() === finalAlias.toLowerCase())) {
+      finalAlias = `${cleanAlias} ${suffix}`;
+      suffix++;
+    }
+    cleanAlias = finalAlias;
+
+    // Assign Host status
+    let isHost = false;
     if (participants.length === 0 || isRejoiningHost) {
-      // First participant or rejoining Host
-      let userAlias = alias ? alias.trim() : 'Guest';
-      if (userAlias.toLowerCase() === 'host') {
-        userAlias = 'Guest';
-      }
-      cleanAlias = containsProfanity(userAlias) ? filterProfanity(userAlias) : userAlias;
       isHost = true;
       roomHosts.set(roomId, { socketId: socket.id, alias: cleanAlias, deviceId });
       if (hostTimeoutHandles.has(roomId)) {
@@ -231,17 +243,6 @@ io.on('connection', (socket) => {
         hostTimeoutHandles.delete(roomId);
         console.log(`[Host Returned] Host returned within timeout, clearing timeout for room ${roomId}`);
       }
-    } else {
-      // Validate alias: reject 'Host' claims and use provided alias
-      let userAlias = alias ? alias.trim() : 'Guest';
-      
-      // Prevent non-hosts from claiming Host status
-      if (userAlias.toLowerCase() === 'host') {
-        userAlias = 'Guest';
-      }
-      
-      // Check profanity on the provided alias
-      cleanAlias = containsProfanity(userAlias) ? filterProfanity(userAlias) : userAlias;
     }
 
     socket.join(roomId);
