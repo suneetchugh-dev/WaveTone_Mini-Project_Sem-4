@@ -4,6 +4,11 @@ import fs from 'fs/promises';
 import fsSync from 'fs';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
+import Groq from 'groq-sdk';
+
+const groq = process.env.GROQ_API_KEY
+  ? new Groq({ apiKey: process.env.GROQ_API_KEY })
+  : null;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -93,18 +98,37 @@ export async function runWhisper(pcmBuffer, language = 'en') {
     }
 
     return new Promise((resolve, reject) => {
-      execFile(WHISPER_BIN, args, (error, stdout, stderr) => {
+      execFile(WHISPER_BIN, args, async (error, stdout, stderr) => {
+        if (error) {
+          console.warn('Local Whisper execution failed, attempting Groq Whisper API fallback...', error.message);
+          
+          if (groq) {
+            try {
+              // Transcribe using Groq Cloud hosted Whisper
+              const transcription = await groq.audio.transcriptions.create({
+                file: fsSync.createReadStream(tempWavPath),
+                model: "whisper-large-v3-turbo",
+                language: language === 'auto' ? undefined : language
+              });
+              
+              // Clean up the temp file
+              fs.unlink(tempWavPath).catch(() => {});
+              
+              console.log('Groq Whisper API transcription success:', transcription.text);
+              return resolve(transcription.text || '');
+            } catch (groqErr) {
+              console.error('Groq Whisper API fallback failed:', groqErr.message);
+            }
+          }
+          
+          // Clean up the temp file if fallback failed or Groq not available
+          fs.unlink(tempWavPath).catch(() => {});
+          return resolve('');
+        }
+        
         // Clean up the temp file
         fs.unlink(tempWavPath).catch(() => {});
         
-        if (error) {
-          console.error('Whisper execution error:', error);
-          // Don't reject completely, whisper might still output something to stdout even if it errors
-          // But if stdout is empty, resolve to empty string
-        }
-        
-        // Whisper outputs lines like: " [00:00:00.000 --> 00:00:02.000]   Hello world."
-        // With -nt, it just outputs " Hello world."
         const text = stdout.replace(/\[.*?\]/g, '').replace(/\r?\n|\r/g, ' ').trim();
         resolve(text);
       });
