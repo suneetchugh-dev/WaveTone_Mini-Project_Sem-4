@@ -42,3 +42,13 @@ export const getSessionSummary = (id) => request(`/sessions/${id}/summary`);
 
 export const getAISummary = (id, data) =>
   request(`/sessions/${id}/ai-summary`, { method: 'POST', body: JSON.stringify(data) });
+
+export const getModerationMetrics = () => request('/moderation/metrics');
+
+export const getFlaggedLogs = () => request('/moderation/flagged');
+
+export const testTextModeration = (data) =>
+  request('/moderation/test-text', { method: 'POST', body: JSON.stringify(data) });
+
+export const submitModerationFeedback = (id, isCorrect) =>
+  request(`/moderation/flagged/${id}/feedback`, { method: 'PUT', body: JSON.stringify({ isCorrect }) });
