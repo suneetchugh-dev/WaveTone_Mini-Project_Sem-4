@@ -251,7 +251,7 @@ io.on('connection', (socket) => {
     participants.push({ socketId: socket.id, alias: cleanAlias, deviceId });
 
     // Sync participant join to database
-    _dbJoinRoom(roomId, socket.id, cleanAlias);
+    _dbJoinRoom(roomId, socket.id, cleanAlias, deviceId);
     
     // Send complete participant list to the new joiner (including themselves) without leaking IP addresses
     socket.emit('room-users', participants.map(p => ({
@@ -844,7 +844,7 @@ function _cleanupVote(roomId, disconnectedSocketId) {
 }
 
 // Database helper functions to synchronize Socket.io state with MongoDB
-async function _dbJoinRoom(roomId, socketId, alias) {
+async function _dbJoinRoom(roomId, socketId, alias, deviceId) {
   try {
     const room = await Room.findById(roomId);
     if (!room) return;
@@ -852,6 +852,7 @@ async function _dbJoinRoom(roomId, socketId, alias) {
     room.participants.push({
       userId: socketId,
       alias: alias,
+      deviceId: deviceId || null,
       joinedAt: new Date(),
       leftAt: null
     });

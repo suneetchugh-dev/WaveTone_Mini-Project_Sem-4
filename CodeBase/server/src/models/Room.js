@@ -26,6 +26,7 @@ const RoomSchema = new mongoose.Schema({
     {
       userId: String,
       alias: String,
+      deviceId: String,
       joinedAt: Date,
       leftAt: Date
     }

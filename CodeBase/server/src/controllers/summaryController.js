@@ -101,19 +101,47 @@ export const getSessionSummary = async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
     if (!room) return res.status(404).json({ error: 'Room not found' });
+
+    // Deduplicate participants by deviceId, falling back to alias
+    const uniqueParticipantsMap = new Map();
+    
+    room.participants.forEach(p => {
+      const key = p.deviceId || p.alias;
+      if (!key) return;
+      
+      const existing = uniqueParticipantsMap.get(key);
+      if (!existing) {
+        uniqueParticipantsMap.set(key, {
+          userId: p.userId,
+          alias: p.alias,
+          joinedAt: p.joinedAt,
+          leftAt: p.leftAt,
+          isActive: !p.leftAt
+        });
+      } else {
+        // Use the earliest join time
+        if (new Date(p.joinedAt) < new Date(existing.joinedAt)) {
+          existing.joinedAt = p.joinedAt;
+        }
+        // Use the latest leave time, or keep active if any session is active
+        if (!p.leftAt) {
+          existing.leftAt = null;
+          existing.isActive = true;
+        } else if (existing.leftAt && new Date(p.leftAt) > new Date(existing.leftAt)) {
+          existing.leftAt = p.leftAt;
+        }
+      }
+    });
+    
+    const uniqueParticipants = Array.from(uniqueParticipantsMap.values());
+
     res.json({
       roomId: room._id,
       topic: room.topic,
       category: room.category,
       duration: room.duration,
-      participantCount: room.participants.length,
-      participants: room.participants.map(p => ({
-        userId: p.userId,
-        alias: p.alias,
-        joinedAt: p.joinedAt,
-        leftAt: p.leftAt,
-        isActive: !p.leftAt
-      })),
+      participantCount: uniqueParticipants.length,
+      participants: uniqueParticipants,
       createdAt: room.createdAt,
       isActive: room.isActive,
     });
