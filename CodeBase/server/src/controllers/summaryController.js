@@ -107,6 +107,13 @@ export const getSessionSummary = async (req, res) => {
       category: room.category,
       duration: room.duration,
       participantCount: room.participants.length,
+      participants: room.participants.map(p => ({
+        userId: p.userId,
+        alias: p.alias,
+        joinedAt: p.joinedAt,
+        leftAt: p.leftAt,
+        isActive: !p.leftAt
+      })),
       createdAt: room.createdAt,
       isActive: room.isActive,
     });

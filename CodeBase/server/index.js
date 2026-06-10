@@ -234,6 +234,9 @@ io.on('connection', (socket) => {
 
     // Add new participant to the list BEFORE sending room-users
     participants.push({ socketId: socket.id, alias: cleanAlias, deviceId });
+
+    // Sync participant join to database
+    _dbJoinRoom(roomId, socket.id, cleanAlias);
     
     // Send complete participant list to the new joiner (including themselves) without leaking IP addresses
     socket.emit('room-users', participants.map(p => ({
@@ -698,11 +701,13 @@ io.on('connection', (socket) => {
         // Cancel active vote if target disconnected
         _cleanupVote(roomId, socket.id);
 
+        // Sync participant leave to database
+        _dbLeaveRoom(roomId, socket.id);
+
         if (participants.length === 0) {
           roomParticipants.delete(roomId);
           roomBannedIPs.delete(roomId);
           _cleanupVote(roomId);
-          Room.findByIdAndUpdate(roomId, { isActive: false }).catch(() => {});
         }
       }
     });
@@ -726,6 +731,9 @@ function _leaveRoom(socket, roomId) {
     if (idx !== -1) participants.splice(idx, 1);
 
     _cleanupVote(roomId, socket.id);
+
+    // Sync participant leave to database
+    _dbLeaveRoom(roomId, socket.id);
 
     // Check if Host left
     const host = roomHosts.get(roomId);
@@ -785,7 +793,6 @@ function _leaveRoom(socket, roomId) {
         hostTimeoutHandles.delete(roomId);
       }
       _cleanupVote(roomId);
-      Room.findByIdAndUpdate(roomId, { isActive: false }).catch(() => {});
       console.log(`Room ${roomId} closed — no participants remain`);
     } else {
       // Broadcast updated participant list for Browse page real-time updates
@@ -820,6 +827,61 @@ function _cleanupVote(roomId, disconnectedSocketId) {
     activeVotes.delete(roomId);
   }
 }
+
+// Database helper functions to synchronize Socket.io state with MongoDB
+async function _dbJoinRoom(roomId, socketId, alias) {
+  try {
+    const room = await Room.findById(roomId);
+    if (!room) return;
+
+    room.participants.push({
+      userId: socketId,
+      alias: alias,
+      joinedAt: new Date(),
+      leftAt: null
+    });
+
+    await room.save();
+    console.log(`[DB Sync] Added participant ${alias} (${socketId}) to room ${roomId}`);
+  } catch (error) {
+    console.error(`[DB Sync Error] Failed to record join for room ${roomId}:`, error.message);
+  }
+}
+
+async function _dbLeaveRoom(roomId, socketId) {
+  try {
+    const room = await Room.findById(roomId);
+    if (!room) return;
+
+    let modified = false;
+
+    // Find the participant entry for this socketId that hasn't left yet
+    const participant = room.participants
+      .slice()
+      .reverse()
+      .find(p => p.userId === socketId && !p.leftAt);
+
+    if (participant) {
+      participant.leftAt = new Date();
+      modified = true;
+      console.log(`[DB Sync] Marked participant (${socketId}) as left in room ${roomId}`);
+    }
+
+    const activeCount = room.participants.filter(p => !p.leftAt).length;
+    if (activeCount === 0 && room.isActive) {
+      room.isActive = false;
+      modified = true;
+      console.log(`[DB Sync] Room ${roomId} marked inactive (no active participants remaining)`);
+    }
+
+    if (modified) {
+      await room.save();
+    }
+  } catch (error) {
+    console.error(`[DB Sync Error] Failed to record leave for room ${roomId}:`, error.message);
+  }
+}
+
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
