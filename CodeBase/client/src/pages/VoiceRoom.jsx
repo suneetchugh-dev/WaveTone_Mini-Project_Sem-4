@@ -438,6 +438,18 @@ function VoiceRoom() {
   }, [roomId, alias, createPeerConnection, navigate]);
 
   const handleMuteToggle = () => {
+    // Resume audio contexts if suspended (browser user-gesture security policy)
+    if (audioPipelineRef.current && audioPipelineRef.current.audioContext && audioPipelineRef.current.audioContext.state === 'suspended') {
+      audioPipelineRef.current.audioContext.resume().then(() => {
+        console.log('AudioContext successfully resumed.');
+      }).catch(err => {
+        console.warn('Failed to resume AudioContext:', err);
+      });
+    }
+    const selfAnalyser = analyserIntervalsRef.current?.['self'];
+    if (selfAnalyser && selfAnalyser.audioCtx && selfAnalyser.audioCtx.state === 'suspended') {
+      selfAnalyser.audioCtx.resume().catch(() => {});
+    }
     // Toggle mic state
     setMuted(m => {
       const newMuted = !m;

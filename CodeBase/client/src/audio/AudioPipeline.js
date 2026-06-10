@@ -56,6 +56,7 @@ export class AudioPipeline {
       if (this.socket) {
         this.socket.on('transcript-chunk', ({ alias, text }) => {
           if (this.isActive && text && text.trim().length > 0) {
+            console.log(`[Speech-to-Text] ${alias}: ${text}`);
             this.transcripts.push(`${alias}: ${text}`);
           }
         });

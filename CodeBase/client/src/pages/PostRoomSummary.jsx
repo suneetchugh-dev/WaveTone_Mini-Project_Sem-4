@@ -47,30 +47,28 @@ function PostRoomSummary() {
           setLoading(false);
         });
 
-      // Request AI summary if transcripts are available
+      // Request AI summary (transcripts may be empty)
       const transcripts = stateData.transcripts || [];
-      if (transcripts.length > 0) {
-        setAiLoading(true);
-        getAISummary(roomId, {
-          transcripts,
-          topic: stateData.room.topic,
-          category: stateData.room.category,
-          duration: stateData.duration,
-          participantCount: stateData.participantCount,
+      setAiLoading(true);
+      getAISummary(roomId, {
+        transcripts,
+        topic: stateData.room.topic,
+        category: stateData.room.category,
+        duration: stateData.duration,
+        participantCount: stateData.participantCount,
+      })
+        .then(data => {
+          console.log('AI Summary Response:', { summary: data.summary?.substring(0, 50) + '...', provider: data.provider, model: data.model, reason: data.reason });
+          setAiSummary(data.summary || data.reason || null);
+          setAiMeta({ provider: data.provider || null, reason: data.reason || null, model: data.model || null });
+          setAiLoading(false);
         })
-          .then(data => {
-            console.log('AI Summary Response:', { summary: data.summary?.substring(0, 50) + '...', provider: data.provider, model: data.model, reason: data.reason });
-            setAiSummary(data.summary || data.reason || null);
-            setAiMeta({ provider: data.provider || null, reason: data.reason || null, model: data.model || null });
-            setAiLoading(false);
-          })
-          .catch((err) => {
-            console.error('AI Summary Error:', err);
-            setAiSummary('AI summary is temporarily unavailable.');
-            setAiMeta({ provider: null, reason: 'The summary service could not be reached.', model: null });
-            setAiLoading(false);
-          });
-      }
+        .catch((err) => {
+          console.error('AI Summary Error:', err);
+          setAiSummary('AI summary is temporarily unavailable.');
+          setAiMeta({ provider: null, reason: 'The summary service could not be reached.', model: null });
+          setAiLoading(false);
+        });
       return;
     }
 
