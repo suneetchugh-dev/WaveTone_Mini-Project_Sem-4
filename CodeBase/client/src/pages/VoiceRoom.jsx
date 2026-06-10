@@ -454,6 +454,8 @@ function VoiceRoom() {
     setMuted(m => {
       const newMuted = !m;
       localStreamRef.current?.getAudioTracks().forEach(t => { t.enabled = !newMuted; });
+      // Sync client-side speech recognition state
+      audioPipelineRef.current?.toggleSpeechRecognition(newMuted);
       return newMuted;
     });
   };

@@ -16,6 +16,10 @@ export class AudioPipeline {
     this.isActive = true;
     this.transcripts = []; // Transcripts are now populated by the server if needed
     this.mutedSegments = [];
+    this.recognition = null;
+    this.isSpeechRecognitionSupported = false;
+    this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    this.speechRecognitionActive = false;
   }
 
   async init() {
@@ -62,6 +66,56 @@ export class AudioPipeline {
         });
       }
 
+      // Initialize desktop-only SpeechRecognition fallback
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition && !this.isMobile) {
+        this.isSpeechRecognitionSupported = true;
+        this.recognition = new SpeechRecognition();
+        this.recognition.continuous = true;
+        this.recognition.interimResults = true;
+        this.recognition.lang = 'en-US';
+
+        this.recognition.onresult = (event) => {
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            const cleanedTranscript = transcript?.replace(/\s+/g, ' ').trim() || '';
+            const isFinal = event.results[i].isFinal;
+            
+            // Client-side quick check
+            if (cleanedTranscript.length > 0 && containsProfanity(cleanedTranscript)) {
+              this._triggerMutePrecise(cleanedTranscript);
+              this.onProfanityDetected?.(cleanedTranscript);
+              if (this.socket) {
+                this._sendToServerModeration(cleanedTranscript);
+              }
+              break;
+            }
+            
+            // Backup final transcripts for summary
+            if (isFinal && cleanedTranscript.length > 0) {
+              const formattedEntry = `Guest: ${cleanedTranscript}`;
+              if (!this.transcripts.includes(formattedEntry)) {
+                console.log(`[Local Speech-to-Text Backup] Guest: ${cleanedTranscript}`);
+                this.transcripts.push(formattedEntry);
+              }
+            }
+          }
+        };
+
+        this.recognition.onerror = (event) => {
+          console.warn('Local SpeechRecognition error:', event.error);
+          if (event.error === 'no-speech' || event.error === 'aborted') {
+            this._restartRecognition();
+          }
+        };
+
+        this.recognition.onend = () => {
+          if (this.isActive && this.speechRecognitionActive) {
+            this._restartRecognition();
+          }
+        };
+      }
+
       // AudioPipeline initialized
       this.onPipelineReady(this.processedStream);
     } catch (err) {
@@ -90,11 +144,85 @@ export class AudioPipeline {
     }
   }
 
+  _triggerMutePrecise(transcript) {
+    const wordCount = transcript.trim().split(/\s+/).length;
+    const duration = Math.max(500, Math.min(1200, wordCount * 300));
+    if (this.workletNode) {
+      this.workletNode.port.postMessage({ 
+        type: 'mute', 
+        durationMs: duration,
+        wordCount: wordCount,
+        precisionMode: true
+      });
+    }
+  }
+
+  _sendToServerModeration(transcript) {
+    if (!this.socket) return;
+    this.socket.emit('check-profanity-server', {
+      transcript,
+      wordTimings: [],
+      clientDetected: true,
+      timestamp: Date.now()
+    }, (response) => {
+      if (response && response.isProfane) {
+        this.onServerModerationResult?.({
+          confirmed: true,
+          badWords: response.badWords,
+          confidence: response.confidence
+        });
+      } else if (response && !response.isProfane) {
+        this.onServerModerationResult?.({
+          confirmed: false,
+          reason: 'Server validation failed - false positive',
+          confidence: response.confidence
+        });
+      }
+    });
+  }
+
+  _restartRecognition() {
+    if (!this.isActive || !this.speechRecognitionActive || !this.recognition) return;
+    try { this.recognition.stop(); } catch {}
+    setTimeout(() => {
+      if (this.isActive && this.speechRecognitionActive && this.recognition) {
+        try { this.recognition.start(); } catch {}
+      }
+    }, 200);
+  }
+
+  toggleSpeechRecognition(muted) {
+    if (!this.isSpeechRecognitionSupported || !this.recognition) return;
+    const shouldBeActive = !muted;
+    if (shouldBeActive === this.speechRecognitionActive) return;
+    this.speechRecognitionActive = shouldBeActive;
+    if (shouldBeActive) {
+      console.log('Starting client-side SpeechRecognition backup...');
+      try {
+        this.recognition.start();
+      } catch (err) {
+        console.warn('Failed to start SpeechRecognition:', err.message);
+      }
+    } else {
+      console.log('Stopping client-side SpeechRecognition backup...');
+      try {
+        this.recognition.stop();
+      } catch (err) {
+        console.warn('Failed to stop SpeechRecognition:', err.message);
+      }
+    }
+  }
+
   destroy() {
     this.isActive = false;
+    this.speechRecognitionActive = false;
     if (this.socket) {
       this.socket.off('transcript-chunk');
     }
+    try {
+      this.recognition?.stop();
+    } catch {}
+    this.recognition = null;
     this.workletNode?.disconnect();
     this.sourceNode?.disconnect();
     this.audioContext?.close().catch(() => {});

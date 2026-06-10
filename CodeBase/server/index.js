@@ -70,7 +70,7 @@ const hostTimeoutHandles = new Map(); // roomId → timeoutHandle
 // Audio processing state
 const socketAudioBuffers = new Map(); // socketId → Array of Buffers
 const socketAudioIntervals = new Map(); // socketId → setInterval handle
-const PROCESSING_INTERVAL_MS = 2500; // Run whisper every 2.5 seconds
+const PROCESSING_INTERVAL_MS = 1200; // Run whisper every 1.2 seconds
 
 function _getIP(socket) {
   return socket.handshake.headers['x-forwarded-for']?.split(',')[0]?.trim()
@@ -485,7 +485,7 @@ io.on('connection', (socket) => {
           const combinedBuffer = Buffer.concat(buffers);
           
           // Ignore very short bursts
-          if (combinedBuffer.length < 16000 * 2 * 0.5) return; // less than 0.5 sec of audio
+          if (combinedBuffer.length < 16000 * 2 * 0.3) return; // less than 0.3 sec of audio
           
           const transcript = await runWhisper(combinedBuffer, room.language || 'en');
           if (transcript) {

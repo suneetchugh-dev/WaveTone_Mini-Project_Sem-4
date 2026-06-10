@@ -22,7 +22,7 @@ class ProfanityGateProcessor extends AudioWorkletProcessor {
     this.downsampleCounter = 0;
     
     // Chunking state for sending to main thread
-    this.chunkSize = 16000; // 1 second chunks at 16kHz
+    this.chunkSize = 8000; // 0.5 second chunks at 16kHz
     this.chunkBuffer = new Int16Array(this.chunkSize);
     this.chunkIndex = 0;
 
