@@ -177,7 +177,34 @@ function VoiceRoom() {
       return;
     }
 
+    // Setup BroadcastChannel for tab-duplication prevention
+    let roomChannel = null;
+    let duplicateDetected = false;
+    const tabId = Math.random().toString(36).substring(2, 15);
+
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        roomChannel = new BroadcastChannel(`wavetone-room-${roomId}`);
+        roomChannel.onmessage = (e) => {
+          if (e.data.type === 'PING' && e.data.tabId !== tabId) {
+            roomChannel.postMessage({ type: 'PONG', tabId });
+          } else if (e.data.type === 'PONG' && e.data.tabId !== tabId) {
+            duplicateDetected = true;
+            navigate('/browse', { state: { error: 'You are already in this room in another tab of this browser.' } });
+          }
+        };
+        // Ping other tabs
+        roomChannel.postMessage({ type: 'PING', tabId });
+      }
+    } catch (err) {
+      console.warn('BroadcastChannel not supported or restricted:', err);
+    }
+
     const init = async () => {
+      // Wait briefly for other tabs to reply on the channel
+      await new Promise(resolve => setTimeout(resolve, 150));
+      if (!active || duplicateDetected) return;
+
       // Request microphone
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
@@ -450,6 +477,11 @@ function VoiceRoom() {
       socketRef.current?.off('sub-host-revoked');
       socketRef.current?.off('sub-host-promoted');
       socketRef.current?.off('host-promoted');
+
+      // Close the broadcast channel if created
+      if (roomChannel) {
+        roomChannel.close();
+      }
     };
   }, [roomId, alias, createPeerConnection, navigate]);
 
@@ -560,33 +592,19 @@ function VoiceRoom() {
   return (
     <section className="page-section">
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-        <div>
-          <h2 className="voiceroom-title" style={{ marginBottom: '0.2rem' }}>
-            {roomData.topic || 'Voice Room'}
-          </h2>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <span className="badge badge-live"><span className="live-dot" /> Live</span>
-            <span className="badge badge-count">{roomData.category || 'General'}</span>
-            {warningCount > 0 && (
-              <span className="badge" style={{ background: 'rgba(248,113,113,0.15)', color: 'var(--warning)' }}>
-                {warningCount}/3 warnings
-              </span>
-            )}
-          </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '2rem', gap: '0.8rem' }}>
+        <h2 className="voiceroom-title">
+          {roomData.topic || 'Voice Room'}
+        </h2>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <span className="badge badge-live"><span className="live-dot" /> Live</span>
+          <span className="badge badge-count">{roomData.category || 'General'}</span>
+          {warningCount > 0 && (
+            <span className="badge" style={{ background: 'rgba(248,113,113,0.15)', color: 'var(--warning)' }}>
+              {warningCount}/3 warnings
+            </span>
+          )}
         </div>
-        <button
-          onClick={handleCopyLink}
-          className={`copy-link-btn${linkCopied ? ' copied' : ''}`}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {linkCopied
-              ? <><polyline points="20 6 9 17 4 12"/></>
-              : <><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></>
-            }
-          </svg>
-          {linkCopied ? 'Copied!' : 'Copy Link'}
-        </button>
       </div>
 
       {/* Mic error */}
@@ -785,25 +803,42 @@ function VoiceRoom() {
       </div>
 
       {/* Controls */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem' }}>
-        <button
-          className={`control-btn${!muted ? ' active' : ''} mic-btn-voiceroom`}
-          onClick={handleMuteToggle}
-          title={muted ? 'Unmute' : 'Mute'}
-        >
-          {muted ? (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .67-.1 1.32-.27 1.94"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          ) : (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          )}
-        </button>
-        <button
-          className="control-btn danger exit-btn-voiceroom"
-          onClick={handleLeave}
-          title="Leave Room"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </button>
+      <div className="voiceroom-controls">
+        <div className="control-btn-wrapper" data-tooltip={muted ? 'Unmute Microphone' : 'Mute Microphone'}>
+          <button
+            className={`control-btn${!muted ? ' active' : ''} mic-btn-voiceroom`}
+            onClick={handleMuteToggle}
+            aria-label={muted ? 'Unmute Microphone' : 'Mute Microphone'}
+          >
+            {muted ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .67-.1 1.32-.27 1.94"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            )}
+          </button>
+        </div>
+        <div className="control-btn-wrapper" data-tooltip={linkCopied ? 'Link Copied!' : 'Copy Room Link'}>
+          <button
+            className={`control-btn${linkCopied ? ' active' : ''} copy-btn-voiceroom`}
+            onClick={handleCopyLink}
+            aria-label={linkCopied ? 'Link Copied!' : 'Copy Room Link'}
+          >
+            {linkCopied ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            )}
+          </button>
+        </div>
+        <div className="control-btn-wrapper" data-tooltip="Leave Room">
+          <button
+            className="control-btn exit-btn-voiceroom"
+            onClick={handleLeave}
+            aria-label="Leave Room"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
       </div>
     </section>
   );

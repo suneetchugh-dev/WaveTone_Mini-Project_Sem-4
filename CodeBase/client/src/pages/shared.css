@@ -140,14 +140,14 @@
   border-color: #a0d8ff !important;
 }
 [data-theme="light"] .exit-btn-voiceroom {
-  background: linear-gradient(135deg, #ffe0e0 0%, #ffb3b3 100%) !important;
-  color: #b71c1c !important;
-  border: 1.5px solid #ffcdd2;
-  box-shadow: 0 2px 8px rgba(183,28,28,0.08);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  color: #0A2E50 !important;
+  border: 1.5px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(10,46,80,0.08);
 }
 [data-theme="light"] .exit-btn-voiceroom:hover {
-  background: #e53935 !important;
-  color: #fff !important;
+  background: linear-gradient(135deg, #e3f0ff 0%, #b6e0fe 100%) !important;
+  color: #0A2E50 !important;
 }
 
 /* Copy Link Button styles for light and dark themes */
@@ -455,16 +455,16 @@
 
 /* Custom premium title for VoiceRoom to replace AI generic slop */
 .voiceroom-title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin-top: 0.4rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 0.2rem;
   margin-bottom: 0.2rem;
-  background: linear-gradient(135deg, #ffffff 15%, #38bdf8 55%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 2px 20px rgba(56, 189, 248, 0.12);
+  text-shadow: none;
 }
 
 body[data-route='voice-room'] .app-bg {
@@ -485,7 +485,7 @@ body[data-route='voice-room'] .app-bg {
   background-clip: text;
 }
 [data-theme="light"] .voiceroom-title {
-  background: linear-gradient(135deg, #0f172a 15%, #0284c7 55%, #6d28d9 100%);
+  background: linear-gradient(135deg, #0f172a 30%, #334155 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1250,23 +1250,64 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 /* Participant card styling */
 .participant-card {
   border: 1.5px solid var(--card-border);
-  background: transparent;
+  background: rgba(30, 41, 59, 0.25);
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: default;
+}
+
+.participant-card:hover {
+  transform: scale(1.02);
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
 }
 
 .participant-card.speaking {
   border-color: var(--speaking);
-  background: rgba(56, 189, 248, 0.05);
+  background: rgba(56, 189, 248, 0.08);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+  animation: participant-speaking-pulse 1.8s ease-in-out infinite;
 }
 
 /* Light theme participant card */
 [data-theme="light"] .participant-card {
-  border: 1.5px solid #0369A1;
-  background: rgba(3, 105, 161, 0.04);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(3, 105, 161, 0.12);
+  box-shadow: 0 4px 12px rgba(10, 46, 80, 0.04);
+}
+
+[data-theme="light"] .participant-card:hover {
+  border-color: rgba(3, 105, 161, 0.35);
+  box-shadow: 0 8px 20px rgba(3, 105, 161, 0.1);
 }
 
 [data-theme="light"] .participant-card.speaking {
   border-color: #0369A1;
-  background: rgba(3, 105, 161, 0.12);
+  background: rgba(3, 105, 161, 0.08);
+  box-shadow: 0 0 20px rgba(3, 105, 161, 0.2);
+  animation: participant-speaking-pulse-light 1.8s ease-in-out infinite;
+}
+
+@keyframes participant-speaking-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.45), 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: #7dd3fc;
+  }
+}
+
+@keyframes participant-speaking-pulse-light {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(3, 105, 161, 0.2), 0 4px 12px rgba(10, 46, 80, 0.04);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(3, 105, 161, 0.45), 0 4px 12px rgba(10, 46, 80, 0.04);
+    border-color: #0284c7;
+  }
 }
 
 /* Participant text styling */
@@ -2509,4 +2550,124 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   border-color: var(--warning) !important;
   box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2) !important;
 }
+
+/* Glassmorphic controls dock */
+.voiceroom-controls {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0.8rem 1.8rem;
+  border-radius: 40px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] .voiceroom-controls {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1.5px solid rgba(10, 46, 80, 0.12);
+  box-shadow: 0 12px 32px rgba(10, 46, 80, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+/* Padding offset to prevent controls from blocking participant card contents */
+body[data-route='voice-room'] .page-section {
+  padding-bottom: 120px !important;
+}
+
+/* Copy Link button style inside controls dock - Premium Indigo/Violet Accent */
+.copy-btn-voiceroom {
+  border-color: rgba(139, 92, 246, 0.35) !important;
+  color: #c084fc !important;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08);
+}
+
+.copy-btn-voiceroom:hover {
+  background: rgba(139, 92, 246, 0.08) !important;
+  border-color: #a855f7 !important;
+  color: #d8b4fe !important;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.22) !important;
+}
+
+.copy-btn-voiceroom.active {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
+  color: #fff !important;
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* Light theme Copy Link button overrides */
+[data-theme="light"] .copy-btn-voiceroom {
+  background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%) !important;
+  border: 1.5px solid rgba(109, 40, 217, 0.35) !important;
+  color: #6d28d9 !important;
+  /* Raised 3D effect: soft shadow + inner highlight */
+  box-shadow: 0 3px 6px rgba(109, 40, 217, 0.12), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.8) !important;
+}
+
+[data-theme="light"] .copy-btn-voiceroom:hover {
+  background: linear-gradient(135deg, #fdfaff 0%, #edd8ff 100%) !important;
+  border-color: #6d28d9 !important;
+  color: #5b21b6 !important;
+  box-shadow: 0 5px 10px rgba(109, 40, 217, 0.18), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(-1px);
+}
+
+[data-theme="light"] .copy-btn-voiceroom.active {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%) !important;
+  color: #5b21b6 !important;
+  border-color: rgba(109, 40, 217, 0.45) !important;
+  /* Sunken "pressed-in" tactile effect */
+  box-shadow: inset 0 3px 6px rgba(109, 40, 217, 0.25), inset 0 -1px 1px rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(1px);
+}
+
+/* Tooltips for voice room control buttons floating above the dock */
+.voiceroom-controls .control-btn-wrapper[data-tooltip] {
+  position: relative;
+}
+
+.voiceroom-controls .control-btn-wrapper[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 0.65rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  z-index: 1000;
+  width: max-content;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.95);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  white-space: nowrap;
+}
+
+[data-theme="light"] .voiceroom-controls .control-btn-wrapper[data-tooltip]::after {
+  background: rgba(255, 255, 255, 0.98);
+  color: #0f172a;
+  border: 1px solid rgba(10, 46, 80, 0.15);
+  box-shadow: 0 4px 12px rgba(10, 46, 80, 0.12);
+}
+
+.voiceroom-controls .control-btn-wrapper[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+
 

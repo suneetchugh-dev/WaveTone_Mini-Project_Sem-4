@@ -112,7 +112,13 @@ function _promoteSubHostToHost(roomId) {
     // Promote highest-ranking (lowest index) sub-host
     const newHost = subHosts[0];
     console.log(`[DEBUG] Promoting ${newHost.alias} to Host in room ${roomId}`);
-    roomHosts.set(roomId, { socketId: newHost.socketId, alias: newHost.alias });
+    
+    // Find device ID of new host
+    const activeParticipants = roomParticipants.get(roomId) || [];
+    const participantInfo = activeParticipants.find(p => p.socketId === newHost.socketId);
+    const newHostDeviceId = participantInfo ? participantInfo.deviceId : null;
+    
+    roomHosts.set(roomId, { socketId: newHost.socketId, alias: newHost.alias, deviceId: newHostDeviceId });
     subHosts.shift(); // Remove from sub-hosts list
     
     io.to(roomId).emit('host-promoted', {
@@ -190,6 +196,9 @@ io.on('connection', (socket) => {
         }
         // Remove the old participant from the list
         participants.splice(existingParticipantIdx, 1);
+
+        // Sync old participant leave to database so they aren't counted as +1
+        _dbLeaveRoom(roomId, existingUser.socketId);
       }
     }
 
@@ -200,21 +209,27 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Assign first participant as Host, but keep their alias
+    // Assign Host status
     let cleanAlias;
     let isHost = false;
-    if (participants.length === 0) {
-      // First participant is Host, but keep their alias instead of renaming to 'Host'
+
+    // Check if the rejoining user is the Host (via deviceId match)
+    const hostInfo = roomHosts.get(roomId);
+    const isRejoiningHost = hostInfo && hostInfo.deviceId === deviceId;
+
+    if (participants.length === 0 || isRejoiningHost) {
+      // First participant or rejoining Host
       let userAlias = alias ? alias.trim() : 'Guest';
       if (userAlias.toLowerCase() === 'host') {
         userAlias = 'Guest';
       }
       cleanAlias = containsProfanity(userAlias) ? filterProfanity(userAlias) : userAlias;
       isHost = true;
-      roomHosts.set(roomId, { socketId: socket.id, alias: cleanAlias });
+      roomHosts.set(roomId, { socketId: socket.id, alias: cleanAlias, deviceId });
       if (hostTimeoutHandles.has(roomId)) {
         clearTimeout(hostTimeoutHandles.get(roomId));
         hostTimeoutHandles.delete(roomId);
+        console.log(`[Host Returned] Host returned within timeout, clearing timeout for room ${roomId}`);
       }
     } else {
       // Validate alias: reject 'Host' claims and use provided alias
