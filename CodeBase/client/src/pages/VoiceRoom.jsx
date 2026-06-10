@@ -222,7 +222,15 @@ function VoiceRoom() {
       // Connect socket and join room
       const socket = connectSocket();
       socketRef.current = socket;
-      socket.emit('join-room', { roomId, alias });
+
+      // Get or generate a persistent unique Device ID for session takeover
+      let deviceId = localStorage.getItem('wavetone-device-id');
+      if (!deviceId) {
+        deviceId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('wavetone-device-id', deviceId);
+      }
+
+      socket.emit('join-room', { roomId, alias, deviceId });
 
       // Join denied (banned IP)
       socket.on('join-denied', ({ reason }) => {

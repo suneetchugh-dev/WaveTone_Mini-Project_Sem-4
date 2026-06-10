@@ -132,7 +132,7 @@ io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   // ==================== JOIN ROOM ====================
-  socket.on('join-room', async ({ roomId, alias }) => {
+  socket.on('join-room', async ({ roomId, alias, deviceId }) => {
     const ip = _getIP(socket);
 
     // Check global ban first
@@ -162,33 +162,35 @@ io.on('connection', (socket) => {
     if (!roomParticipants.has(roomId)) roomParticipants.set(roomId, []);
     const participants = roomParticipants.get(roomId);
 
-    // Enforce single connection per IP address (IP Session Takeover / Multi-tab prevention)
-    const existingParticipantIdx = participants.findIndex(p => p.ip === ip);
-    if (existingParticipantIdx !== -1) {
-      const existingUser = participants[existingParticipantIdx];
-      const oldSocket = io.sockets.sockets.get(existingUser.socketId);
-      if (oldSocket) {
-        console.log(`[Session Takeover] Kicking old socket ${existingUser.socketId} from IP ${ip} in room ${roomId}`);
-        oldSocket.emit('kicked', {
-          reason: 'You have been disconnected because you joined this room from another window, device, or browser.',
-          code: 'SESSION_TAKEOVER',
-          timestamp: new Date().toISOString()
-        });
-        
-        // Remove old socket from all lists and maps
-        socketAliases.delete(existingUser.socketId);
-        socketWarnings.delete(existingUser.socketId);
-        if (socketAudioIntervals.has(existingUser.socketId)) {
-          clearInterval(socketAudioIntervals.get(existingUser.socketId));
-          socketAudioIntervals.delete(existingUser.socketId);
+    // Enforce single connection per device (Device ID Session Takeover / Multi-tab prevention)
+    if (deviceId) {
+      const existingParticipantIdx = participants.findIndex(p => p.deviceId === deviceId);
+      if (existingParticipantIdx !== -1) {
+        const existingUser = participants[existingParticipantIdx];
+        const oldSocket = io.sockets.sockets.get(existingUser.socketId);
+        if (oldSocket) {
+          console.log(`[Session Takeover] Kicking old socket ${existingUser.socketId} for device ${deviceId} in room ${roomId}`);
+          oldSocket.emit('kicked', {
+            reason: 'You have been disconnected because you joined this room from another window, device, or browser.',
+            code: 'SESSION_TAKEOVER',
+            timestamp: new Date().toISOString()
+          });
+          
+          // Remove old socket from all lists and maps
+          socketAliases.delete(existingUser.socketId);
+          socketWarnings.delete(existingUser.socketId);
+          if (socketAudioIntervals.has(existingUser.socketId)) {
+            clearInterval(socketAudioIntervals.get(existingUser.socketId));
+            socketAudioIntervals.delete(existingUser.socketId);
+          }
+          socketAudioBuffers.delete(existingUser.socketId);
+          
+          oldSocket.leave(roomId);
+          oldSocket.disconnect(true);
         }
-        socketAudioBuffers.delete(existingUser.socketId);
-        
-        oldSocket.leave(roomId);
-        oldSocket.disconnect(true);
+        // Remove the old participant from the list
+        participants.splice(existingParticipantIdx, 1);
       }
-      // Remove the old participant from the list
-      participants.splice(existingParticipantIdx, 1);
     }
 
     // Enforce maxUsers limit
@@ -231,7 +233,7 @@ io.on('connection', (socket) => {
     socketAliases.set(socket.id, cleanAlias);
 
     // Add new participant to the list BEFORE sending room-users
-    participants.push({ socketId: socket.id, alias: cleanAlias, ip });
+    participants.push({ socketId: socket.id, alias: cleanAlias, deviceId });
     
     // Send complete participant list to the new joiner (including themselves) without leaking IP addresses
     socket.emit('room-users', participants.map(p => ({
