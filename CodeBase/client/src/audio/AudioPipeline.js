@@ -104,8 +104,9 @@ export class AudioPipeline {
 
         this.recognition.onerror = (event) => {
           console.warn('Local SpeechRecognition error:', event.error);
-          if (event.error === 'no-speech' || event.error === 'aborted') {
-            this._restartRecognition();
+          // Stop auto-restart loop for fatal/persistent errors
+          if (['network', 'not-allowed', 'service-not-allowed', 'language-not-supported'].includes(event.error)) {
+            this.speechRecognitionActive = false;
           }
         };
 

@@ -163,6 +163,12 @@ function VoiceRoom() {
   useEffect(() => {
     let active = true;
 
+    // Redirect to Join Room page if the user accessed the room URL directly without choosing an alias
+    if (!location.state?.alias) {
+      navigate(`/join/${roomId}`, { replace: true });
+      return;
+    }
+
     const currentActiveRoom = localStorage.getItem('wavetone-active-room');
     if (currentActiveRoom && currentActiveRoom !== roomId) {
       navigate(`/join/${roomId}`);
