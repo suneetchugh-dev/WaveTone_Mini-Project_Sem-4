@@ -52,6 +52,15 @@ export class AudioPipeline {
         }
       };
 
+      // Listen for transcripts from the server
+      if (this.socket) {
+        this.socket.on('transcript-chunk', ({ alias, text }) => {
+          if (this.isActive && text && text.trim().length > 0) {
+            this.transcripts.push(`${alias}: ${text}`);
+          }
+        });
+      }
+
       // AudioPipeline initialized
       this.onPipelineReady(this.processedStream);
     } catch (err) {
@@ -82,6 +91,9 @@ export class AudioPipeline {
 
   destroy() {
     this.isActive = false;
+    if (this.socket) {
+      this.socket.off('transcript-chunk');
+    }
     this.workletNode?.disconnect();
     this.sourceNode?.disconnect();
     this.audioContext?.close().catch(() => {});

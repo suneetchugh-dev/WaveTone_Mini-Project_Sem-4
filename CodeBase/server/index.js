@@ -488,6 +488,13 @@ io.on('connection', (socket) => {
           const transcript = await runWhisper(combinedBuffer);
           if (transcript) {
             console.log(`[Whisper ${socketAliases.get(socket.id) || socket.id}]: ${transcript}`);
+            
+            // Broadcast the transcript chunk to everyone in the room
+            io.to(roomId).emit('transcript-chunk', {
+              alias: socketAliases.get(socket.id) || 'Unknown',
+              text: transcript
+            });
+
             const isBad = await isToxicOrProfane(transcript);
             if (isBad) {
               console.log(`SERVER DETECTED PROFANITY/TOXICITY from ${socket.id}: "${transcript}"`);
