@@ -1627,11 +1627,11 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 }
 
 [data-theme="light"] .about-stat:hover .about-stat-value {
-  color: mediumaquamarine;
+  color: lightseagreen;
 }
 
 [data-theme="dark"] .about-stat:hover .about-stat-value {
-  color: mediumaquamarine;
+  color: lightseagreen;
 }
 
 .about-stat-value {
@@ -1640,7 +1640,7 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 .about-stat-value {
   font-size: 1.4rem;
   font-weight: 800;
-  color: darkcyan;
+  color: lightseagreen;
   margin-bottom: 0.2rem;
 }
 .about-stat-label {

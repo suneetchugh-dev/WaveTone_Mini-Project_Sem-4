@@ -293,26 +293,26 @@ function About() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '1rem', marginBottom: '2rem' }}>
             <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Total Flagged Items</span>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--speaking)' }}>{metrics.totalFlagged}</span>
+              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>{metrics.totalFlagged}</span>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Logged across sessions</span>
             </div>
             <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Verified Accuracy</span>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: metrics.accuracyRate > 90 ? '#10b981' : '#f59e0b' }}>
+              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>
                 {metrics.accuracyRate}%
               </span>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Based on moderator feedback</span>
             </div>
             <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>False Positive Rate</span>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: metrics.falsePositiveRate < 10 ? '#10b981' : '#ef4444' }}>
+              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>
                 {metrics.falsePositiveRate}%
               </span>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Clean flagged as profane</span>
             </div>
             <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Active Classifiers</span>
-              <span style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.6rem' }}>
+              <span style={{ fontSize: '1.05rem', fontWeight: 700, color: 'lightseagreen', marginTop: '0.6rem' }}>
                 Dictionary + TF.js
               </span>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Whisper Multilingual</span>
@@ -373,15 +373,15 @@ function About() {
                 <div style={{ marginTop: '1.2rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--card-border)', borderRadius: '12px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
                     <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Result:</span>
-                    <span className={`badge ${sandboxResult.isFlagged ? 'badge-live' : 'badge-count'}`} style={{ background: sandboxResult.isFlagged ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)', color: sandboxResult.isFlagged ? '#ef4444' : '#10b981', border: `1px solid ${sandboxResult.isFlagged ? '#ef4444' : '#10b981'}` }}>
+                    <span className={`badge ${sandboxResult.isFlagged ? 'badge-live' : 'badge-count'}`} style={{ background: 'rgba(32, 178, 170, 0.15)', color: 'lightseagreen', border: '1px solid lightseagreen' }}>
                       {sandboxResult.isFlagged ? 'FLAGGED (Profane/Toxic)' : 'CLEAN'}
                     </span>
                   </div>
                   
                   <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <div><strong>Latency:</strong> {sandboxResult.latency}ms</div>
+                    <div><strong>Latency:</strong> <span style={{ color: 'lightseagreen' }}>{sandboxResult.latency}ms</span></div>
                     {sandboxResult.dictionary?.hasProfanity && (
-                      <div style={{ color: 'var(--warning)' }}>
+                      <div style={{ color: 'lightseagreen' }}>
                         <strong>Dictionary Match:</strong> [{sandboxResult.dictionary.matchedWords.join(', ')}]
                       </div>
                     )}
@@ -390,7 +390,7 @@ function About() {
                         <strong>Toxicity Classifier Breakdown:</strong>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.3rem', marginTop: '0.3rem', paddingLeft: '0.4rem' }}>
                           {sandboxResult.toxicity.map(t => (
-                            <div key={t.label} style={{ color: t.match ? '#ef4444' : 'var(--text-tertiary)', fontWeight: t.match ? 600 : 400 }}>
+                            <div key={t.label} style={{ color: 'lightseagreen', fontWeight: t.match ? 600 : 400 }}>
                               • {t.label}: {(t.probability * 100).toFixed(0)}% {t.match ? '⚠️' : ''}
                             </div>
                           ))}
@@ -423,24 +423,24 @@ function About() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
                       <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Accuracy</span>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-primary)' }}>{benchmarkMetrics.accuracy}%</span>
+                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.accuracy}%</span>
                     </div>
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
                       <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Precision</span>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-primary)' }}>{benchmarkMetrics.precision}%</span>
+                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.precision}%</span>
                     </div>
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
                       <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Recall</span>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-primary)' }}>{benchmarkMetrics.recall}%</span>
+                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.recall}%</span>
                     </div>
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
                       <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>F1-Score</span>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--speaking)' }}>{benchmarkMetrics.f1Score}</span>
+                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.f1Score}</span>
                     </div>
                   </div>
                   
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', textAlign: 'center' }}>
-                    Results: TP: {benchmarkMetrics.tp} | TN: {benchmarkMetrics.tn} | FP: {benchmarkMetrics.fp} | FN: {benchmarkMetrics.fn}
+                    Results: TP: <span style={{ color: 'lightseagreen', fontWeight: 600 }}>{benchmarkMetrics.tp}</span> | TN: <span style={{ color: 'lightseagreen', fontWeight: 600 }}>{benchmarkMetrics.tn}</span> | FP: <span style={{ color: 'lightseagreen', fontWeight: 600 }}>{benchmarkMetrics.fp}</span> | FN: <span style={{ color: 'lightseagreen', fontWeight: 600 }}>{benchmarkMetrics.fn}</span>
                   </div>
                 </div>
               )}
@@ -465,15 +465,15 @@ function About() {
                   {benchmarkResults.map((item, idx) => (
                     <tr key={idx} style={{ borderBottom: '1px solid var(--card-border)' }}>
                       <td style={{ padding: '0.6rem 0.4rem', fontWeight: 600, color: 'var(--text-secondary)' }}>{item.type}</td>
-                      <td style={{ padding: '0.6rem 0.4rem', color: 'var(--text-primary)' }}>"{item.text}" ({item.lang})</td>
-                      <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center', color: item.expected === 'profane' ? '#ef4444' : '#10b981', fontWeight: 600 }}>
+                      <td style={{ padding: '0.6rem 0.4rem', color: 'lightseagreen' }}>"{item.text}" ({item.lang})</td>
+                      <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center', color: 'lightseagreen', fontWeight: 600 }}>
                         {item.expected.toUpperCase()}
                       </td>
-                      <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center', color: item.predicted === 'profane' ? '#ef4444' : '#10b981', fontWeight: 600 }}>
+                      <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center', color: 'lightseagreen', fontWeight: 600 }}>
                         {item.predicted.toUpperCase()}
                       </td>
                       <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center' }}>
-                        <span style={{ color: item.passed ? '#10b981' : '#ef4444', fontWeight: 700 }}>
+                        <span style={{ color: 'lightseagreen', fontWeight: 700 }}>
                           {item.passed ? '✓ PASS' : '✗ FAIL'}
                         </span>
                       </td>
@@ -514,15 +514,15 @@ function About() {
                       <td style={{ padding: '0.6rem 0.4rem', color: 'var(--text-tertiary)', fontSize: '0.75rem' }}>
                         {new Date(log.timestamp).toLocaleTimeString()}
                       </td>
-                      <td style={{ padding: '0.6rem 0.4rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+                      <td style={{ padding: '0.6rem 0.4rem', color: 'lightseagreen', fontWeight: 500 }}>
                         "{log.transcript}"
                       </td>
                       <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center' }}>
-                        <span className="badge" style={{ fontSize: '0.68rem', padding: '0.1rem 0.4rem', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>
+                        <span className="badge" style={{ fontSize: '0.68rem', padding: '0.1rem 0.4rem', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'lightseagreen' }}>
                           {log.detectedBy}
                         </span>
                       </td>
-                      <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>
+                      <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.72rem', color: 'lightseagreen' }}>
                         {log.language}
                       </td>
                       <td style={{ padding: '0.6rem 0.4rem', textAlign: 'center' }}>
@@ -530,20 +530,20 @@ function About() {
                           <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center' }}>
                             <button
                               onClick={() => handleFeedback(log._id, true)}
-                              style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#10b981', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
+                              style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: 'rgba(32, 178, 170, 0.15)', border: '1px solid rgba(32, 178, 170, 0.3)', color: 'lightseagreen', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
                             >
                               Confirm Swear
                             </button>
                             <button
                               onClick={() => handleFeedback(log._id, false)}
-                              style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
+                              style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: 'rgba(32, 178, 170, 0.15)', border: '1px solid rgba(32, 178, 170, 0.3)', color: 'lightseagreen', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
                             >
                               False Positive
                             </button>
                           </div>
                         ) : (
                           <span style={{
-                            color: log.isCorrect ? '#10b981' : '#ef4444',
+                            color: 'lightseagreen',
                             fontWeight: 700,
                             fontSize: '0.75rem',
                             display: 'inline-flex',
