@@ -18,7 +18,7 @@ function normalizeTranscripts(transcripts) {
   return transcripts
     .filter((entry) => typeof entry === 'string')
     .map((entry) => entry.replace(/\s+/g, ' ').trim())
-    .filter((entry) => entry.length > 2)
+    .filter((entry) => entry.length > 0)
     .slice(0, 100);
 }
 
