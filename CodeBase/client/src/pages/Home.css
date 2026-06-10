@@ -440,7 +440,7 @@ body[data-route="home"] .page-container {
   transition: all 0.3s ease;
   z-index: 1000;
   backdrop-filter: blur(4px);
-  box-shadow: 1px 1px white;
+  box-shadow: 2px 2px antiquewhite;
 }
 
 .ambient-sound-toggle:hover {

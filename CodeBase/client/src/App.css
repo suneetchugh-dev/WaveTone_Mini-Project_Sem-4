@@ -47,9 +47,8 @@
 
 [data-theme="light"] .nav-title {
   color: var(--text-primary);
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  background: transparent;
+  font-weight: 600;
+  letter-spacing: -0.03em;
   border: none;
   border-radius: 8px;
   padding: 0.75rem 0.5rem 0.35rem 0.5rem;
@@ -265,17 +264,16 @@
 .nav-title {
   margin-left: -2.1rem;
   transform: translateY(0px);
-  font-size: 1.3rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
   border: none;
   border-radius: 8px;
   padding: 0.75rem 0.5rem 0.35rem 0.5rem;
-  background: transparent;
+  color: #ffffff;
   position: relative;
-  font-family: var(--font-family-display);
+  font-family: 'Space Grotesk', sans-serif;
   font-feature-settings: var(--font-features);
-  color: var(--text-primary);
 }
 
 .nav-links {
