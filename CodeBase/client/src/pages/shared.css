@@ -139,15 +139,36 @@
   color: #fff !important;
   border-color: #a0d8ff !important;
 }
+/* VoiceRoom exit button styles for dark theme (default) */
+.exit-btn-voiceroom {
+  border-color: rgba(248, 113, 113, 0.22);
+}
+.exit-btn-voiceroom svg {
+  stroke: #f87171;
+}
+.exit-btn-voiceroom:hover {
+  background: rgba(248, 113, 113, 0.12) !important;
+  border-color: rgba(248, 113, 113, 0.4) !important;
+  box-shadow: 0 0 16px rgba(248, 113, 113, 0.2);
+}
+.exit-btn-voiceroom:hover svg {
+  stroke: #ef4444;
+}
+
 [data-theme="light"] .exit-btn-voiceroom {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
   color: #0A2E50 !important;
   border: 1.5px solid #e0e0e0;
   box-shadow: 0 2px 8px rgba(10,46,80,0.08);
 }
+[data-theme="light"] .exit-btn-voiceroom svg {
+  stroke: currentColor;
+}
 [data-theme="light"] .exit-btn-voiceroom:hover {
   background: linear-gradient(135deg, #e3f0ff 0%, #b6e0fe 100%) !important;
   color: #0A2E50 !important;
+  border-color: rgba(10, 46, 80, 0.18);
+  box-shadow: 0 4px 12px rgba(10, 46, 80, 0.12);
 }
 
 /* Copy Link Button styles for light and dark themes */
@@ -442,6 +463,7 @@
 
 /* Page title */
 .page-title {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 1.8rem;
   font-weight: 800;
   letter-spacing: -0.01em;
@@ -455,6 +477,7 @@
 
 /* Custom premium title for VoiceRoom to replace AI generic slop */
 .voiceroom-title {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: -0.02em;
