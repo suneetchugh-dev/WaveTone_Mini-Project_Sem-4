@@ -562,7 +562,7 @@ function VoiceRoom() {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
         <div>
-          <h2 className="page-title" style={{ marginBottom: '0.2rem' }}>
+          <h2 className="voiceroom-title" style={{ marginBottom: '0.2rem' }}>
             {roomData.topic || 'Voice Room'}
           </h2>
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
