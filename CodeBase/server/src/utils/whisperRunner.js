@@ -72,9 +72,15 @@ function createWavHeader(pcmData) {
 export async function runWhisper(pcmBuffer, language = 'en') {
   if (!pcmBuffer || pcmBuffer.length === 0) return '';
   
-  const wavBuffer = createWavHeader(pcmBuffer);
+  // Detect if buffer is already a formatted audio file (WAV or MP3)
+  const isWav = pcmBuffer.toString('ascii', 0, 4) === 'RIFF';
+  const isMp3 = pcmBuffer.toString('ascii', 0, 3) === 'ID3' || 
+                (pcmBuffer[0] === 0xff && (pcmBuffer[1] & 0xe0) === 0xe0);
+  
+  const wavBuffer = (isWav || isMp3) ? pcmBuffer : createWavHeader(pcmBuffer);
   const tempId = crypto.randomBytes(16).toString('hex');
-  const tempWavPath = path.join(TEMP_DIR, `${tempId}.wav`);
+  const ext = isMp3 ? '.mp3' : '.wav';
+  const tempWavPath = path.join(TEMP_DIR, `${tempId}${ext}`);
   
   // Choose correct model file
   let modelPath = WHISPER_MODEL_MULTI;

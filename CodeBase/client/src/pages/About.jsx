@@ -414,18 +414,18 @@ function About() {
               ) : (
                 <form onSubmit={handleAudioSandboxSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
                   <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label htmlFor="sandbox-audio" className="form-label" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Select 16kHz Mono WAV File</label>
+                    <label htmlFor="sandbox-audio" className="form-label" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Select Audio File (WAV, MP3)</label>
                     <input
                       id="sandbox-audio"
                       type="file"
-                      accept=".wav"
+                      accept=".wav,.mp3"
                       onChange={(e) => setAudioFile(e.target.files[0])}
                       className="form-input"
                       style={{ borderRadius: '12px', fontSize: '0.88rem', padding: '0.5rem', color: 'var(--text-secondary)' }}
                       required
                     />
                     <p style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', margin: '0.2rem 0 0 0' }}>
-                      Try uploading the <strong>jfk.wav</strong> quote file from the server folder!
+                      Supports WAV and MP3 files. Try uploading the <strong>jfk.wav</strong> quote file from the server folder!
                     </p>
                   </div>
                   

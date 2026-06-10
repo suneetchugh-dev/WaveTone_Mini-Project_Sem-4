@@ -144,18 +144,12 @@ router.post('/test-audio', async (req, res) => {
     }
 
     const fileBuffer = Buffer.from(audio, 'base64');
-    let pcmBuffer = fileBuffer;
-    
-    // Extract raw PCM if it is a WAV file
-    if (fileBuffer.toString('ascii', 0, 4) === 'RIFF') {
-      pcmBuffer = fileBuffer.slice(44);
-    }
 
     const startTime = Date.now();
     const targetLang = language || 'en';
 
     // 1. Run Whisper Transcription
-    const transcript = await runWhisper(pcmBuffer, targetLang);
+    const transcript = await runWhisper(fileBuffer, targetLang);
     if (!transcript) {
       return res.json({
         transcript: '',
