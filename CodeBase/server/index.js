@@ -184,6 +184,9 @@ io.on('connection', (socket) => {
       return;
     }
 
+    // Prevent "Phantom Participant" edge case if the socket disconnected while waiting for the DB
+    if (socket.disconnected) return;
+
     if (!roomParticipants.has(roomId)) roomParticipants.set(roomId, []);
     const participants = roomParticipants.get(roomId);
 
@@ -878,24 +881,22 @@ function _cleanupVote(roomId, disconnectedSocketId) {
 // Database helper functions to synchronize Socket.io state with MongoDB
 async function _dbJoinRoom(roomId, socketId, alias, deviceId) {
   try {
-    const room = await Room.findById(roomId);
-    if (!room) return;
-
-    if (!room.isActive) {
-      room.isActive = true;
-      console.log(`[DB Sync] Reactivating room ${roomId} on participant join`);
-    }
-
-    room.participants.push({
-      userId: socketId,
-      alias: alias,
-      deviceId: deviceId || null,
-      joinedAt: new Date(),
-      leftAt: null
-    });
-
-    await room.save();
-    console.log(`[DB Sync] Added participant ${alias} (${socketId}) to room ${roomId}`);
+    await Room.updateOne(
+      { _id: roomId },
+      {
+        $set: { isActive: true },
+        $push: {
+          participants: {
+            userId: socketId,
+            alias: alias,
+            deviceId: deviceId || null,
+            joinedAt: new Date(),
+            leftAt: null
+          }
+        }
+      }
+    );
+    console.log(`[DB Sync] Added participant ${alias} (${socketId}) and ensured room ${roomId} is active`);
   } catch (error) {
     console.error(`[DB Sync Error] Failed to record join for room ${roomId}:`, error.message);
   }
@@ -903,32 +904,25 @@ async function _dbJoinRoom(roomId, socketId, alias, deviceId) {
 
 async function _dbLeaveRoom(roomId, socketId) {
   try {
-    const room = await Room.findById(roomId);
-    if (!room) return;
+    // Atomically mark the specific participant as left without overwriting the entire array
+    const updateResult = await Room.updateOne(
+      { _id: roomId },
+      { $set: { "participants.$[elem].leftAt": new Date() } },
+      { arrayFilters: [{ "elem.userId": socketId, "elem.leftAt": null }] }
+    );
 
-    let modified = false;
-
-    // Find the participant entry for this socketId that hasn't left yet
-    const participant = room.participants
-      .slice()
-      .reverse()
-      .find(p => p.userId === socketId && !p.leftAt);
-
-    if (participant) {
-      participant.leftAt = new Date();
-      modified = true;
+    if (updateResult.modifiedCount > 0) {
       console.log(`[DB Sync] Marked participant (${socketId}) as left in room ${roomId}`);
     }
 
-    const activeCount = room.participants.filter(p => !p.leftAt).length;
-    if (activeCount === 0 && room.isActive) {
-      room.isActive = false;
-      modified = true;
-      console.log(`[DB Sync] Room ${roomId} marked inactive (no active participants remaining)`);
-    }
-
-    if (modified) {
-      await room.save();
+    // Check if the room should be marked inactive (0 active participants)
+    const room = await Room.findById(roomId);
+    if (room) {
+      const activeCount = room.participants.filter(p => !p.leftAt).length;
+      if (activeCount === 0 && room.isActive) {
+        await Room.updateOne({ _id: roomId }, { $set: { isActive: false } });
+        console.log(`[DB Sync] Room ${roomId} marked inactive (no active participants remaining)`);
+      }
     }
   } catch (error) {
     console.error(`[DB Sync Error] Failed to record leave for room ${roomId}:`, error.message);
