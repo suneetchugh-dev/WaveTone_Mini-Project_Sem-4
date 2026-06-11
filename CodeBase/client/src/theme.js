@@ -2,7 +2,7 @@
 export const darkTheme = {
   '--bg': '#13161B',
   '--surface': '#1E2128',
-  '--card-border': '#2A2F3A',
+  '--card-border': '#353B4A',
   '--accent': '#94A3B8',
   '--speaking': '#38BDF8',
   '--warning': '#F87171',
