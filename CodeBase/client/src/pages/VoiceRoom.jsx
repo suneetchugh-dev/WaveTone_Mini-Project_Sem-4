@@ -4,6 +4,25 @@ import './shared.css';
 import { connectSocket } from '../services/socket';
 import { AudioPipeline } from '../audio/AudioPipeline';
 
+import exitBtnAudio from '../../../../Assets/Audio/For-VoiceRoom/Exit-Button.ogg';
+import otherParticipantJoinedAudio from '../../../../Assets/Audio/For-VoiceRoom/Other-Participant-Joined.mp3';
+import userKickedAudio from '../../../../Assets/Audio/For-VoiceRoom/User-Kicked.ogg';
+import userJoinAudio from '../../../../Assets/Audio/For-VoiceRoom/User-join.wav';
+import cannotFindRoomAudio from '../../../../Assets/Audio/For-VoiceRoom/cannot-find-room-OR-server-down.wav';
+
+const playSound = (audioSrc) => {
+  try {
+    const audio = new Audio(audioSrc);
+    audio.volume = 0.45;
+    audio.play().catch((err) => {
+      console.warn('Audio playback prevented or failed:', err);
+    });
+  } catch (err) {
+    console.warn('Failed to initialize Audio object:', err);
+  }
+};
+
+
 const ICE_SERVERS = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
@@ -101,6 +120,7 @@ function VoiceRoom() {
   const analyserIntervalsRef = useRef({});
   const joinTimeRef = useRef(Date.now());
   const speakingTimeRef = useRef({});  // id → seconds of speaking time
+  const hasPlayedJoinSoundRef = useRef(false);
 
   // --- Volume detection + speaking time tracking ---
   const setupVolumeDetection = (id, stream, setter) => {
@@ -307,15 +327,23 @@ function VoiceRoom() {
 
       socket.emit('join-room', { roomId, alias, deviceId });
 
+      // Connection error / Server down
+      socket.on('connect_error', () => {
+        if (!active) return;
+        playSound(cannotFindRoomAudio);
+      });
+
       // Join denied (banned IP)
       socket.on('join-denied', ({ reason }) => {
         if (!active) return;
+        playSound(cannotFindRoomAudio);
         navigate('/browse', { state: { error: reason } });
       });
 
         // Room destroyed or NOT_FOUND error
         socket.on('room-error', ({ code, error }) => {
           if (!active) return;
+          playSound(cannotFindRoomAudio);
           if (code === 'NOT_FOUND') {
             // Redirect to 404 page if route exists, else to app domain
             navigate('/404');
@@ -336,6 +364,7 @@ function VoiceRoom() {
       // New user joined → initiate offer (no need to update state, room-users event will handle it)
       socket.on('user-joined', async ({ socketId, alias: newAlias }) => {
         if (!active) return;
+        playSound(otherParticipantJoinedAudio);
         const pc = createPeerConnection(socketId);
         try {
           const offer = await pc.createOffer();
@@ -385,6 +414,8 @@ function VoiceRoom() {
       socket.on('kicked', ({ reason, code } = {}) => {
         if (!active) return;
         
+        playSound(userKickedAudio);
+
         // Show kick notification before redirect with emphasis
         setWarningToast(reason || 'You were removed from the room.');
         setToastType('kick');
@@ -451,6 +482,12 @@ function VoiceRoom() {
         if (!active) return;
         setIsHost(hostStatus);
         setSubHosts(subHostList || []);
+
+        // Play user-join sound once when current user successfully joins
+        if (!hasPlayedJoinSoundRef.current) {
+          playSound(userJoinAudio);
+          hasPlayedJoinSoundRef.current = true;
+        }
       });
 
       // Sub-Host assigned
@@ -650,6 +687,7 @@ function VoiceRoom() {
   };
 
   const handleLeave = useCallback(() => {
+    playSound(exitBtnAudio);
     const durationMin = Math.max(1, Math.round((Date.now() - joinTimeRef.current) / 60000));
     const transcripts = audioPipelineRef.current?.getTranscripts() || [];
     socketRef.current?.emit('leave-room', { roomId });
