@@ -3227,22 +3227,26 @@ body[data-route='voice-room'] .page-section {
   border-color: transparent !important;
 }
 
-/* Remove cyan outline/border from Create Room form card in dark mode */
-.create-room-card.participants-card-with-lamp {
+/* Remove cyan outline/border from Create Room & Join Room form card in dark mode */
+.create-room-card.participants-card-with-lamp,
+.join-room-card.participants-card-with-lamp {
   border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-.create-room-card.participants-card-with-lamp:hover {
+.create-room-card.participants-card-with-lamp:hover,
+.join-room-card.participants-card-with-lamp:hover {
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Remove cyan outline/border from Create Room form card in light mode */
-[data-theme="light"] .create-room-card.participants-card-with-lamp {
+/* Remove cyan outline/border from Create Room & Join Room form card in light mode */
+[data-theme="light"] .create-room-card.participants-card-with-lamp,
+[data-theme="light"] .join-room-card.participants-card-with-lamp {
   border: 1.5px solid rgba(10, 46, 80, 0.1) !important;
   box-shadow: 0 1px 8px rgba(10, 46, 80, 0.05) !important;
 }
 
-[data-theme="light"] .create-room-card.participants-card-with-lamp:hover {
+[data-theme="light"] .create-room-card.participants-card-with-lamp:hover,
+[data-theme="light"] .join-room-card.participants-card-with-lamp:hover {
   border-color: rgba(10, 46, 80, 0.2) !important;
   box-shadow: 0 8px 24px rgba(10, 46, 80, 0.1) !important;
 }

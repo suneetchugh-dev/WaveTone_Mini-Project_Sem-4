@@ -128,39 +128,49 @@ function JoinRoom() {
         <h2 className="page-title">Join Room</h2>
         <p className="page-subtitle">You're about to enter an anonymous voice session.</p>
 
-      <div className="card" style={{ marginBottom: '1.2rem' }}>
-        <div className="info-row">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
-          <span>Topic: <strong style={{ color: 'var(--text-primary)' }}>{room.topic}</strong></span>
+      <div className="card join-room-card participants-card-with-lamp" style={{ marginBottom: '1.2rem' }}>
+        {/* Lamp visual effect wrapper */}
+        <div className="voice-room-lamp-wrapper">
+          <div className="voice-room-lamp-beam-left"></div>
+          <div className="voice-room-lamp-beam-right"></div>
+          <div className="voice-room-lamp-blur-mid"></div>
+          <div className="voice-room-lamp-line"></div>
         </div>
-        <div className="info-row">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/><path d="M12 2a14.5 14.5 0 0 0 0 20"/></svg>
-          <span>Category: <strong style={{ color: 'var(--text-primary)' }}>{room.category}</strong></span>
-        </div>
-        <div className="info-row">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          <span>
-            {activeCount}/{room.maxUsers} participants
-            {isFull && <span style={{ color: 'var(--warning)', marginLeft: '0.4rem' }}>(Full)</span>}
-          </span>
-        </div>
-        <div className="info-row">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>Moderation is active</span>
-        </div>
-        <hr className="divider" />
-        <div className="form-group">
-          <label htmlFor="join-alias" className="form-label">Your Alias (optional)</label>
-          <input
-            id="join-alias"
-            name="alias"
-            className="form-input"
-            type="text"
-            placeholder="Leave blank for random alias"
-            value={alias}
-            onChange={(e) => setAlias(e.target.value)}
-            maxLength={20}
-          />
+
+        <div className="card-content-relative">
+          <div className="info-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
+            <span>Topic: <strong style={{ color: 'var(--text-primary)' }}>{room.topic}</strong></span>
+          </div>
+          <div className="info-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/><path d="M12 2a14.5 14.5 0 0 0 0 20"/></svg>
+            <span>Category: <strong style={{ color: 'var(--text-primary)' }}>{room.category}</strong></span>
+          </div>
+          <div className="info-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span>
+              {activeCount}/{room.maxUsers} participants
+              {isFull && <span style={{ color: 'var(--warning)', marginLeft: '0.4rem' }}>(Full)</span>}
+            </span>
+          </div>
+          <div className="info-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Moderation is active</span>
+          </div>
+          <hr className="divider" />
+          <div className="form-group">
+            <label htmlFor="join-alias" className="form-label">Your Alias (optional)</label>
+            <input
+              id="join-alias"
+              name="alias"
+              className="form-input"
+              type="text"
+              placeholder="Leave blank for random alias"
+              value={alias}
+              onChange={(e) => setAlias(e.target.value)}
+              maxLength={20}
+            />
+          </div>
         </div>
       </div>
 
