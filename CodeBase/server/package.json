@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "setup": "node scripts/setup-whisper.js"
+    "setup": "node scripts/setup-whisper.js",
+    "test:profanity": "node scripts/test-profanity.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

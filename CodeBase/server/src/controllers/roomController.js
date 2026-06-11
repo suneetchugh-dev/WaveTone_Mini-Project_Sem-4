@@ -64,6 +64,10 @@ export const createRoom = async (req, res) => {
     await room.save();
     res.status(201).json(room);
   } catch (err) {
-    res.status(400).json({ error: 'Failed to create room' });
+    if (err.name === 'ValidationError') {
+      const messages = Object.values(err.errors).map(e => e.message).join(', ');
+      return res.status(400).json({ error: `Validation failed: ${messages}` });
+    }
+    res.status(400).json({ error: `Failed to create room: ${err.message}` });
   }
 };

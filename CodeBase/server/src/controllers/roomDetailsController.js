@@ -7,7 +7,10 @@ export const getRoomById = async (req, res) => {
     if (!room) return res.status(404).json({ error: 'Room not found' });
     res.json(room);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch room details' });
+    if (err.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid room ID format.' });
+    }
+    res.status(500).json({ error: `Failed to fetch room details: ${err.message}` });
   }
 };
 
@@ -33,7 +36,10 @@ export const joinRoom = async (req, res) => {
 
     res.json({ message: 'Joined room', room });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to join room' });
+    if (err.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid room ID format.' });
+    }
+    res.status(500).json({ error: `Failed to join room: ${err.message}` });
   }
 };
 
@@ -62,6 +68,9 @@ export const leaveRoom = async (req, res) => {
 
     res.json({ message: 'Left room' });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to leave room' });
+    if (err.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid room ID format.' });
+    }
+    res.status(500).json({ error: `Failed to leave room: ${err.message}` });
   }
 };

@@ -1,215 +1,168 @@
 # WaveTone
 
-WaveTone is a cutting-edge, anonymous voice room platform designed for real-time peer-to-peer communication. Built with modern web technologies, it emphasizes privacy, accessibility, and elegant design.
+> Connect anonymously. Speak freely. Listen respectfully.
+
+WaveTone is a cutting-edge, privacy-first anonymous voice room platform designed for focused, real-time peer-to-peer discussions. Built with low-latency WebRTC and a multi-layered hybrid AI moderation engine, WaveTone ensures safe conversations without compromising user privacy.
 
 ---
 
+## 🌟 What Makes WaveTone Unique?
 
-## Features
+WaveTone is engineered from the ground up to offer a premium, secure, and private voice discussion experience:
 
-- **Anonymous Voice Rooms**: Connect without revealing your identity.
-- **Real-Time Communication**: Powered by WebRTC and Socket.io.
-- **Advanced Moderation**: Profanity filters, warning systems, and vote-kick mechanisms.
-- **AI-Powered Summaries**: Post-session summaries using Groq SDK and fallback summaries.
-- **Customizable Rooms**: Set topics, categories, and participant limits.
-- **Responsive Design**: Optimized for both desktop and mobile.
+*   **Zero-Trust Ephemerality (No Accounts & No Recordings)**
+    *   No registration, email, or passwords required. 
+    *   Audio is streamed peer-to-peer and processed in-memory. **Zero audio files and zero session transcripts are ever stored** on any database or server.
+*   **Hybrid Client-Server AI Moderation**
+    *   **On-Device TF.js Classifier**: Detects toxic language inside the user's browser before it leaves their machine.
+    *   **Multilingual Whisper Speech-to-Text**: Converts real-time stream chunks into text in the background.
+    *   **Groq LLM Verification**: Leverages Llama models to review flagged content with a validation loop, protecting against false positives and restoring speech context.
+*   **Sub-Second Audio Muting (Profanity Gate)**
+    *   A custom `AudioWorklet` processor implements a ring-buffer gate to retroactively mute offending utterances within milliseconds of detection.
+*   **Resilient Host Promotion & Sub-Hosts Hierarchy**
+    *   Hosts can designate multiple Sub-Hosts with ranked hierarchies. If the Host goes offline, a ranked Sub-Host is automatically promoted to Host after a 5-minute grace period to prevent room collapse.
+*   **State-of-the-Art Premium UX/UI**
+    *   **Glassmorphism & Backdrop Blurs**: Vibrant glassmorphic card layouts over custom ambient video backgrounds.
+    *   **Glowing Lamp Beam Effects**: Cascading dynamic glow indicators on cards representing room portals.
+    *   **Skeleton Loader Shimmers**: Smooth shimmer animations for components waiting for server data.
+    *   **Active Speaker Indicators**: Real-time pulsing soundwave animations for participants who are speaking.
 
 ---
 
-## Tech Stack
+## 🛠 Tech Stack
 
 ### Frontend
-- React.js, Vite, React Router
-- Web Audio API, Web Speech API
-- CSS3 with glassmorphism and animations
+*   React.js, Vite, Framer Motion
+*   Web Audio API, Web Speech API (SpeechRecognition fallback)
+*   CSS3 variables with glassmorphism, shimmers, and lamp filters
 
 ### Backend
-- Node.js, Express.js, Socket.io
-- MongoDB Atlas, Mongoose
-- Groq SDK, WebRTC
+*   Node.js, Express.js, Socket.io
+*   MongoDB Atlas, Mongoose
+*   Groq SDK, WebRTC
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 CodeBase/
 ├── client/                  # React frontend
 │   ├── index.html           # Entry HTML
 │   ├── vite.config.js       # Vite config
-│   ├── public/              # Static assets
+│   ├── public/              # Static assets (including profanity-worklet.js)
 │   └── src/                 # Source code
 │       ├── App.jsx          # Root component
-│       ├── pages/           # React pages
-│       ├── audio/           # Audio pipeline
-│       └── services/        # API and socket helpers
+│       ├── pages/           # React pages (BrowseRooms, VoiceRoom, About, etc.)
+│       ├── audio/           # Audio pipeline (AudioPipeline.js, profanity lists)
+│       └── services/        # API and Socket helpers
 ├── server/                  # Node backend
 │   ├── index.js             # Entry point
 │   ├── src/                 # Source code
-│       ├── controllers/     # API controllers
-│       ├── routes/          # API routes
-│       ├── models/          # Database models
-│       └── utils/           # Utility functions
-└── Z+ Updates & Help/       # Documentation
+│       ├── controllers/     # API controllers (Room details, AI summaries)
+│       ├── routes/          # API routes (Moderation, rooms, summaries)
+│       ├── models/          # Database models (Room, FlaggedContent)
+│       └── utils/           # Utility functions (Whisper, profanity lists)
+└── Z+ Improvements/         # Backlog & Offline Mode Documentation
 ```
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js v18+
-- MongoDB Atlas account
-- Groq API Key
+*   Node.js v18+
+*   MongoDB Atlas account
+*   Groq API Key
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/WaveTone.git
-cd WaveTone/CodeBase
+git clone https://github.com/suneetchugh-dev/WaveTone_Mini-Project_Sem-4.git
+cd WaveTone_Mini-Project_Sem-4/CodeBase
 
-# Install dependencies
+# Install frontend dependencies
 cd client && npm install
+
+# Install backend dependencies
 cd ../server && npm install
 ```
 
 ### Environment Variables
 
-Create a `.env` file in `server/` with the following:
-```
+Create a `.env` file in the `CodeBase/server/` directory:
+```env
 MONGO_URI=your_mongodb_connection_string
 GROQ_API_KEY=your_groq_api_key
+PORT=5000
 ```
 
 ### Run Locally
 
 ```bash
-# Start backend
-cd server
+# Start backend (from CodeBase/server)
 npm run dev
 
-# Start frontend
-cd client
+# Start frontend (from CodeBase/client in a separate terminal)
 npm run dev
 ```
 
 ---
 
-## Docker (Production and Development)
+## 🐳 Docker (Production and Development)
 
-Recommended layout: keep the `client` and `server` folders under `CodeBase/`, and place the production `docker-compose.yml` at the repository root. For development you can use the provided `docker-compose.dev.yml` which uses bind-mounts and runs dev servers inside containers.
+The project includes pre-configured Docker environments. Place the `docker-compose` files at the root of the repository.
 
-Production quick run (from repository root):
-
+### Production Build & Launch (Nginx + Node production image)
 ```bash
 docker compose up --build
 ```
 
-Development quick run (bind-mounts, nodemon, and vite dev server):
-
+### Local Development (Live Reload + Bind Mounts)
 ```bash
-# from repository root
 docker compose -f docker-compose.dev.yml up --build
 ```
-
-Important notes and best practices:
-- Do NOT mount your application source directory into a production container image (i.e. avoid host bind-mounts) — doing so can mask files that were built into the image (for example `node_modules`) and cause missing-dependency errors. The production `docker-compose.yml` intentionally does not include any `volumes:` for this reason.
-- Use `docker-compose.dev.yml` for local iterative development; it mounts source directories and starts `nodemon` / `vite` for live reload.
-- Keep secrets out of your Git repository. Use `.env` files referenced in your compose files or CI/CD secrets.
-- When deploying to a cloud provider, ensure your `MONGO_URI` and any API keys are provided as environment variables.
-
-If you previously had a `docker-compose.yml` inside `CodeBase/`, it has been moved to the repository root to follow common conventions (so `docker compose up` works from the project root).
+> [!NOTE]
+> Client Nginx configuration (`nginx.conf`) is excluded from `.dockerignore` to ensure production builds compile successfully. Heavy assets, binaries, and local developer caches (`bin/`, `models/`, `temp/`) are ignored in `CodeBase/server/.dockerignore` to minimize production image footprint.
 
 ---
 
-## Deployment
+## 🧪 Developer Testing & Utilities
 
-### Frontend
-- Deploy `client/dist/` to Vercel.
-- Set `VITE_API_URL` environment variable.
+WaveTone includes a terminal-native test validation suite to verify the profanity filter's regex rules, word-masking algorithms, and multilingual checks.
 
-### Backend
-- Deploy `server/` to Railway or Render.
-- Set `MONGO_URI`, `GROQ_API_KEY`, and `PORT`.
+### Run Profanity Tests
+To run the automated validation test suite:
+```bash
+cd CodeBase/server
+npm run test:profanity
+```
 
----
-
-## Recent Enhancements (Latest)
-
-### Real-Time Participant Count on Browse Page
-- **Instant Updates**: Participant count now updates in real-time using Socket.io instead of polling
-- **Reduced Server Load**: Eliminated 10-second polling interval, now using event-driven updates
-- **Better UX**: Users see immediate participant changes when someone joins or leaves
-- **Fallback Polling**: Still polls every 30 seconds as fallback for resilience
-
-### Sub-Host Role System
-- **Multiple Sub-Hosts**: Host can assign multiple Sub-Hosts with hierarchical ranking (primary + backup roles)
-- **Automatic Promotion**: Sub-Host automatically promoted to Host if Host leaves and doesn't return within 5 minutes
-- **UI Indicators**: Clear visual indication of Host and Sub-Hosts with their respective roles
-- **Revocable Status**: Host can revoke Sub-Host status at any time
-- **Session Continuity**: Ensures the session remains managed even if the original Host leaves
-
-### Enhanced Profanity Detection
-- **Improved Mute Duration**: Increased from 500ms to 1200ms max with intelligent word-count scaling
-- **Better Logging**: Comprehensive detection logs with timestamps, word counts, and mute durations
-- **Server Verification**: Enhanced server-side validation with confidence levels and false-positive detection
-- **Word-Level Precision**: Improved word timing extraction for more accurate muting
-
-### Professional Kick/Ban Messages
-- **Host Kicks**: `"You have been removed by the Host ({hostAlias}) for moderation reasons."`
-- **Vote-Kicks**: `"You were vote-kicked by participants ({votes}/{required} votes)."`
-- **Profanity Auto-Kicks**: `"Removed after 3 profanity warnings."`
-- **Broadcast Details**: Room receives context about removals via `user-kicked` event
+### Test Scope
+*   **Classification**: Validates standard swearing, leet-speak (e.g. `f*ck`, `sh1t`), spaced characters (e.g. `s h i t`), and multilingual profanity (French, Spanish, German, Hindi).
+*   **Masking**: Confirms correct word obscuring (e.g., `shit` ➔ `s***`).
+*   **Extraction**: Verifies words are correctly isolated from sentences.
+*   **Performance Latency**: Runs 1,000 checks in a loop and prints average processing latency in microseconds to guarantee WebRTC real-time safety suitability.
 
 ---
 
-## Known Limitations & Planned Enhancements
+## 📈 Recent Enhancements
 
-### Current Limitations
+### 1. Robust Server-Side & Client Error Handling (New)
+*   **Granular Mic Diagnostics**: Detects and displays clear user instructions for browser microphone blocks (`NotAllowedError`), missing devices (`NotFoundError`), or microphone conflicts (`NotReadableError`).
+*   **Mongoose Validations**: Room creation errors now extract exact field-validation issues (e.g., missing topic) instead of generic crashes.
+*   **Malformed IDs**: Checks malformed mongo IDs (`CastError`) and returns `400 Invalid ID format` to prevent 500 crashes.
+*   **Secure Routing Fallbacks**: Socket and navigation failures cleanly redirect back to `/browse` with context-toast error payloads, rather than hijacking URLs.
 
-#### Profanity Detection
-- **Speech Recognition Delays**: Browser speech recognition may not transcribe words accurately, especially for slang, accents, or fast speech.
-- **Mute Timing**: Audio may pass through briefly due to processing delay before muting takes effect.
-- **AudioWorklet Delay**: The worklet only mutes after receiving a message from the main thread, introducing latency.
-- **Detection Accuracy**: Current regex-based detection may miss variations or unexpected character combinations.
+### 2. Developer Validation Testing Suite (New)
+*   **Profanity Verification CLI**: Automated regression test utility detailing classification accuracy, precision, recall, and F1-score.
 
-#### Host Role Management
-- **No Host Transfer**: If the Host leaves, there is currently no auto-assignment of a new Host, potentially leaving the room unmanaged.
+### 3. Real-Time Participant Updates
+*   **Event-Driven Sync**: Browse page participant counts update in real-time using Socket.io instead of server-heavy polling.
 
-### Planned Enhancements
-
-#### Sub-Host Role (✅ Implemented)
-- ✅ Implement a **Sub-Host** role that can be assigned by the Host
-- ✅ Add UI button for Host to assign/revoke Sub-Host status
-- ✅ Support **multiple Sub-Hosts** with ranking for backup hierarchy
-- ✅ Automatic promotion: Sub-Host becomes Host if Host leaves (with 5-minute timeout)
-- ✅ Clear UI indication of Host and Sub-Hosts with their roles
-- ✅ Enable Host to revoke Sub-Host status at any time
-- ✅ Add timeout mechanism before automatic promotion
-
-#### Enhanced Profanity Detection
-- ✅ Improved mute duration calculation (up to 1200ms)
-- ✅ Enhanced logging for debugging
-- ✅ Better server verification
-- [ ] Consider integrating TensorFlow.js toxicity model for more robust detection
-- [ ] Add language and accent support improvements
-- [ ] Implement pre-muting before detected words when possible
-
-#### User Experience Improvements
-- ✅ Professional kick/ban notification messages
-- ✅ Detailed logging for transcript analysis
-- [ ] Add testing utilities for profanity detection validation
-- [ ] Improve error messaging clarity
-
----
-
-## Documentation
-
-- **Project_Info.txt**: Architecture and data flows.
-- **Future Upgrades AI.txt**: AI feature roadmap.
-- **AI_Recommendations.txt**: Prioritized feature recommendations.
-- **Viva_Questions.txt**: Viva preparation Q&A.
+### 4. Advanced Sub-Host Role System
+*   **Failover Promotions**: Support for multiple Sub-Hosts with ranked promotions if the Host drops off.
 
 ---
 

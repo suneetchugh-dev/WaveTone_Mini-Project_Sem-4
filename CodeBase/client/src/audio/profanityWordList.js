@@ -21,8 +21,8 @@ const BLOCKED_WORDS_BY_LANG = {
 };
 
 const LEET_MAP = {
-  a: '[a@4]', e: '[e3]', i: '[i1!]', o: '[o0]', s: '[s$5]',
-  t: '[t7]', l: '[l1]', g: '[g9]',
+  a: '[a@4*]', e: '[e3*]', i: '[i1!*]', o: '[o0*]', u: '[u*]',
+  s: '[s$5]', t: '[t7]', l: '[l1]', g: '[g9]',
 };
 
 function buildRegex(word) {

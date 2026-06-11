@@ -24,8 +24,8 @@ const BLOCKED_WORDS_BY_LANG = {
 // Also catches leet-speak variants like f*ck, sh1t, a$$
 function buildRegex(word) {
   const leetMap = {
-    a: '[a@4]', e: '[e3]', i: '[i1!]', o: '[o0]', s: '[s$5]',
-    t: '[t7]', l: '[l1]', g: '[g9]',
+    a: '[a@4*]', e: '[e3*]', i: '[i1!*]', o: '[o0*]', u: '[u*]',
+    s: '[s$5]', t: '[t7]', l: '[l1]', g: '[g9]',
   };
   const pattern = word
     .split('')

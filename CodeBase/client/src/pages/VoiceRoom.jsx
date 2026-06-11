@@ -311,8 +311,20 @@ function VoiceRoom() {
         });
         audioPipelineRef.current = pipeline;
         await pipeline.init();
-      } catch {
-        setMicError('Microphone access denied — you can still listen.');
+      } catch (err) {
+        let msg = 'Microphone access error — you can still listen.';
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          msg = 'Microphone access denied — please allow permission in your browser settings.';
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          msg = 'No microphone detected. Please connect an input device and try again.';
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+          msg = 'Microphone is already in use by another tab or application.';
+        } else if (err.name === 'OverconstrainedError') {
+          msg = 'Microphone hardware does not meet the required constraints.';
+        } else if (err.message) {
+          msg = `Microphone error: ${err.message}`;
+        }
+        setMicError(msg);
       }
 
       // Connect socket and join room
@@ -346,11 +358,9 @@ function VoiceRoom() {
           if (!active) return;
           playSound(cannotFindRoomAudio);
           if (code === 'NOT_FOUND') {
-            // Redirect to 404 page if route exists, else to app domain
             navigate('/404');
           } else {
-            // fallback: redirect to app domain
-            window.location.href = 'https://wave-tone-mini-project.vercel.app/';
+            navigate('/browse', { state: { error: error || 'Room error occurred.' } });
           }
         });
 

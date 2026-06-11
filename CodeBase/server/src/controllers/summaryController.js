@@ -146,7 +146,10 @@ export const getSessionSummary = async (req, res) => {
       isActive: room.isActive,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch session summary' });
+    if (err.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid room ID format.' });
+    }
+    res.status(500).json({ error: `Failed to fetch session summary: ${err.message}` });
   }
 };
 
