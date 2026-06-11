@@ -85,6 +85,7 @@ function VoiceRoom() {
     }, []);
 
   const [participants, setParticipants] = useState([]);
+  const [assignedAlias, setAssignedAlias] = useState(alias);
   const [muted, setMuted] = useState(true);
   const [audioDevices, setAudioDevices] = useState([]);
   const [selectedAudioDevice, setSelectedAudioDevice] = useState('');
@@ -359,6 +360,12 @@ function VoiceRoom() {
         // Handle both array format and object format from server
         const usersList = Array.isArray(data) ? data : (data?.participants || []);
         setParticipants(usersList);
+        
+        // Find our own assigned alias from the server list using our socket ID
+        const selfUser = usersList.find(p => p.socketId === socket.id);
+        if (selfUser && selfUser.alias) {
+          setAssignedAlias(selfUser.alias);
+        }
       });
 
       // New user joined → initiate offer (no need to update state, room-users event will handle it)
@@ -456,7 +463,7 @@ function VoiceRoom() {
         if (!active) return;
         setVoteKick(data);
         setVoteKickTimer(data.timeoutSeconds);
-        setHasVoted(data.initiatorAlias === alias);
+        setHasVoted(data.initiatorAlias === assignedAlias);
       });
 
       socket.on('vote-kick-update', ({ currentVotes, requiredVotes, totalVoters }) => {
@@ -522,7 +529,7 @@ function VoiceRoom() {
       socket.on('host-promoted', ({ newHostAlias, subHosts }) => {
         if (!active) return;
         // Update current user's Host status if they're the one being promoted
-        if (alias === newHostAlias) {
+        if (assignedAlias === newHostAlias) {
           setIsHost(true);
           setSubHosts(subHosts || []);
           setWarningToast(`You are now the Host!`);
@@ -695,16 +702,16 @@ function VoiceRoom() {
     Object.values(peerConnectionsRef.current).forEach(pc => pc.close());
     // Build speaking time map with aliases
     const speakingTimes = {};
-    speakingTimes[alias] = Math.round(speakingTimeRef.current['self'] || 0);
+    speakingTimes[assignedAlias] = Math.round(speakingTimeRef.current['self'] || 0);
     participants.forEach(p => {
-      if (p.alias !== alias) {
+      if (p.socketId !== socketRef.current?.id) {
         speakingTimes[p.alias] = Math.round(speakingTimeRef.current[p.socketId] || 0);
       }
     });
     navigate(`/summary/${roomId}`, {
       state: { room: roomData, duration: durationMin, participantCount: participants.length, transcripts, speakingTimes },
     });
-  }, [roomId, roomData, alias, participants, navigate]);
+  }, [roomId, roomData, assignedAlias, participants, navigate]);
 
   useEffect(() => {
     const handleStorageChange = (e) => {
@@ -762,8 +769,8 @@ function VoiceRoom() {
   };
 
   // Build participant list: self + remote participants (exclude self from server list)
-  const remoteParticipants = participants.filter(p => p.alias !== alias);
-  const self = { socketId: 'self', alias, isSelf: true };
+  const remoteParticipants = participants.filter(p => p.socketId !== socketRef.current?.id);
+  const self = { socketId: 'self', alias: assignedAlias, isSelf: true };
   const allParticipants = [self, ...remoteParticipants];
 
   return (
