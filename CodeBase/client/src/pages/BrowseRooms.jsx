@@ -6,12 +6,21 @@ import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import { getRooms } from '../services/api';
 import { connectSocket } from '../services/socket';
 
-const categories = ['All', 'General', 'Study', 'Debate', 'Feedback', 'Chill'];
+const standardCategories = ['General', 'Study', 'Debate', 'Feedback', 'Chill'];
+const categories = ['All', 'General', 'Study', 'Debate', 'Feedback', 'Chill', 'Other'];
+const sortLabels = {
+  default: 'Default Sort',
+  'low-to-high': 'Participants: Low to High',
+  'high-to-low': 'Participants: High to Low'
+};
 
 function BrowseRooms() {
   const [activeCat, setActiveCat] = useState('All');
   const [search, setSearch] = useState('');
+  const [sortOrder, setSortOrder] = useState('default');
+  const [showSortMenu, setShowSortMenu] = useState(false);
   const [rooms, setRooms] = useState([]);
+  const sortGroupRef = React.useRef(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [joinCode, setJoinCode] = useState('');
@@ -51,6 +60,18 @@ function BrowseRooms() {
     document.body.setAttribute('data-route', 'browse-rooms');
     return () => {
       document.body.removeAttribute('data-route');
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sortGroupRef.current && !sortGroupRef.current.contains(event.target)) {
+        setShowSortMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -127,17 +148,29 @@ function BrowseRooms() {
     };
   }, [socket]);
 
-  const filtered = rooms
-    .filter(r => activeCat === 'All' || r.category === activeCat)
+  const activeCount = (room) => room.participants.filter(p => !p.leftAt).length;
+
+  let filtered = rooms
+    .filter(r => {
+      if (activeCat === 'All') return true;
+      if (activeCat === 'Other') {
+        return !standardCategories.includes(r.category);
+      }
+      return r.category === activeCat;
+    })
     .filter(r => r.topic.toLowerCase().includes(search.toLowerCase()));
 
-  const activeCount = (room) => room.participants.filter(p => !p.leftAt).length;
+  if (sortOrder === 'low-to-high') {
+    filtered = [...filtered].sort((a, b) => activeCount(a) - activeCount(b));
+  } else if (sortOrder === 'high-to-low') {
+    filtered = [...filtered].sort((a, b) => activeCount(b) - activeCount(a));
+  }
 
   return (
     <section className="page-section-wide">
       <AmbientVideoBackground variant="audio-only" showToggleButton={false} />
-        <h1 className="page-title">Browse Rooms</h1>
-        <p className="page-subtitle">Find a conversation that interests you.</p>
+      <h1 className="page-title">Browse Rooms</h1>
+      <p className="page-subtitle">Find a conversation that interests you.</p>
 
       {toastMessage && (
         <div style={{
@@ -210,6 +243,57 @@ function BrowseRooms() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+
+        <div className={`browse-sort-box${showSortMenu ? ' menu-open' : ''}`} ref={sortGroupRef}>
+          <button
+            type="button"
+            className="browse-sort-trigger-btn"
+            onClick={() => setShowSortMenu(prev => !prev)}
+            aria-haspopup="listbox"
+            aria-expanded={showSortMenu}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+              <path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"/>
+            </svg>
+            <span className="browse-sort-trigger-label">{sortLabels[sortOrder]}</span>
+          </button>
+
+          {showSortMenu && (
+            <div className="mic-submenu sort-submenu">
+              <div className="mic-submenu-header">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"/>
+                </svg>
+                Sort Rooms
+              </div>
+              <div className="mic-submenu-list">
+                {Object.keys(sortLabels).map((key) => {
+                  const isSelected = sortOrder === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => {
+                        setSortOrder(key);
+                        setShowSortMenu(false);
+                      }}
+                      className={`mic-submenu-item${isSelected ? ' selected' : ''}`}
+                    >
+                      <span className="mic-submenu-checkmark">
+                        {isSelected && (
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                      </span>
+                      <span className="mic-submenu-label">{sortLabels[key]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="browse-tabs">
@@ -224,77 +308,89 @@ function BrowseRooms() {
         ))}
       </div>
 
-      {loading && (
-        <div className="room-grid">
-          {[1, 2, 3, 4, 5, 6].map(i => (
-            <div className="skeleton-card" key={i}>
-              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                <div className="skeleton skeleton-badge" />
-                <div className="skeleton skeleton-badge" />
-              </div>
-              <div className="skeleton skeleton-title" />
-              <div className="skeleton skeleton-text short" />
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
-                <div className="skeleton skeleton-text" style={{ width: '60px', marginBottom: 0 }} />
-                <div className="skeleton skeleton-text" style={{ width: '40px', marginBottom: 0 }} />
-              </div>
+      <div style={{ position: 'relative', marginTop: '4.5rem' }}>
+        {/* Lamp visual effect wrapper */}
+        <div className="voice-room-lamp-wrapper" style={{ height: '220px', top: '0px' }}>
+          <div className="voice-room-lamp-beam-left"></div>
+          <div className="voice-room-lamp-beam-right"></div>
+          <div className="voice-room-lamp-blur-mid" style={{ width: '180px', height: '60px' }}></div>
+          <div className="voice-room-lamp-line"></div>
+        </div>
+
+        <div className="card-content-relative">
+          {loading && (
+            <div className="room-grid">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div className="skeleton-card" key={i}>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+                    <div className="skeleton skeleton-badge" />
+                    <div className="skeleton skeleton-badge" />
+                  </div>
+                  <div className="skeleton skeleton-title" />
+                  <div className="skeleton skeleton-text short" />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
+                    <div className="skeleton skeleton-text" style={{ width: '60px', marginBottom: 0 }} />
+                    <div className="skeleton skeleton-text" style={{ width: '40px', marginBottom: 0 }} />
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          )}
 
-      {error && (
-        <div className="empty-state">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-          <p style={{ color: 'var(--warning)' }}>Could not load rooms: {error}</p>
-        </div>
-      )}
+          {error && (
+            <div className="empty-state">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              <p style={{ color: 'var(--warning)' }}>Could not load rooms: {error}</p>
+            </div>
+          )}
 
-      {!loading && !error && filtered.length === 0 && (
-        <div className="empty-state">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <p>No rooms found. Try a different search or <Link to="/create" style={{ color: 'var(--speaking)' }}>create one</Link>.</p>
-        </div>
-      )}
+          {!loading && !error && filtered.length === 0 && (
+            <div className="empty-state">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <p>No rooms found. Try a different search or <Link to="/create" style={{ color: 'var(--speaking)' }}>create one</Link>.</p>
+            </div>
+          )}
 
-      {!loading && !error && filtered.length > 0 && (
-        <div className="room-grid">
-          {filtered.map(room => {
-            const count = activeCount(room);
-            const isFull = count >= room.maxUsers;
-            return (
-              <div className={`room-card${search ? ' search-match' : ''}`} key={room._id}>
-                <div className="room-card-header">
-                  <span className="badge badge-live">
-                    <span className="live-dot" />
-                    Live
-                  </span>
-                  <span className="badge badge-count">{room.category}</span>
-                </div>
-                <h3 className="room-topic">{room.topic}</h3>
-                <div className="room-card-footer">
-                  <span className="room-users">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                    {count}/{room.maxUsers}
-                  </span>
-                  {isFull ? (
-                    <span style={{ fontSize: '0.8rem', color: 'var(--warning)', fontWeight: 600 }}>Full</span>
-                  ) : (
-                    <button
-                      className="room-join-link"
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                      onClick={() => navigate(`/join/${room._id}`)}
-                    >
-                      Join
-                      <svg className="room-join-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {!loading && !error && filtered.length > 0 && (
+            <div className="room-grid">
+              {filtered.map(room => {
+                const count = activeCount(room);
+                const isFull = count >= room.maxUsers;
+                return (
+                  <div className={`room-card${search ? ' search-match' : ''}`} key={room._id}>
+                    <div className="room-card-header">
+                      <span className="badge badge-live">
+                        <span className="live-dot" />
+                        Live
+                      </span>
+                      <span className="badge badge-count">{room.category}</span>
+                    </div>
+                    <h3 className="room-topic">{room.topic}</h3>
+                    <div className="room-card-footer">
+                      <span className="room-users">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                        {count}/{room.maxUsers}
+                      </span>
+                      {isFull ? (
+                        <span style={{ fontSize: '0.8rem', color: 'var(--warning)', fontWeight: 600 }}>Full</span>
+                      ) : (
+                        <button
+                          className="room-join-link"
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                          onClick={() => navigate(`/join/${room._id}`)}
+                        >
+                          Join
+                          <svg className="room-join-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </section>
   );
 }
