@@ -114,7 +114,15 @@ function CreateRoom() {
       <p className="page-subtitle">Set up your anonymous voice room in seconds.</p>
 
       <form onSubmit={handleCreate} className="create-room-form">
-        <div className="card create-room-card">
+        <div className="card create-room-card participants-card-with-lamp">
+          {/* Lamp visual effect wrapper */}
+          <div className="voice-room-lamp-wrapper">
+            <div className="voice-room-lamp-beam-left"></div>
+            <div className="voice-room-lamp-beam-right"></div>
+            <div className="voice-room-lamp-blur-mid"></div>
+            <div className="voice-room-lamp-line"></div>
+          </div>
+
           <div className="form-group full-width-mobile">
             <label htmlFor="room-topic" className="form-label">Room Topic</label>
             <input

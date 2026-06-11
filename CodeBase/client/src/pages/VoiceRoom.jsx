@@ -46,8 +46,17 @@ function VoiceRoom() {
 
     useEffect(() => {
       const handleClickOutside = (event) => {
+        console.log("handleClickOutside triggered:", event.target);
         if (micGroupRef.current && !micGroupRef.current.contains(event.target)) {
           setShowMicSubmenu(false);
+        }
+        if (participantGroupRef.current) {
+          const contains = participantGroupRef.current.contains(event.target);
+          console.log("participantGroupRef contains target:", contains);
+          if (!contains) {
+            setShowParticipantSubmenu(false);
+            setSelectedSubmenuParticipant(null);
+          }
         }
       };
       document.addEventListener('mousedown', handleClickOutside);
@@ -63,6 +72,9 @@ function VoiceRoom() {
   const [showMicSubmenu, setShowMicSubmenu] = useState(false);
   const micGroupRef = useRef(null);
   const [showManage, setShowManage] = useState(false);
+  const [showParticipantSubmenu, setShowParticipantSubmenu] = useState(false);
+  const [selectedSubmenuParticipant, setSelectedSubmenuParticipant] = useState(null);
+  const participantGroupRef = useRef(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const [speakingStates, setSpeakingStates] = useState({});
   const [selfSpeaking, setSelfSpeaking] = useState(false);
@@ -828,132 +840,322 @@ function VoiceRoom() {
         </div>
       )}
 
-      {/* Participants grid */}
-      <div className="card" style={{ marginBottom: '1.2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-          <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1rem', margin: 0 }}>
-            Participants ({allParticipants.length}/{maxUsers})
-          </h3>
-          <button
-            className="control-btn"
-            onClick={() => setShowManage(s => !s)}
-            title="Manage Participants"
-            style={{ width: '40px', height: '40px' }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </button>
+      {/* Participants grid with Lamp effect */}
+      <div className="card participants-card-with-lamp" style={{ marginBottom: '1.2rem' }}>
+        {/* Lamp visual effect wrapper */}
+        <div className="voice-room-lamp-wrapper">
+          <div className="voice-room-lamp-beam-left"></div>
+          <div className="voice-room-lamp-beam-right"></div>
+          <div className="voice-room-lamp-blur-mid"></div>
+          <div className="voice-room-lamp-line"></div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '1.5rem', padding: '0.5rem 0' }}>
-          {allParticipants.map(p => {
-            const isSpeaking = p.isSelf
-              ? (selfSpeaking && !muted)
-              : speakingStates[p.socketId];
-            const isMuted = p.isSelf ? muted : (p.isMuted !== false);
-            return (
-              <div
-                key={p.socketId}
-                className={`participant-card${isSpeaking ? ' speaking' : ''}`}
-                style={{ textAlign: 'center', padding: '1rem', borderRadius: '10px', transition: 'all 0.2s ease', width: 'fit-content', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        <div className="card-content-relative">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1rem', margin: 0 }}>
+              Participants ({allParticipants.length}/{maxUsers})
+            </h3>
+            <div ref={participantGroupRef} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <button
+                className="control-btn manage-btn-voiceroom"
+                onClick={() => setShowManage(s => !s)}
+                title="Manage Participants"
+                style={{ width: '40px', height: '40px' }}
               >
-                <div style={{ position: 'relative' }}>
-                  <div className={`participant-avatar${isSpeaking ? ' speaking' : ''}`}>
-                    {p.alias[0].toUpperCase()}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </button>
+              <button
+                className="mic-submenu-indicator-btn"
+                onClick={(e) => {
+                  console.log("Indicator button clicked! Stop propagation. Prev state:", showParticipantSubmenu);
+                  e.stopPropagation();
+                  setShowParticipantSubmenu(prev => !prev);
+                }}
+                aria-label="Manage Participants Menu"
+                style={{ 
+                  position: 'absolute',
+                  top: '-4px',
+                  right: '-4px',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 0,
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                  cursor: 'pointer',
+                  zIndex: 10,
+                  border: 'none'
+                }}
+              >
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="18 15 12 9 6 15"/>
+                </svg>
+              </button>
+
+              {showParticipantSubmenu && (
+                <div 
+                  className="mic-submenu" 
+                  style={{ right: 0, left: 'auto', transform: 'none', top: 'calc(100% + 8px)', bottom: 'auto' }}
+                  onClick={(e) => {
+                    console.log("Submenu click event captured (stopping propagation)");
+                    e.stopPropagation();
+                  }}
+                >
+                  <div className="mic-submenu-header">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    {selectedSubmenuParticipant ? selectedSubmenuParticipant.alias : 'Participants'}
                   </div>
-                  <div 
-                    className={`participant-mic-status ${isMuted ? 'muted' : 'unmuted'}`}
-                    style={{
-                      position: 'absolute',
-                      bottom: '-2px',
-                      right: '-2px',
-                      background: isMuted ? 'var(--warning)' : '#10b981',
-                      border: '2px solid var(--surface)',
-                      borderRadius: '50%',
-                      width: '20px',
-                      height: '20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-                      color: '#ffffff',
-                      transition: 'all 0.25s ease'
-                    }}
-                  >
-                    {isMuted ? (
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .67-.1 1.32-.27 1.94"/></svg>
+                  <div className="mic-submenu-list">
+                    {!selectedSubmenuParticipant ? (
+                      remoteParticipants.length === 0 ? (
+                        <div style={{ padding: '0.55rem 0.75rem', fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>
+                          No other participants
+                        </div>
+                      ) : (
+                        remoteParticipants.map(p => {
+                          const isSubHost = subHosts.some(s => s.socketId === p.socketId);
+                          return (
+                            <button
+                              key={p.socketId}
+                              onClick={(e) => {
+                                console.log("Participant clicked:", p.alias);
+                                e.stopPropagation();
+                                setSelectedSubmenuParticipant(p);
+                              }}
+                              className="mic-submenu-item"
+                            >
+                              <span className="mic-submenu-checkmark">
+                                {isSubHost && (
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                  </svg>
+                                )}
+                              </span>
+                              <span className="mic-submenu-label">
+                                {p.alias}
+                              </span>
+                            </button>
+                          );
+                        })
+                      )
                     ) : (
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-                    )}
-                  </div>
-                </div>
-                <div style={{ marginTop: '0.6rem', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.4rem' }} className={`participant-text${isSpeaking ? ' speaking' : ''}`}>
-                  <div className="participant-name">
-                    {p.alias}{p.isSelf ? ' (you)' : ''}
-                  </div>
-                  {isHost && p.isSelf && (
-                    <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--speaking)', opacity: 0.7, marginTop: '0.1rem' }}>Host</span>
-                  )}
-                  {subHosts.some(s => s.socketId === p.socketId) && (
-                    <span style={{ display: 'block', fontSize: '0.65rem', color: '#fbbf24', opacity: 0.9, marginTop: '0.1rem' }}>⭐ Sub-Host</span>
-                  )}
-                </div>
-                {showManage && !p.isSelf && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                    {isHost && (
-                      <button
-                        onClick={() => handleKick(p.socketId)}
-                        style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: 'rgba(248,113,113,0.2)', border: '1px solid rgba(248,113,113,0.4)', color: '#F87171', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 600 }}
-                        onMouseEnter={(e) => { e.target.style.background = '#F87171'; e.target.style.color = '#fff'; }}
-                        onMouseLeave={(e) => { e.target.style.background = 'rgba(248,113,113,0.2)'; e.target.style.color = '#F87171'; }}
-                      >
-                        Kick
-                      </button>
-                    )}
-                    {!isHost && (
-                      <button
-                        disabled
-                        style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.1)', color: '#aaa', borderRadius: '4px', cursor: 'not-allowed', width: '100%', fontWeight: 600 }}
-                        title="Only the Host can kick directly"
-                      >
-                        Kick
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleStartVoteKick(p.socketId)}
-                      disabled={allParticipants.length < 3}
-                      style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: allParticipants.length < 3 ? 'rgba(56,189,248,0.08)' : 'rgba(56,189,248,0.15)', border: '1px solid rgba(56,189,248,0.3)', color: allParticipants.length < 3 ? '#aaa' : 'var(--speaking)', borderRadius: '4px', cursor: allParticipants.length < 3 ? 'not-allowed' : 'pointer', width: '100%', fontWeight: 600 }}
-                      title={allParticipants.length < 3 ? 'Vote kick requires at least 3 participants' : 'Vote Kick'}
-                    >
-                      Vote Kick
-                    </button>
-                    {isHost && (
                       <>
-                        {subHosts.some(s => s.socketId === p.socketId) ? (
+                        <button
+                          onClick={(e) => {
+                            console.log("Back clicked");
+                            e.stopPropagation();
+                            setSelectedSubmenuParticipant(null);
+                          }}
+                          className="mic-submenu-item"
+                          style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '10px 10px 0 0' }}
+                        >
+                          <span className="mic-submenu-checkmark">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="15 18 9 12 15 6"/>
+                            </svg>
+                          </span>
+                          <span className="mic-submenu-label">Back</span>
+                        </button>
+
+                        {isHost ? (
                           <button
-                            onClick={() => handleRevokeSubHost(p.socketId)}
-                            style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: 'rgba(251, 191, 36, 0.2)', border: '1px solid rgba(251, 191, 36, 0.4)', color: '#fbbf24', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 600 }}
-                            onMouseEnter={(e) => { e.target.style.background = '#fbbf24'; e.target.style.color = '#000'; }}
-                            onMouseLeave={(e) => { e.target.style.background = 'rgba(251, 191, 36, 0.2)'; e.target.style.color = '#fbbf24'; }}
+                            onClick={(e) => {
+                              console.log("Kick clicked for:", selectedSubmenuParticipant.alias);
+                              e.stopPropagation();
+                              handleKick(selectedSubmenuParticipant.socketId);
+                              setShowParticipantSubmenu(false);
+                              setSelectedSubmenuParticipant(null);
+                            }}
+                            className="mic-submenu-item"
+                            style={{ color: '#F87171' }}
                           >
-                            Revoke Sub-Host
+                            <span className="mic-submenu-checkmark" />
+                            <span className="mic-submenu-label">Kick</span>
                           </button>
                         ) : (
                           <button
-                            onClick={() => handleAssignSubHost(p.socketId, p.alias, subHosts.length)}
-                            style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: 'rgba(251, 191, 36, 0.15)', border: '1px solid rgba(251, 191, 36, 0.3)', color: '#fbbf24', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 600 }}
-                            onMouseEnter={(e) => { e.target.style.background = 'rgba(251, 191, 36, 0.25)'; }}
-                            onMouseLeave={(e) => { e.target.style.background = 'rgba(251, 191, 36, 0.15)'; }}
+                            disabled
+                            className="mic-submenu-item"
+                            style={{ opacity: 0.5, cursor: 'not-allowed' }}
+                            title="Only the Host can kick directly"
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            Make Sub-Host
+                            <span className="mic-submenu-checkmark" />
+                            <span className="mic-submenu-label">Kick (Host Only)</span>
                           </button>
+                        )}
+
+                        <button
+                          onClick={(e) => {
+                            console.log("Vote kick clicked for:", selectedSubmenuParticipant.alias);
+                            e.stopPropagation();
+                            handleStartVoteKick(selectedSubmenuParticipant.socketId);
+                            setShowParticipantSubmenu(false);
+                            setSelectedSubmenuParticipant(null);
+                          }}
+                          disabled={allParticipants.length < 3}
+                          className="mic-submenu-item"
+                          style={allParticipants.length < 3 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                          title={allParticipants.length < 3 ? 'Vote kick requires at least 3 participants' : 'Vote Kick'}
+                        >
+                          <span className="mic-submenu-checkmark" />
+                          <span className="mic-submenu-label">Vote Kick</span>
+                        </button>
+
+                        {isHost && (
+                          subHosts.some(s => s.socketId === selectedSubmenuParticipant.socketId) ? (
+                            <button
+                              onClick={(e) => {
+                                console.log("Revoke subhost clicked for:", selectedSubmenuParticipant.alias);
+                                e.stopPropagation();
+                                handleRevokeSubHost(selectedSubmenuParticipant.socketId);
+                                setShowParticipantSubmenu(false);
+                                setSelectedSubmenuParticipant(null);
+                              }}
+                              className="mic-submenu-item"
+                              style={{ color: '#fbbf24' }}
+                            >
+                              <span className="mic-submenu-checkmark" />
+                              <span className="mic-submenu-label">Revoke Sub-Host</span>
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                console.log("Make subhost clicked for:", selectedSubmenuParticipant.alias);
+                                e.stopPropagation();
+                                handleAssignSubHost(selectedSubmenuParticipant.socketId, selectedSubmenuParticipant.alias, subHosts.length);
+                                setShowParticipantSubmenu(false);
+                                setSelectedSubmenuParticipant(null);
+                              }}
+                              className="mic-submenu-item"
+                              style={{ color: '#fbbf24' }}
+                            >
+                              <span className="mic-submenu-checkmark" />
+                              <span className="mic-submenu-label">Make Sub-Host</span>
+                            </button>
+                          )
                         )}
                       </>
                     )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '1.5rem', padding: '0.5rem 0' }}>
+            {allParticipants.map(p => {
+              const isSpeaking = p.isSelf
+                ? (selfSpeaking && !muted)
+                : speakingStates[p.socketId];
+              const isMuted = p.isSelf ? muted : (p.isMuted !== false);
+              return (
+                <div
+                  key={p.socketId}
+                  className={`participant-card${isSpeaking ? ' speaking' : ''}`}
+                  style={{ textAlign: 'center', padding: '1rem', borderRadius: '10px', transition: 'all 0.2s ease', width: 'fit-content', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                >
+                  <div style={{ position: 'relative' }}>
+                    <div className={`participant-avatar${isSpeaking ? ' speaking' : ''}`}>
+                      {p.alias[0].toUpperCase()}
+                    </div>
+                    <div 
+                      className={`participant-mic-status ${isMuted ? 'muted' : 'unmuted'}`}
+                      style={{
+                        position: 'absolute',
+                        bottom: '-2px',
+                        right: '-2px',
+                        background: isMuted ? 'var(--warning)' : '#10b981',
+                        border: '2px solid var(--surface)',
+                        borderRadius: '50%',
+                        width: '20px',
+                        height: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                        color: '#ffffff',
+                        transition: 'all 0.25s ease'
+                      }}
+                    >
+                      {isMuted ? (
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .67-.1 1.32-.27 1.94"/></svg>
+                      ) : (
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ marginTop: '0.6rem', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.4rem' }} className={`participant-text${isSpeaking ? ' speaking' : ''}`}>
+                    <div className="participant-name">
+                      {p.alias}{p.isSelf ? ' (you)' : ''}
+                    </div>
+                    {isHost && p.isSelf && (
+                      <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--speaking)', opacity: 0.7, marginTop: '0.1rem' }}>Host</span>
+                    )}
+                    {subHosts.some(s => s.socketId === p.socketId) && (
+                      <span style={{ display: 'block', fontSize: '0.65rem', color: '#fbbf24', opacity: 0.9, marginTop: '0.1rem' }}>⭐ Sub-Host</span>
+                    )}
+                  </div>
+                  {showManage && !p.isSelf && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                      {isHost && (
+                        <button
+                          onClick={() => handleKick(p.socketId)}
+                          style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: 'rgba(248,113,113,0.2)', border: '1px solid rgba(248,113,113,0.4)', color: '#F87171', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 600 }}
+                          onMouseEnter={(e) => { e.target.style.background = '#F87171'; e.target.style.color = '#fff'; }}
+                          onMouseLeave={(e) => { e.target.style.background = 'rgba(248,113,113,0.2)'; e.target.style.color = '#F87171'; }}
+                        >
+                          Kick
+                        </button>
+                      )}
+                      {!isHost && (
+                        <button
+                          disabled
+                          style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.1)', color: '#aaa', borderRadius: '4px', cursor: 'not-allowed', width: '100%', fontWeight: 600 }}
+                          title="Only the Host can kick directly"
+                        >
+                          Kick
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleStartVoteKick(p.socketId)}
+                        disabled={allParticipants.length < 3}
+                        style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: allParticipants.length < 3 ? 'rgba(56,189,248,0.08)' : 'rgba(56,189,248,0.15)', border: '1px solid rgba(56,189,248,0.3)', color: allParticipants.length < 3 ? '#aaa' : 'var(--speaking)', borderRadius: '4px', cursor: allParticipants.length < 3 ? 'not-allowed' : 'pointer', width: '100%', fontWeight: 600 }}
+                        title={allParticipants.length < 3 ? 'Vote kick requires at least 3 participants' : 'Vote Kick'}
+                      >
+                        Vote Kick
+                      </button>
+                      {isHost && (
+                        <>
+                          {subHosts.some(s => s.socketId === p.socketId) ? (
+                            <button
+                              onClick={() => handleRevokeSubHost(p.socketId)}
+                              style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: 'rgba(251, 191, 36, 0.2)', border: '1px solid rgba(251, 191, 36, 0.4)', color: '#fbbf24', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 600 }}
+                              onMouseEnter={(e) => { e.target.style.background = '#fbbf24'; e.target.style.color = '#000'; }}
+                              onMouseLeave={(e) => { e.target.style.background = 'rgba(251, 191, 36, 0.2)'; e.target.style.color = '#fbbf24'; }}
+                            >
+                              Revoke Sub-Host
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleAssignSubHost(p.socketId, p.alias, subHosts.length)}
+                              style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', background: 'rgba(251, 191, 36, 0.15)', border: '1px solid rgba(251, 191, 36, 0.3)', color: '#fbbf24', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 600 }}
+                              onMouseEnter={(e) => { e.target.style.background = 'rgba(251, 191, 36, 0.25)'; }}
+                              onMouseLeave={(e) => { e.target.style.background = 'rgba(251, 191, 36, 0.15)'; }}
+                            >
+                              Make Sub-Host
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
