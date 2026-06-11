@@ -44,8 +44,24 @@ function VoiceRoom() {
       };
     }, [roomId]);
 
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (micGroupRef.current && !micGroupRef.current.contains(event.target)) {
+          setShowMicSubmenu(false);
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+
   const [participants, setParticipants] = useState([]);
   const [muted, setMuted] = useState(true);
+  const [audioDevices, setAudioDevices] = useState([]);
+  const [selectedAudioDevice, setSelectedAudioDevice] = useState('');
+  const [showMicSubmenu, setShowMicSubmenu] = useState(false);
+  const micGroupRef = useRef(null);
   const [showManage, setShowManage] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [speakingStates, setSpeakingStates] = useState({});
@@ -177,6 +193,14 @@ function VoiceRoom() {
       return;
     }
 
+    const handleDeviceChange = () => {
+      navigator.mediaDevices.enumerateDevices().then(devices => {
+        const audioInputs = devices.filter(d => d.kind === 'audioinput');
+        setAudioDevices(audioInputs);
+      });
+    };
+    navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange);
+
     // Setup BroadcastChannel for tab-duplication prevention
     let roomChannel = null;
     let duplicateDetected = false;
@@ -213,6 +237,18 @@ function VoiceRoom() {
         // Mute mic by default
         stream.getAudioTracks().forEach(track => { track.enabled = false; });
         setupVolumeDetection('self', stream, setSelfSpeaking);
+
+        // Get default device ID
+        const currentTrack = stream.getAudioTracks()[0];
+        if (currentTrack) {
+          setSelectedAudioDevice(currentTrack.getSettings().deviceId || '');
+        }
+
+        // Enumerate input devices
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+          const audioInputs = devices.filter(d => d.kind === 'audioinput');
+          setAudioDevices(audioInputs);
+        });
 
         // Set up audio pipeline (always initialized for transcription/Whisper/AI summaries)
         const pipeline = new AudioPipeline({
@@ -326,6 +362,11 @@ function VoiceRoom() {
         if (!active) return;
         setParticipants(prev => prev.filter(p => p.socketId !== socketId));
         cleanupPeer(socketId);
+      });
+
+      socket.on('user-mute-toggle', ({ socketId, isMuted }) => {
+        if (!active) return;
+        setParticipants(prev => prev.map(p => p.socketId === socketId ? { ...p, isMuted } : p));
       });
 
       // Kicked (with reason)
@@ -477,6 +518,9 @@ function VoiceRoom() {
       socketRef.current?.off('sub-host-revoked');
       socketRef.current?.off('sub-host-promoted');
       socketRef.current?.off('host-promoted');
+      socketRef.current?.off('user-mute-toggle');
+
+      navigator.mediaDevices.removeEventListener('devicechange', handleDeviceChange);
 
       // Close the broadcast channel if created
       if (roomChannel) {
@@ -484,6 +528,88 @@ function VoiceRoom() {
       }
     };
   }, [roomId, alias, createPeerConnection, navigate]);
+
+  const changeAudioDevice = async (deviceId) => {
+    if (!deviceId) return;
+    try {
+      const constraints = {
+        audio: { deviceId: { exact: deviceId } },
+        video: false
+      };
+      const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+      
+      // Stop current tracks
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach(t => t.stop());
+      }
+      
+      localStreamRef.current = newStream;
+      setSelectedAudioDevice(deviceId);
+      
+      // Reset local volume detector
+      const selfAnalyser = analyserIntervalsRef.current?.['self'];
+      if (selfAnalyser) {
+        clearInterval(selfAnalyser.intervalId);
+        selfAnalyser.audioCtx.close().catch(() => {});
+        delete analyserIntervalsRef.current['self'];
+      }
+      // If muted is false, new track should be enabled. If muted is true, new track should be disabled.
+      newStream.getAudioTracks().forEach(track => { track.enabled = !muted; });
+      setupVolumeDetection('self', newStream, setSelfSpeaking);
+      
+      // Re-create the Audio Pipeline so it binds to the new stream
+      if (audioPipelineRef.current) {
+        audioPipelineRef.current.destroy();
+      }
+      
+      const pipeline = new AudioPipeline({
+        rawStream: newStream,
+        onProfanityDetected: () => {
+          if (roomData.profanityFilter !== false) {
+            socketRef.current?.emit('profanity-warning', { roomId });
+          }
+        },
+        onServerModerationResult: (result) => {
+          if (roomData.profanityFilter !== false) {
+            if (result.confirmed) {
+              console.log('Profanity confirmed by server:', result.badWords);
+            } else {
+              console.log('Server rejected profanity detection - false positive recovered');
+            }
+          }
+        },
+        onPipelineReady: (processed) => {
+          processedStreamRef.current = processed;
+          
+          // Replace track on all active peer connections
+          const newTrack = processed.getAudioTracks()[0];
+          if (newTrack) {
+            newTrack.enabled = !muted;
+            Object.values(peerConnectionsRef.current).forEach(pc => {
+              const sender = pc.getSenders().find(s => s.track && s.track.kind === 'audio');
+              if (sender) {
+                sender.replaceTrack(newTrack).catch(err => console.error('Error replacing track:', err));
+              }
+            });
+          }
+        },
+        onError: () => {
+          processedStreamRef.current = newStream;
+        },
+        socket: socketRef.current
+      });
+      audioPipelineRef.current = pipeline;
+      await pipeline.init();
+      
+      // Re-sync local speech recognition state
+      if (roomData.profanityFilter !== false) {
+        audioPipelineRef.current?.toggleSpeechRecognition(muted);
+      }
+      
+    } catch (err) {
+      console.error('Error changing audio input device:', err);
+    }
+  };
 
   const handleMuteToggle = () => {
     // Resume audio contexts if suspended (browser user-gesture security policy)
@@ -506,6 +632,7 @@ function VoiceRoom() {
       if (roomData.profanityFilter !== false) {
         audioPipelineRef.current?.toggleSpeechRecognition(newMuted);
       }
+      socketRef.current?.emit('toggle-mute', { roomId, isMuted: newMuted });
       return newMuted;
     });
   };
@@ -722,14 +849,42 @@ function VoiceRoom() {
             const isSpeaking = p.isSelf
               ? (selfSpeaking && !muted)
               : speakingStates[p.socketId];
+            const isMuted = p.isSelf ? muted : (p.isMuted !== false);
             return (
               <div
                 key={p.socketId}
                 className={`participant-card${isSpeaking ? ' speaking' : ''}`}
                 style={{ textAlign: 'center', padding: '1rem', borderRadius: '10px', transition: 'all 0.2s ease', width: 'fit-content', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               >
-                <div className={`participant-avatar${isSpeaking ? ' speaking' : ''}`}>
-                  {p.alias[0].toUpperCase()}
+                <div style={{ position: 'relative' }}>
+                  <div className={`participant-avatar${isSpeaking ? ' speaking' : ''}`}>
+                    {p.alias[0].toUpperCase()}
+                  </div>
+                  <div 
+                    className={`participant-mic-status ${isMuted ? 'muted' : 'unmuted'}`}
+                    style={{
+                      position: 'absolute',
+                      bottom: '-2px',
+                      right: '-2px',
+                      background: isMuted ? 'var(--warning)' : '#10b981',
+                      border: '2px solid var(--surface)',
+                      borderRadius: '50%',
+                      width: '20px',
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                      color: '#ffffff',
+                      transition: 'all 0.25s ease'
+                    }}
+                  >
+                    {isMuted ? (
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .67-.1 1.32-.27 1.94"/></svg>
+                    ) : (
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                    )}
+                  </div>
                 </div>
                 <div style={{ marginTop: '0.6rem', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.4rem' }} className={`participant-text${isSpeaking ? ' speaking' : ''}`}>
                   <div className="participant-name">
@@ -804,18 +959,81 @@ function VoiceRoom() {
 
       {/* Controls */}
       <div className="voiceroom-controls">
-        <div className="control-btn-wrapper" data-tooltip={muted ? 'Unmute Microphone' : 'Mute Microphone'}>
-          <button
-            className={`control-btn${!muted ? ' active' : ''} mic-btn-voiceroom`}
-            onClick={handleMuteToggle}
-            aria-label={muted ? 'Unmute Microphone' : 'Mute Microphone'}
-          >
-            {muted ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .67-.1 1.32-.27 1.94"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-            ) : (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-            )}
-          </button>
+        <div ref={micGroupRef} className="mic-control-group" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <div className="control-btn-wrapper" data-tooltip={muted ? 'Unmute Microphone' : 'Mute Microphone'}>
+            <button
+              className={`control-btn${!muted ? ' active' : ''} mic-btn-voiceroom`}
+              onClick={handleMuteToggle}
+              aria-label={muted ? 'Unmute Microphone' : 'Mute Microphone'}
+            >
+              {muted ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .67-.1 1.32-.27 1.94"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              )}
+            </button>
+          </div>
+          {audioDevices.length > 0 && (
+            <button
+              className="mic-submenu-indicator-btn"
+              onClick={() => setShowMicSubmenu(prev => !prev)}
+              aria-label="Select Input Device"
+              style={{ 
+                position: 'absolute',
+                top: '-4px',
+                right: '-4px',
+                width: '18px',
+                height: '18px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 0,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                cursor: 'pointer',
+                zIndex: 10,
+                border: 'none'
+              }}
+            >
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="18 15 12 9 6 15"/>
+              </svg>
+            </button>
+          )}
+
+          {/* Custom Popover Submenu */}
+          {showMicSubmenu && audioDevices.length > 0 && (
+            <div className="mic-submenu">
+              <div className="mic-submenu-header">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                Input Device
+              </div>
+              <div className="mic-submenu-list">
+                {audioDevices.map(device => {
+                  const isSelected = selectedAudioDevice === device.deviceId;
+                  return (
+                    <button
+                      key={device.deviceId}
+                      onClick={() => {
+                        changeAudioDevice(device.deviceId);
+                        setShowMicSubmenu(false);
+                      }}
+                      className={`mic-submenu-item${isSelected ? ' selected' : ''}`}
+                    >
+                      <span className="mic-submenu-checkmark">
+                        {isSelected && (
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        )}
+                      </span>
+                      <span className="mic-submenu-label">
+                        {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
         <div className="control-btn-wrapper" data-tooltip={linkCopied ? 'Link Copied!' : 'Copy Room Link'}>
           <button

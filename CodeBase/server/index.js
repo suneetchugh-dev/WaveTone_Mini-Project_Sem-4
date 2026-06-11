@@ -249,7 +249,7 @@ io.on('connection', (socket) => {
     socketAliases.set(socket.id, cleanAlias);
 
     // Add new participant to the list BEFORE sending room-users
-    participants.push({ socketId: socket.id, alias: cleanAlias, deviceId });
+    participants.push({ socketId: socket.id, alias: cleanAlias, deviceId, isMuted: true });
 
     // Sync participant join to database
     _dbJoinRoom(roomId, socket.id, cleanAlias, deviceId);
@@ -259,7 +259,8 @@ io.on('connection', (socket) => {
       socketId: p.socketId,
       alias: p.alias,
       joinedAt: p.joinedAt,
-      leftAt: p.leftAt
+      leftAt: p.leftAt,
+      isMuted: p.isMuted !== false
     })));
     socket.emit('room-metadata', { 
       isHost, 
@@ -274,7 +275,8 @@ io.on('connection', (socket) => {
       socketId: p.socketId, 
       alias: p.alias, 
       joinedAt: p.joinedAt, 
-      leftAt: p.leftAt 
+      leftAt: p.leftAt,
+      isMuted: p.isMuted !== false
     })));
     
     socket.to(roomId).emit('user-joined', { 
@@ -388,6 +390,16 @@ io.on('connection', (socket) => {
   // ==================== LEAVE ROOM ====================
   socket.on('leave-room', ({ roomId }) => {
     _leaveRoom(socket, roomId);
+  });
+
+  // ==================== TOGGLE MUTE ====================
+  socket.on('toggle-mute', ({ roomId, isMuted }) => {
+    const participants = roomParticipants.get(roomId) || [];
+    const participant = participants.find(p => p.socketId === socket.id);
+    if (participant) {
+      participant.isMuted = isMuted;
+    }
+    socket.to(roomId).emit('user-mute-toggle', { socketId: socket.id, isMuted });
   });
 
   // ==================== WEBRTC SIGNALING ====================

@@ -65,7 +65,7 @@
   align-items: center;
   gap: 0.6rem;
   background: var(--bg);
-  border: 1.5px solid var(--card-border);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   border-radius: 40px;
   padding: 0.6rem 1rem;
   max-width: 400px;
@@ -116,7 +116,10 @@
   width: 100%;
 }
 .browse-search-input::placeholder {
-  color: var(--text-tertiary);
+  color: rgba(255, 255, 255, 0.4);
+}
+[data-theme="light"] .browse-search-input::placeholder {
+  color: rgba(10, 46, 80, 0.45);
 }
 
 /* Tabs */

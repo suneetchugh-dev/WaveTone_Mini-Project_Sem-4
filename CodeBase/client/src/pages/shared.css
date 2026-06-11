@@ -1008,11 +1008,17 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   padding: 0.65rem 0.85rem;
   font-size: 0.9rem;
   background: var(--bg);
-  border: 1.5px solid var(--card-border);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   border-radius: 40px;
   color: var(--text-primary);
   outline: none;
   transition: all 0.2s ease;
+}
+
+[data-theme="light"] .form-input,
+[data-theme="light"] .form-select,
+[data-theme="light"] .form-textarea {
+  border-color: rgba(10, 46, 80, 0.18);
 }
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -1021,7 +1027,11 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   background: rgba(56, 189, 248, 0.02);
 }
 .form-input::placeholder, .form-textarea::placeholder {
-  color: var(--text-tertiary);
+  color: rgba(255, 255, 255, 0.4);
+}
+[data-theme="light"] .form-input::placeholder,
+[data-theme="light"] .form-textarea::placeholder {
+  color: rgba(10, 46, 80, 0.45);
 }
 .form-select {
   appearance: none;
@@ -2691,6 +2701,194 @@ body[data-route='voice-room'] .page-section {
   transform: translateX(-50%) translateY(0);
 }
 
+/* Floating Microphone Selector for VoiceRoom */
+.voiceroom-mic-selector {
+  position: fixed;
+  bottom: 92px; /* Floats perfectly above the main controls dock */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 1rem;
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
+[data-theme="light"] .voiceroom-mic-selector {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1.5px solid rgba(10, 46, 80, 0.12);
+  box-shadow: 0 8px 24px rgba(10, 46, 80, 0.1), inset 0 1px 0px rgba(255, 255, 255, 0.6);
+}
 
+.voiceroom-mic-select {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 1.6rem 0.2rem 0.4rem;
+  outline: none;
+  cursor: pointer;
+  max-width: 180px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.3rem center;
+  transition: all 0.2s ease;
+}
 
+[data-theme="light"] .voiceroom-mic-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%230ea5e9' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.voiceroom-mic-select option {
+  background: #1e2128;
+  color: #f1f5f9;
+}
+
+[data-theme="light"] .voiceroom-mic-select option {
+  background: #ffffff;
+  color: #0a2e50;
+}
+
+/* Mic Submenu Popover */
+.mic-submenu {
+  position: absolute;
+  bottom: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  width: 250px;
+  background: rgba(20, 24, 33, 0.92);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  padding: 0.75rem 0.5rem;
+  animation: slideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+[data-theme="light"] .mic-submenu {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  box-shadow: 0 16px 32px rgba(10, 46, 80, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+.mic-submenu-header {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  padding: 0.2rem 0.6rem 0.5rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+[data-theme="light"] .mic-submenu-header {
+  border-bottom-color: rgba(10, 46, 80, 0.06);
+}
+
+.mic-submenu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.mic-submenu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.mic-submenu-item:hover {
+  background: rgba(56, 189, 248, 0.08);
+  color: var(--speaking);
+  padding-left: 0.9rem; /* Soft indentation micro-animation on hover! */
+}
+
+[data-theme="light"] .mic-submenu-item:hover {
+  background: rgba(14, 165, 233, 0.08);
+  color: #0ea5e9;
+  padding-left: 0.9rem;
+}
+
+.mic-submenu-item.selected {
+  color: var(--speaking);
+  background: rgba(56, 189, 248, 0.04);
+}
+
+[data-theme="light"] .mic-submenu-item.selected {
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.04);
+}
+
+.mic-submenu-checkmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.mic-submenu-label {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Floating circular indicator button for Mic Group */
+.mic-submenu-indicator-btn {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--card-border) !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mic-submenu-indicator-btn:hover {
+  color: var(--speaking) !important;
+  border-color: var(--speaking) !important;
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+}
+
+[data-theme="light"] .mic-submenu-indicator-btn {
+  background: #ffffff !important;
+  border: 1.5px solid rgba(10, 46, 80, 0.15) !important;
+  color: #64748b !important;
+}
+
+[data-theme="light"] .mic-submenu-indicator-btn:hover {
+  color: #0ea5e9 !important;
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.2);
+}
