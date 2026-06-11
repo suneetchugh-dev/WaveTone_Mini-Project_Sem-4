@@ -29,6 +29,27 @@ WaveTone is engineered from the ground up to offer a premium, secure, and privat
 
 ---
 
+## 🚀 Core Features
+
+WaveTone is packed with features designed to make voice rooms collaborative, manageable, and highly interactive:
+
+*   **Customizable Ephemeral Rooms**
+    *   **Custom Settings**: Set room topics, categories, and participant limits (up to 10 users) on creation.
+    *   **Language Specific Context**: Select room languages (English, Spanish, French, German, Hindi, Portuguese) to customize transcription and dictionary filters.
+    *   **Private/Public Visibility**: Toggle rooms between public (visible on the Browse page) and private (accessible only via a direct URL link).
+*   **Real-Time Collaborative Moderation**
+    *   **Democratic Vote-Kick**: Participants can start a vote to kick disruptive users, requiring a simple majority to remove them.
+    *   **Host Kick & Ban**: Hosts can kick users directly and ban their IP addresses from rejoining the room.
+    *   **Dynamic Warnings & Auto-Kicks**: Sends automated toast notifications to users when profanity is detected. Users are automatically kicked after 3 warnings.
+*   **Post-Session Summary Dashboard**
+    *   **Ephemerality Safe Summaries**: After a room ends, view a dashboard showing session duration, participant count, and participant lists using random aliases.
+    *   **Groq AI Summarization**: Automatically processes text transcripts via Groq Llama models to generate a clean, 2-4 sentence summary of what was discussed (safely stripped of any personal identifiers). Includes a local NLP-based fallback generator if the AI API is unreachable.
+*   **Interactive Moderation Sandbox & Admin Queue**
+    *   **Interactive Sandbox (About Page)**: Test text snippets or upload audio files (e.g. WAV, MP3) to see real-time transcription, latency, dictionary matching, and TF.js classifier breakdown scores.
+    *   **Admin Review Queue**: Live review panel showing recent flagged utterances where administrators can confirm swears or mark false positives to refine filter parameters.
+
+---
+
 ## 🛠 Tech Stack
 
 ### Frontend
