@@ -15,7 +15,26 @@ import { runWhisper } from './src/utils/whisperRunner.js';
 import { isToxicOrProfane } from './src/utils/toxicityModerator.js';
 
 dotenv.config();
-connectDB();
+await connectDB();
+
+// Cleanup active rooms and participants on server startup (handles crash/restart recovery)
+const cleanupDatabaseOnStartup = async () => {
+  try {
+    const resultParticipants = await Room.updateMany(
+      { 'participants.leftAt': null },
+      { $set: { 'participants.$[elem].leftAt': new Date() } },
+      { arrayFilters: [{ 'elem.leftAt': null }] }
+    );
+    const resultRooms = await Room.updateMany(
+      { isActive: true },
+      { $set: { isActive: false } }
+    );
+    console.log(`[Startup Cleanup] Stale participants marked as left: ${resultParticipants.modifiedCount}, Stale rooms marked inactive: ${resultRooms.modifiedCount}`);
+  } catch (err) {
+    console.error('[Startup Cleanup Error] Failed to clean up database on startup:', err.message);
+  }
+};
+await cleanupDatabaseOnStartup();
 
 const app = express();
 
