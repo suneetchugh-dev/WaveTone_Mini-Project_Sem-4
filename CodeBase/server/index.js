@@ -881,6 +881,11 @@ async function _dbJoinRoom(roomId, socketId, alias, deviceId) {
     const room = await Room.findById(roomId);
     if (!room) return;
 
+    if (!room.isActive) {
+      room.isActive = true;
+      console.log(`[DB Sync] Reactivating room ${roomId} on participant join`);
+    }
+
     room.participants.push({
       userId: socketId,
       alias: alias,
