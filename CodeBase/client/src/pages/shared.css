@@ -1199,8 +1199,9 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   letter-spacing: 0.04em;
 }
 .badge-live {
-  background: rgba(56, 189, 248, 0.12);
+  background: rgba(56, 189, 248, 0.15);
   color: var(--speaking);
+  border: 1px solid rgba(56, 189, 248, 0.35);
 }
 .badge-count {
   background: var(--card-border);
@@ -1211,6 +1212,7 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 [data-theme="light"] .badge-live {
   background: rgba(10, 46, 80, 0.08);
   color: #0A2E50;
+  border-color: transparent;
 }
 [data-theme="light"] .badge-count {
   background: rgba(10, 46, 80, 0.08);
