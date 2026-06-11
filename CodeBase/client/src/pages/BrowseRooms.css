@@ -103,7 +103,7 @@
   min-width: 240px;
   transition: border 0.2s, background 0.2s;
   position: relative;
-  z-index: 10;
+  z-index: 100;
   margin-left: auto;
 }
 
