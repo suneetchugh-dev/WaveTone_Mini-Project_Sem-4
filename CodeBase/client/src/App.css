@@ -1296,3 +1296,15 @@
     padding: 0.25rem;
   }
 }
+
+/* HP Victus laptop screen size only (shorter desktop/laptop viewports) */
+@media (min-width: 1025px) and (max-height: 960px) {
+  .main-nav.nav-scrolled .nav-logo-img {
+    width: 124px;
+    height: 49px;
+    margin: -6px -1.5rem 0 -1rem;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: none;
+    border-radius: 0;
+  }
+}
