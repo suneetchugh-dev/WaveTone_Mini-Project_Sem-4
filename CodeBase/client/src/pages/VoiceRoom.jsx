@@ -10,17 +10,60 @@ import userKickedAudio from '../../../../Assets/Audio/For-VoiceRoom/User-Kicked.
 import userJoinAudio from '../../../../Assets/Audio/For-VoiceRoom/User-join.wav';
 import cannotFindRoomAudio from '../../../../Assets/Audio/For-VoiceRoom/cannot-find-room-OR-server-down.wav';
 
-const playSound = (audioSrc) => {
+let audioCtx = null;
+const soundBuffers = {};
+
+const getAudioContext = () => {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioCtx;
+};
+
+const preloadSound = async (src) => {
+  if (!src || soundBuffers[src]) return;
   try {
-    const audio = new Audio(audioSrc);
-    audio.volume = 0.45;
-    audio.play().catch((err) => {
-      console.warn('Audio playback prevented or failed:', err);
-    });
+    const response = await fetch(src);
+    const arrayBuffer = await response.arrayBuffer();
+    const ctx = getAudioContext();
+    const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+    soundBuffers[src] = audioBuffer;
   } catch (err) {
-    console.warn('Failed to initialize Audio object:', err);
+    console.warn(`Failed to preload sound: ${src}`, err);
   }
 };
+
+const playSound = async (audioSrc) => {
+  try {
+    const ctx = getAudioContext();
+    if (ctx.state === 'suspended') {
+      await ctx.resume().catch(() => {});
+    }
+
+    const buffer = soundBuffers[audioSrc];
+    if (!buffer) {
+      // Fallback: standard Audio if buffer is not loaded or fetch failed
+      const audio = new Audio(audioSrc);
+      audio.volume = 0.45;
+      audio.play().catch((err) => console.warn('Audio playback fallback prevented:', err));
+      return;
+    }
+
+    // Play decoded buffer instantly
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+
+    const gainNode = ctx.createGain();
+    gainNode.gain.value = 0.45;
+
+    source.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    source.start(0);
+  } catch (err) {
+    console.warn('Failed to play sound via Web Audio API:', err);
+  }
+};
+
 
 
 const ICE_SERVERS = {
@@ -62,6 +105,23 @@ function VoiceRoom() {
         }
       };
     }, [roomId]);
+
+    // Preload voice room sound effects on component mount for zero-latency playback
+    useEffect(() => {
+      const sounds = [
+        exitBtnAudio,
+        otherParticipantJoinedAudio,
+        userKickedAudio,
+        userJoinAudio,
+        cannotFindRoomAudio,
+      ];
+      sounds.forEach((src) => {
+        preloadSound(src).catch((err) => {
+          console.warn('Error preloading voice room sound:', err);
+        });
+      });
+    }, []);
+
 
     useEffect(() => {
       const handleClickOutside = (event) => {
