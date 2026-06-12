@@ -3291,12 +3291,29 @@ body[data-route='voice-room'] .page-section {
   left: 0 !important;
   transform: none !important;
   width: 100% !important;
+  min-width: 220px !important;
   box-sizing: border-box !important;
+  padding: 0.5rem 0.4rem !important;
 }
 
-.form-submenu.no-scroll .mic-submenu-list {
-  max-height: none !important;
-  overflow-y: visible !important;
+.form-submenu.open-up {
+  top: auto !important;
+  bottom: calc(100% + 6px) !important;
+}
+
+.form-submenu .mic-submenu-list {
+  max-height: 280px !important;
+  overflow-y: auto !important;
+}
+
+.form-submenu .mic-submenu-item {
+  padding: 0.4rem 0.6rem !important;
+  font-size: 0.68rem !important;
+}
+
+.form-submenu .mic-submenu-header {
+  padding: 0.15rem 0.5rem 0.35rem 0.5rem !important;
+  margin-bottom: 0.35rem !important;
 }
 
 /* Custom Select Buttons style overrides */
@@ -3348,7 +3365,7 @@ button.form-select {
 /* Moderation Engine Cards Hover Styling */
 .moderation-card {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
@@ -3364,6 +3381,7 @@ button.form-select {
   transition: opacity 0.4s ease;
   pointer-events: none;
   z-index: 0;
+  border-radius: inherit;
 }
 
 /* Ensure card children stack above the gradient overlay */
@@ -3381,6 +3399,10 @@ button.form-select {
 
 .moderation-card:hover::before {
   opacity: 1;
+}
+
+.no-hover-translate:hover {
+  transform: none !important;
 }
 
 /* Light theme moderation card styles */

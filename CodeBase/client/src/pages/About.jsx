@@ -91,6 +91,21 @@ function About() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sandboxTextLangGroupRef.current && !sandboxTextLangGroupRef.current.contains(event.target)) {
+        setShowSandboxTextLangMenu(false);
+      }
+      if (sandboxAudioLangGroupRef.current && !sandboxAudioLangGroupRef.current.contains(event.target)) {
+        setShowSandboxAudioLangMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const steps = useMemo(() => ([
     { step: '01', title: 'Create or Browse', desc: 'Pick a topic and open a room, or join one that matches your vibe.', icon: '🚪' },
     { step: '02', title: 'Choose an Alias', desc: 'Use a random name or set your own — still anonymous.', icon: '🎭' },
@@ -109,6 +124,13 @@ function About() {
   const [audioFile, setAudioFile] = useState(null);
   const [sandboxResult, setSandboxResult] = useState(null);
   const [sandboxLoading, setSandboxLoading] = useState(false);
+
+  // Submenu states & refs for sandbox
+  const [showSandboxTextLangMenu, setShowSandboxTextLangMenu] = useState(false);
+  const [showSandboxAudioLangMenu, setShowSandboxAudioLangMenu] = useState(false);
+
+  const sandboxTextLangGroupRef = useRef(null);
+  const sandboxAudioLangGroupRef = useRef(null);
 
   const [metrics, setMetrics] = useState({
     totalFlagged: 0,
@@ -401,7 +423,7 @@ function About() {
 
             <motion.div variants={staggerItemVariants} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
               {/* Sandbox Card */}
-              <div className="card moderation-card" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="card moderation-card no-hover-translate" style={{ display: 'flex', flexDirection: 'column', zIndex: (showSandboxTextLangMenu || showSandboxAudioLangMenu) ? 10 : 1 }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Interactive Sandbox</h3>
               
               {/* Tab Selector */}
@@ -439,23 +461,81 @@ function About() {
                   </div>
                   
                   <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                    <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                    <div className="form-group" style={{ flex: 1, marginBottom: 0, position: 'relative' }} ref={sandboxTextLangGroupRef}>
                       <label htmlFor="sandbox-lang" className="sr-only">Language Context</label>
-                      <select
+                      <button
                         id="sandbox-lang"
-                        className="form-select"
-                        value={sandboxLang}
-                        onChange={(e) => setSandboxLang(e.target.value)}
-                        style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem' }}
+                        type="button"
+                        className={`form-select${showSandboxTextLangMenu ? ' menu-open' : ''}`}
+                        onClick={() => setShowSandboxTextLangMenu(prev => !prev)}
+                        style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem', height: '100%' }}
+                        aria-haspopup="listbox"
+                        aria-expanded={showSandboxTextLangMenu}
                       >
-                        <option value="en">English</option>
-                        <option value="auto">Multilingual Auto</option>
-                        <option value="es">Spanish (Español)</option>
-                        <option value="fr">French (Français)</option>
-                        <option value="de">German (Deutsch)</option>
-                        <option value="hi">Hindi (हिंदी)</option>
-                        <option value="pt">Portuguese (Português)</option>
-                      </select>
+                        <span>
+                          {sandboxLang === 'en' ? 'English' :
+                           sandboxLang === 'auto' ? 'Multilingual Auto' :
+                           sandboxLang === 'es' ? 'Spanish (Español)' :
+                           sandboxLang === 'fr' ? 'French (Français)' :
+                           sandboxLang === 'de' ? 'German (Deutsch)' :
+                           sandboxLang === 'hi' ? 'Hindi (हिंदी)' :
+                           sandboxLang === 'pt' ? 'Portuguese (Português)' : sandboxLang}
+                        </span>
+                        <svg 
+                          className="form-select-caret" 
+                          width="12" 
+                          height="12" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                      </button>
+
+                      {showSandboxTextLangMenu && (
+                        <div className="mic-submenu form-submenu open-up">
+                          <div className="mic-submenu-header">
+                            Language Context
+                          </div>
+                          <div className="mic-submenu-list">
+                            {[
+                              { value: 'en', label: 'English' },
+                              { value: 'auto', label: 'Multilingual Auto' },
+                              { value: 'es', label: 'Spanish (Español)' },
+                              { value: 'fr', label: 'French (Français)' },
+                              { value: 'de', label: 'German (Deutsch)' },
+                              { value: 'hi', label: 'Hindi (हिंदी)' },
+                              { value: 'pt', label: 'Portuguese (Português)' }
+                            ].map(lang => {
+                              const isSelected = sandboxLang === lang.value;
+                              return (
+                                <button
+                                  key={lang.value}
+                                  type="button"
+                                  onClick={() => {
+                                    setSandboxLang(lang.value);
+                                    setShowSandboxTextLangMenu(false);
+                                  }}
+                                  className={`mic-submenu-item${isSelected ? ' selected' : ''}`}
+                                >
+                                  <span className="mic-submenu-checkmark">
+                                    {isSelected && (
+                                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                      </svg>
+                                    )}
+                                  </span>
+                                  <span className="mic-submenu-label">{lang.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                     
                     <button
@@ -471,39 +551,136 @@ function About() {
               ) : (
                 <form onSubmit={handleAudioSandboxSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
                   <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <label htmlFor="sandbox-audio" className="form-label" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Select Audio File (WAV, MP3)</label>
-                    <input
-                      id="sandbox-audio"
-                      type="file"
-                      accept=".wav,.mp3"
-                      onChange={(e) => setAudioFile(e.target.files[0])}
-                      className="form-input"
-                      style={{ borderRadius: '12px', fontSize: '0.88rem', padding: '0.5rem', color: 'var(--text-secondary)' }}
-                      required
-                    />
+                    <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Select Audio File (WAV, MP3)</label>
+                    
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        id="sandbox-audio"
+                        type="file"
+                        accept=".wav,.mp3"
+                        onChange={(e) => setAudioFile(e.target.files[0])}
+                        style={{ display: 'none' }}
+                        required
+                      />
+                      
+                      <label 
+                        htmlFor="sandbox-audio"
+                        className="form-input"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          borderRadius: '12px',
+                          fontSize: '0.82rem',
+                          padding: '0.62rem 0.8rem',
+                          color: audioFile ? 'lightseagreen' : 'var(--text-secondary)',
+                          cursor: 'pointer',
+                          border: '1.5px dashed rgba(56, 189, 248, 0.25)',
+                          background: 'rgba(255, 255, 255, 0.01)',
+                          transition: 'all 0.3s ease',
+                          fontWeight: audioFile ? '600' : '400',
+                          minHeight: '38px',
+                          boxSizing: 'border-box'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.5)';
+                          e.currentTarget.style.background = 'rgba(56, 189, 248, 0.03)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.25)';
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.01)';
+                        }}
+                      >
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '240px' }}>
+                          {audioFile ? `📁 ${audioFile.name}` : 'Click to upload audio...'}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', padding: '0.2rem 0.5rem', background: 'rgba(56, 189, 248, 0.1)', color: '#ffffff', borderRadius: '6px', fontWeight: 600 }}>
+                          Browse
+                        </span>
+                      </label>
+                    </div>
+                    
                     <p style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', margin: '0.2rem 0 0 0' }}>
                       Supports WAV and MP3 files. Try uploading the <strong>jfk.wav</strong> quote file from the server folder!
                     </p>
                   </div>
                   
                   <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                    <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                    <div className="form-group" style={{ flex: 1, marginBottom: 0, position: 'relative' }} ref={sandboxAudioLangGroupRef}>
                       <label htmlFor="sandbox-lang-audio" className="sr-only">Language Context</label>
-                      <select
+                      <button
                         id="sandbox-lang-audio"
-                        className="form-select"
-                        value={sandboxLang}
-                        onChange={(e) => setSandboxLang(e.target.value)}
-                        style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem' }}
+                        type="button"
+                        className={`form-select${showSandboxAudioLangMenu ? ' menu-open' : ''}`}
+                        onClick={() => setShowSandboxAudioLangMenu(prev => !prev)}
+                        style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem', height: '100%' }}
+                        aria-haspopup="listbox"
+                        aria-expanded={showSandboxAudioLangMenu}
                       >
-                        <option value="en">English</option>
-                        <option value="auto">Multilingual Auto</option>
-                        <option value="es">Spanish (Español)</option>
-                        <option value="fr">French (Français)</option>
-                        <option value="de">German (Deutsch)</option>
-                        <option value="hi">Hindi (हिंदी)</option>
-                        <option value="pt">Portuguese (Português)</option>
-                      </select>
+                        <span>
+                          {sandboxLang === 'en' ? 'English' :
+                           sandboxLang === 'auto' ? 'Multilingual Auto' :
+                           sandboxLang === 'es' ? 'Spanish (Español)' :
+                           sandboxLang === 'fr' ? 'French (Français)' :
+                           sandboxLang === 'de' ? 'German (Deutsch)' :
+                           sandboxLang === 'hi' ? 'Hindi (हिंदी)' :
+                           sandboxLang === 'pt' ? 'Portuguese (Português)' : sandboxLang}
+                        </span>
+                        <svg 
+                          className="form-select-caret" 
+                          width="12" 
+                          height="12" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                      </button>
+
+                      {showSandboxAudioLangMenu && (
+                        <div className="mic-submenu form-submenu open-up">
+                          <div className="mic-submenu-header">
+                            Language Context
+                          </div>
+                          <div className="mic-submenu-list">
+                            {[
+                              { value: 'en', label: 'English' },
+                              { value: 'auto', label: 'Multilingual Auto' },
+                              { value: 'es', label: 'Spanish (Español)' },
+                              { value: 'fr', label: 'French (Français)' },
+                              { value: 'de', label: 'German (Deutsch)' },
+                              { value: 'hi', label: 'Hindi (हिंदी)' },
+                              { value: 'pt', label: 'Portuguese (Português)' }
+                            ].map(lang => {
+                              const isSelected = sandboxLang === lang.value;
+                              return (
+                                <button
+                                  key={lang.value}
+                                  type="button"
+                                  onClick={() => {
+                                    setSandboxLang(lang.value);
+                                    setShowSandboxAudioLangMenu(false);
+                                  }}
+                                  className={`mic-submenu-item${isSelected ? ' selected' : ''}`}
+                                >
+                                  <span className="mic-submenu-checkmark">
+                                    {isSelected && (
+                                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                      </svg>
+                                    )}
+                                  </span>
+                                  <span className="mic-submenu-label">{lang.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                     
                     <button
@@ -574,53 +751,66 @@ function About() {
             </div>
 
               {/* Benchmark Runner Card */}
-              <div className="card moderation-card" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="card moderation-card no-hover-translate" style={{ display: 'flex', flexDirection: 'column', zIndex: 1 }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Bulk Benchmark Test Suite</h3>
-              <p style={{ margin: '0 0 1rem 0', fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+              <p style={{ margin: '0 0 1.5rem 0', fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                 Test the filters against {BENCHMARK_SUITE.length} pre-compiled scenarios including leet-speak, spaces, Spanish, French, German, and Hindi.
               </p>
 
-              <button
-                onClick={runBenchmark}
-                disabled={benchmarkRunning}
-                className="home-btn home-btn-solid"
-                style={{ width: '100%', justifyContent: 'center', marginBottom: '1rem' }}
-              >
-                {benchmarkRunning ? 'Running Test Suite...' : 'Run Benchmark Suite'}
-              </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <button
+                  onClick={runBenchmark}
+                  disabled={benchmarkRunning}
+                  className="home-btn home-btn-solid"
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  {benchmarkRunning ? 'Running Test Suite...' : 'Run Benchmark Suite'}
+                </button>
 
-              {benchmarkMetrics && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Accuracy</span>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.accuracy}%</span>
+                {benchmarkMetrics && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.4rem', background: 'rgba(255,255,255,0.02)', padding: '0.65rem 0.4rem', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
+                      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.62rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Accuracy</span>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.accuracy}%</span>
+                      </div>
+                      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.62rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Precision</span>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.precision}%</span>
+                      </div>
+                      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.62rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Recall</span>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.recall}%</span>
+                      </div>
+                      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.62rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>F1-Score</span>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.f1Score}</span>
+                      </div>
                     </div>
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Precision</span>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.precision}%</span>
-                    </div>
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Recall</span>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.recall}%</span>
-                    </div>
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>F1-Score</span>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'lightseagreen' }}>{benchmarkMetrics.f1Score}</span>
+                    
+                    <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '0.2rem' }}>
+                      <span style={{ fontSize: '0.68rem', padding: '0.15rem 0.45rem', background: 'rgba(56, 189, 248, 0.05)', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.15)', color: 'var(--text-secondary)' }}>
+                        TP: <strong style={{ color: 'lightseagreen' }}>{benchmarkMetrics.tp}</strong>
+                      </span>
+                      <span style={{ fontSize: '0.68rem', padding: '0.15rem 0.45rem', background: 'rgba(56, 189, 248, 0.05)', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.15)', color: 'var(--text-secondary)' }}>
+                        TN: <strong style={{ color: 'lightseagreen' }}>{benchmarkMetrics.tn}</strong>
+                      </span>
+                      <span style={{ fontSize: '0.68rem', padding: '0.15rem 0.45rem', background: 'rgba(56, 189, 248, 0.05)', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.15)', color: 'var(--text-secondary)' }}>
+                        FP: <strong style={{ color: 'lightseagreen' }}>{benchmarkMetrics.fp}</strong>
+                      </span>
+                      <span style={{ fontSize: '0.68rem', padding: '0.15rem 0.45rem', background: 'rgba(56, 189, 248, 0.05)', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.15)', color: 'var(--text-secondary)' }}>
+                        FN: <strong style={{ color: 'lightseagreen' }}>{benchmarkMetrics.fn}</strong>
+                      </span>
                     </div>
                   </div>
-                  
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', textAlign: 'center' }}>
-                    Results: TP: <span style={{ color: 'lightseagreen', fontWeight: 600 }}>{benchmarkMetrics.tp}</span> | TN: <span style={{ color: 'lightseagreen', fontWeight: 600 }}>{benchmarkMetrics.tn}</span> | FP: <span style={{ color: 'lightseagreen', fontWeight: 600 }}>{benchmarkMetrics.fp}</span> | FN: <span style={{ color: 'lightseagreen', fontWeight: 600 }}>{benchmarkMetrics.fn}</span>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
               </div>
             </motion.div>
 
           {/* Benchmark results table */}
           {benchmarkResults.length > 0 && (
-            <motion.div variants={staggerItemVariants} className="card moderation-card" style={{ marginBottom: '2rem', overflowX: 'auto' }}>
+            <motion.div variants={staggerItemVariants} className="card moderation-card no-hover-translate" style={{ marginBottom: '2rem', overflowX: 'auto' }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Benchmark Suite Breakdown</h3>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
                 <thead>
@@ -656,7 +846,7 @@ function About() {
           )}
 
           {/* Flagged logs queue */}
-          <motion.div variants={staggerItemVariants} className="card moderation-card" style={{ overflowX: 'auto' }}>
+          <motion.div variants={staggerItemVariants} className="card moderation-card no-hover-translate" style={{ overflowX: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
               <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Moderator Review Queue</h3>
               <button onClick={fetchLogs} style={{ background: 'none', border: 'none', color: 'var(--speaking)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
