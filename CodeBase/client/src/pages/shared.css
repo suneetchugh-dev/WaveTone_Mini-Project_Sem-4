@@ -3252,3 +3252,65 @@ body[data-route='voice-room'] .page-section {
   border-color: rgba(10, 46, 80, 0.2) !important;
   box-shadow: 0 8px 24px rgba(10, 46, 80, 0.1) !important;
 }
+
+/* Custom Form Dropdowns styled like the Voice Room Mic selector */
+.form-submenu {
+  bottom: auto !important;
+  top: calc(100% + 6px) !important;
+  left: 0 !important;
+  transform: none !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.form-submenu.no-scroll .mic-submenu-list {
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+/* Custom Select Buttons style overrides */
+button.form-select {
+  background-image: none !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 1rem;
+}
+
+/* Caret icon styles and transition */
+.form-select-caret {
+  color: var(--text-tertiary);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1), color 0.38s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Rotate caret and change color when dropdown is open */
+.form-select.menu-open .form-select-caret {
+  transform: rotate(180deg);
+  color: var(--speaking);
+}
+
+/* Custom select dropdown active/open state outline */
+.form-select.menu-open {
+  border-color: var(--speaking) !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15) !important;
+  background-color: rgba(56, 189, 248, 0.02) !important;
+}
+
+/* Page Load Entry Animations (using 'both' to prevent initial flash) */
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.delay-100 { animation-delay: 0.1s !important; }
+.delay-200 { animation-delay: 0.2s !important; }
+.delay-300 { animation-delay: 0.3s !important; }
+.delay-400 { animation-delay: 0.4s !important; }
+.delay-500 { animation-delay: 0.5s !important; }
+

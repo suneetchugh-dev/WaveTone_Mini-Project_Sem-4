@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import './shared.css';
@@ -22,6 +22,32 @@ function CreateRoom() {
   const [isBubbling, setIsBubbling] = useState(false);
   const [activeRoomId, setActiveRoomId] = useState(null);
   const navigate = useNavigate();
+
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showMaxUsersMenu, setShowMaxUsersMenu] = useState(false);
+
+  const categoryGroupRef = useRef(null);
+  const languageGroupRef = useRef(null);
+  const maxUsersGroupRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (categoryGroupRef.current && !categoryGroupRef.current.contains(event.target)) {
+        setShowCategoryMenu(false);
+      }
+      if (languageGroupRef.current && !languageGroupRef.current.contains(event.target)) {
+        setShowLanguageMenu(false);
+      }
+      if (maxUsersGroupRef.current && !maxUsersGroupRef.current.contains(event.target)) {
+        setShowMaxUsersMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     document.title = 'Create Room - WaveTone';
@@ -154,13 +180,66 @@ function CreateRoom() {
             </span>
           </div>
 
-          <div className="form-group">
+          <div className="form-group" ref={categoryGroupRef} style={{ position: 'relative' }}>
             <label htmlFor="room-category" className="form-label">Category</label>
-            <select id="room-category" name="category" className={`form-select${errorField === 'category' ? ' input-error' : ''}`} aria-label="Category" value={category} onChange={(e) => { setCategory(e.target.value); setError(null); setErrorField(null); }}>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
+            <button
+              id="room-category"
+              type="button"
+              className={`form-select${errorField === 'category' ? ' input-error' : ''}${showCategoryMenu ? ' menu-open' : ''}`}
+              onClick={() => setShowCategoryMenu(prev => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={showCategoryMenu}
+            >
+              <span>{category}</span>
+              <svg 
+                className="form-select-caret" 
+                width="12" 
+                height="12" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+
+            {showCategoryMenu && (
+              <div className="mic-submenu form-submenu no-scroll">
+                <div className="mic-submenu-header">
+                  Category
+                </div>
+                <div className="mic-submenu-list">
+                  {categories.map(cat => {
+                    const isSelected = category === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => {
+                          setCategory(cat);
+                          setShowCategoryMenu(false);
+                          setError(null);
+                          setErrorField(null);
+                        }}
+                        className={`mic-submenu-item${isSelected ? ' selected' : ''}`}
+                      >
+                        <span className="mic-submenu-checkmark">
+                          {isSelected && (
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          )}
+                        </span>
+                        <span className="mic-submenu-label">{cat}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {category === 'Custom' && (
@@ -183,40 +262,140 @@ function CreateRoom() {
             </div>
           )}
 
-          <div className="form-group">
+          <div className="form-group" ref={languageGroupRef} style={{ position: 'relative' }}>
             <label htmlFor="room-language" className="form-label">Speech Language / Accent</label>
-            <select
+            <button
               id="room-language"
-              name="language"
-              className="form-select"
-              aria-label="Language / Accent"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
+              type="button"
+              className={`form-select${showLanguageMenu ? ' menu-open' : ''}`}
+              onClick={() => setShowLanguageMenu(prev => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={showLanguageMenu}
             >
-              <option value="en">English (Standard)</option>
-              <option value="auto">Multilingual Auto</option>
-              <option value="es">Spanish (Español)</option>
-              <option value="fr">French (Français)</option>
-              <option value="de">German (Deutsch)</option>
-              <option value="hi">Hindi (हिंदी)</option>
-              <option value="pt">Portuguese (Português)</option>
-            </select>
+              <span>
+                {language === 'en' ? 'English (Standard)' :
+                 language === 'auto' ? 'Multilingual Auto' :
+                 language === 'es' ? 'Spanish (Español)' :
+                 language === 'fr' ? 'French (Français)' :
+                 language === 'de' ? 'German (Deutsch)' :
+                 language === 'hi' ? 'Hindi (हिंदी)' :
+                 language === 'pt' ? 'Portuguese (Português)' : language}
+              </span>
+              <svg 
+                className="form-select-caret" 
+                width="12" 
+                height="12" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+
+            {showLanguageMenu && (
+              <div className="mic-submenu form-submenu no-scroll">
+                <div className="mic-submenu-header">
+                  Language / Accent
+                </div>
+                <div className="mic-submenu-list">
+                  {[
+                    { value: 'en', label: 'English (Standard)' },
+                    { value: 'auto', label: 'Multilingual Auto' },
+                    { value: 'es', label: 'Spanish (Español)' },
+                    { value: 'fr', label: 'French (Français)' },
+                    { value: 'de', label: 'German (Deutsch)' },
+                    { value: 'hi', label: 'Hindi (हिंदी)' },
+                    { value: 'pt', label: 'Portuguese (Português)' }
+                  ].map(lang => {
+                    const isSelected = language === lang.value;
+                    return (
+                      <button
+                        key={lang.value}
+                        type="button"
+                        onClick={() => {
+                          setLanguage(lang.value);
+                          setShowLanguageMenu(false);
+                        }}
+                        className={`mic-submenu-item${isSelected ? ' selected' : ''}`}
+                      >
+                        <span className="mic-submenu-checkmark">
+                          {isSelected && (
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          )}
+                        </span>
+                        <span className="mic-submenu-label">{lang.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="form-group">
+          <div className="form-group" ref={maxUsersGroupRef} style={{ position: 'relative' }}>
             <label htmlFor="max-users" className="form-label">Max Participants</label>
-            <select
+            <button
               id="max-users"
-              name="maxUsers"
-              className="form-select"
-              aria-label="Max Participants"
-              value={maxUsers}
-              onChange={(e) => setMaxUsers(Number(e.target.value))}
+              type="button"
+              className={`form-select${showMaxUsersMenu ? ' menu-open' : ''}`}
+              onClick={() => setShowMaxUsersMenu(prev => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={showMaxUsersMenu}
             >
-              {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                <option key={num} value={num}>{num} Participants</option>
-              ))}
-            </select>
+              <span>{maxUsers} Participants</span>
+              <svg 
+                className="form-select-caret" 
+                width="12" 
+                height="12" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+
+            {showMaxUsersMenu && (
+              <div className="mic-submenu form-submenu">
+                <div className="mic-submenu-header">
+                  Max Participants
+                </div>
+                <div className="mic-submenu-list">
+                  {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => {
+                    const isSelected = maxUsers === num;
+                    return (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => {
+                          setMaxUsers(num);
+                          setShowMaxUsersMenu(false);
+                        }}
+                        className={`mic-submenu-item${isSelected ? ' selected' : ''}`}
+                      >
+                        <span className="mic-submenu-checkmark">
+                          {isSelected && (
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          )}
+                        </span>
+                        <span className="mic-submenu-label">{num} Participants</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="toggle-row create-room-toggle">

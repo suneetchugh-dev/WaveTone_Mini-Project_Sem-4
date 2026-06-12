@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import { getModerationMetrics, getFlaggedLogs, testTextModeration, testAudioModeration, submitModerationFeedback } from '../services/api';
 import './shared.css';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+// framer-motion removed: animations/effects intentionally disabled
 
 const BENCHMARK_SUITE = [
   // Clean Cases
@@ -32,12 +35,60 @@ const BENCHMARK_SUITE = [
   { text: "tu bahut bada chutiya hai", expected: "profane", lang: "hi", type: "Hindi Swear" }
 ];
 
+const staggerContainerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+    }
+  }
+};
+
+const staggerItemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  show: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.7, 
+      ease: [0.25, 1, 0.5, 1] 
+    } 
+  }
+};
+
 function About() {
   useEffect(() => {
     document.title = 'About - WaveTone';
     document.body.setAttribute('data-route', 'about');
     return () => {
       document.body.removeAttribute('data-route');
+    };
+  }, []);
+
+  // Rigid, dense, and smooth Custom Scroll using Lenis Scroll
+  useEffect(() => {
+    // Initialize Lenis
+    const lenis = new Lenis({
+      duration: 1.4, // Speed of scroll animation
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Smooth exponential deceleration
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 0.75, // Lower multiplier dampens delta scrolling to feel rigid/dense
+    });
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+      cancelAnimationFrame(rafId);
     };
   }, []);
 
