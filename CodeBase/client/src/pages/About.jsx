@@ -448,7 +448,7 @@ function About() {
                         onChange={(e) => setSandboxLang(e.target.value)}
                         style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem' }}
                       >
-                        <option value="en">English (Standard)</option>
+                        <option value="en">English</option>
                         <option value="auto">Multilingual Auto</option>
                         <option value="es">Spanish (Español)</option>
                         <option value="fr">French (Français)</option>
@@ -496,7 +496,7 @@ function About() {
                         onChange={(e) => setSandboxLang(e.target.value)}
                         style={{ width: '100%', paddingBlock: '0.55rem', fontSize: '0.82rem' }}
                       >
-                        <option value="en">English (Standard)</option>
+                        <option value="en">English</option>
                         <option value="auto">Multilingual Auto</option>
                         <option value="es">Spanish (Español)</option>
                         <option value="fr">French (Français)</option>

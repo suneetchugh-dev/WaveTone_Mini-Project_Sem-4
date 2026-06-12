@@ -2340,15 +2340,8 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   color: darkcyan;
 }
 
-/* Device-specific override for Samsung Galaxy S8+ */
-@media (width: 360px) and (height: 740px) {
-  body[data-route='create-room'] .page-title {
-    margin-top: 4.5rem !important;
-  }
-}
-
-/* iPhone SE 1st Gen (320x568) */
-@media (width: 320px) and (height: 568px) {
+/* Range-based query: Short Mobile screens (e.g. iPhone SE 1st Gen 320x568, etc. - height <= 600px) */
+@media (max-width: 600px) and (max-height: 600px) {
   body[data-route='create-room'] .page-container {
     padding-top: 0.1rem !important;
     padding-bottom: 0.1rem !important;
@@ -2357,58 +2350,57 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
     padding: 0.15rem 0.5rem !important;
   }
   body[data-route='create-room'] .page-title {
-    margin-top: 2.6rem !important;
+    margin-top: 4.0rem !important;
     margin-bottom: 0.05rem !important;
     font-size: 1.05rem !important;
   }
   body[data-route='create-room'] .page-subtitle {
-    margin-bottom: 0.2rem !important;
-    font-size: 0.72rem !important;
+    display: none !important;
   }
   body[data-route='create-room'] .create-room-form {
-    margin-top: 0.5rem !important;
+    margin-top: 0.4rem !important;
   }
   .create-room-card {
-    padding: 0.5rem 0.7rem !important;
-    gap: 0.35rem !important;
-    margin-bottom: 0.3rem !important;
+    padding: 0.65rem 0.75rem !important;
+    gap: 0.45rem 0.4rem !important;
+    margin-bottom: 0.4rem !important;
     border-radius: 10px !important;
   }
   .form-group {
-    margin-bottom: 0.2rem !important;
+    margin-bottom: 0.15rem !important;
   }
   body[data-route='create-room'] .form-label {
-    margin-bottom: 0.05rem !important;
-    font-size: 0.62rem !important;
+    margin-bottom: 0.04rem !important;
+    font-size: 0.64rem !important;
   }
   body[data-route='create-room'] .form-input,
   body[data-route='create-room'] .form-select {
-    padding-block: 0.35rem !important;
-    font-size: 0.78rem !important;
+    padding-block: 0.4rem !important;
+    font-size: 0.8rem !important;
   }
   .field-hint {
     margin-top: 0.05rem !important;
     font-size: 0.6rem !important;
   }
   .create-room-toggle {
-    padding-top: 0.35rem !important;
-    margin-top: 0.1rem !important;
+    padding-top: 0.4rem !important;
+    margin-top: 0.12rem !important;
   }
   .create-room-toggle span {
     font-size: 0.76rem !important;
   }
-  .create-room-toggle p {
-    font-size: 0.62rem !important;
+  body[data-route='create-room'] .create-room-toggle p {
+    display: none !important;
   }
   body[data-route='create-room'] .create-room-submit-btn {
-    padding: 0.6rem 1.2rem !important;
-    margin-top: 0.1rem !important;
-    font-size: 0.9rem !important;
+    padding: 0.45rem 1.25rem !important;
+    margin-top: 0.05rem !important;
+    font-size: 0.86rem !important;
   }
 }
 
-/* iPhone SE 2nd & 3rd Gen (375x667) */
-@media (width: 375px) and (height: 667px) {
+/* Range-based query: Medium Mobile screens (e.g. iPhone SE 2nd & 3rd Gen 375x667, Samsung S8+ 360x740, Surface Duo 540x720 - height 601px to 780px) */
+@media (max-width: 600px) and (min-height: 601px) and (max-height: 780px) {
   body[data-route='create-room'] .page-container {
     padding-top: 0.2rem !important;
     padding-bottom: 0.2rem !important;
@@ -2417,34 +2409,33 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
     padding: 0.25rem 0.6rem !important;
   }
   body[data-route='create-room'] .page-title {
-    margin-top: 3.0rem !important;
+    margin-top: 4.8rem !important;
     margin-bottom: 0.1rem !important;
     font-size: 1.15rem !important;
   }
   body[data-route='create-room'] .page-subtitle {
-    margin-bottom: 0.3rem !important;
-    font-size: 0.78rem !important;
+    display: none !important;
   }
   body[data-route='create-room'] .create-room-form {
-    margin-top: 0.8rem !important;
+    margin-top: 0.6rem !important;
   }
   .create-room-card {
-    padding: 0.7rem 0.9rem !important;
-    gap: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
+    padding: 0.8rem 0.95rem !important;
+    gap: 0.55rem 0.5rem !important;
+    margin-bottom: 0.55rem !important;
     border-radius: 12px !important;
   }
   .form-group {
-    margin-bottom: 0.3rem !important;
+    margin-bottom: 0.2rem !important;
   }
   body[data-route='create-room'] .form-label {
-    margin-bottom: 0.1rem !important;
-    font-size: 0.68rem !important;
+    margin-bottom: 0.08rem !important;
+    font-size: 0.7rem !important;
   }
   body[data-route='create-room'] .form-input,
   body[data-route='create-room'] .form-select {
     padding-block: 0.45rem !important;
-    font-size: 0.82rem !important;
+    font-size: 0.85rem !important;
   }
   .field-hint {
     margin-top: 0.05rem !important;
@@ -2457,28 +2448,68 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   .create-room-toggle span {
     font-size: 0.82rem !important;
   }
-  .create-room-toggle p {
-    font-size: 0.68rem !important;
+  body[data-route='create-room'] .create-room-toggle p {
+    display: none !important;
   }
   body[data-route='create-room'] .create-room-submit-btn {
-    padding: 0.75rem 1.5rem !important;
+    padding: 0.5rem 1.35rem !important;
+    margin-top: 0.08rem !important;
+    font-size: 0.88rem !important;
+  }
+}
+
+/* Range-based query: Taller Mobile / Narrow screens (e.g. iPhone 12 Pro 390x844, Galaxy Z Fold 5 344x882 - height 781px to 900px) */
+@media (max-width: 600px) and (min-height: 781px) and (max-height: 900px) {
+  body[data-route='create-room'] .page-container {
+    padding-top: 0.3rem !important;
+    padding-bottom: 0.3rem !important;
+  }
+  body[data-route='create-room'] .page-section {
+    padding: 0.3rem 0.75rem !important;
+  }
+  body[data-route='create-room'] .page-title {
+    margin-top: 4.8rem !important;
+    margin-bottom: 0.15rem !important;
+    font-size: 1.25rem !important;
+  }
+  body[data-route='create-room'] .page-subtitle {
+    display: none !important;
+  }
+  body[data-route='create-room'] .create-room-form {
+    margin-top: 0.7rem !important;
+  }
+  .create-room-card {
+    padding: 0.9rem 1.05rem !important;
+    gap: 0.7rem 0.6rem !important;
+    margin-bottom: 0.7rem !important;
+    border-radius: 14px !important;
+  }
+  .form-group {
+    margin-bottom: 0.25rem !important;
+  }
+  body[data-route='create-room'] .form-label {
+    margin-bottom: 0.12rem !important;
+    font-size: 0.74rem !important;
+  }
+  body[data-route='create-room'] .form-input,
+  body[data-route='create-room'] .form-select {
+    padding-block: 0.5rem !important;
+    font-size: 0.88rem !important;
+  }
+  .create-room-toggle {
+    padding-top: 0.6rem !important;
     margin-top: 0.2rem !important;
-    font-size: 0.92rem !important;
   }
-}
-
-/* Device-specific override for iPhone 12 / 12 Pro (390x844) */
-@media (width: 390px) and (height: 844px) {
-  body[data-route='create-room'] .page-title {
-    margin-top: 4.5rem !important;
+  .create-room-toggle span {
+    font-size: 0.88rem !important;
   }
-}
-
-/* Device-specific override for Surface Duo (540x720) */
-@media (width: 540px) and (height: 720px) {
-  body[data-route='create-room'] .page-title {
-    margin-top: 2.5rem !important;
-    font-size: 1.8rem !important;
+  body[data-route='create-room'] .create-room-toggle p {
+    display: none !important;
+  }
+  body[data-route='create-room'] .create-room-submit-btn {
+    padding: 0.7rem 1.4rem !important;
+    margin-top: 0.3rem !important;
+    font-size: 0.9rem !important;
   }
 }
 
@@ -3361,6 +3392,70 @@ button.form-select {
   background: linear-gradient(135deg, #e6f0f9 0%, #f9fbfd 100%) !important;
   border-color: rgba(10, 46, 80, 0.25) !important;
   box-shadow: 0 8px 36px 0 rgba(10, 46, 80, 0.18), 0 3px 12px 0 rgba(10, 46, 80, 0.13) !important;
+}
+
+@media (min-width: 769px) and (max-height: 850px) {
+  /* Layout tuning for shorter desktop/laptop viewports (e.g. HP Victus 15.6" scaled) */
+  body[data-route='create-room'] .app-bg {
+    padding-top: 72px !important;
+  }
+  body[data-route='create-room'] .page-section {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  body[data-route='create-room'] .page-title {
+    margin-top: 1rem !important;
+    margin-bottom: 0.2rem !important;
+    font-size: 1.6rem !important;
+  }
+  body[data-route='create-room'] .page-subtitle {
+    margin-bottom: 0.8rem !important;
+    font-size: 0.9rem !important;
+  }
+  .create-room-card {
+    padding: 1.35rem !important;
+    gap: 1.1rem 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .create-room-toggle {
+    padding-top: 1rem !important;
+    margin-top: 0.25rem !important;
+  }
+  body[data-route='create-room'] .create-room-submit-btn {
+    padding-block: 0.7rem !important;
+    margin-top: 0.4rem !important;
+  }
+}
+
+@media (min-width: 769px) and (max-height: 650px) {
+  /* Highly compact layout for very short desktop/laptop screens (like Nest Hub 1024x600) */
+  body[data-route='create-room'] .app-bg {
+    padding-top: 88px !important;
+  }
+  body[data-route='create-room'] .page-title {
+    margin-top: 1.2rem !important;
+    font-size: 1.4rem !important;
+  }
+  body[data-route='create-room'] .page-subtitle {
+    display: none !important;
+  }
+  .create-room-card {
+    padding: 1.2rem !important;
+    gap: 0.9rem 1rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+  body[data-route='create-room'] .create-room-toggle p {
+    display: none !important;
+  }
+  .create-room-toggle {
+    padding-top: 0.6rem !important;
+    margin-top: 0.15rem !important;
+  }
+  body[data-route='create-room'] .create-room-submit-btn {
+    padding-block: 0.55rem !important;
+    margin-top: 0.12rem !important;
+    font-size: 0.88rem !important;
+  }
 }
 
 

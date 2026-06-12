@@ -292,7 +292,7 @@ function CreateRoom() {
           )}
 
           <div className="form-group" ref={languageGroupRef} style={{ position: 'relative' }}>
-            <label htmlFor="room-language" className="form-label">Speech Language / Accent</label>
+            <label htmlFor="room-language" className="form-label">Speech Language</label>
             <button
               id="room-language"
               type="button"
@@ -302,7 +302,7 @@ function CreateRoom() {
               aria-expanded={showLanguageMenu}
             >
               <span>
-                {language === 'en' ? 'English (Standard)' :
+                {language === 'en' ? 'English' :
                  language === 'auto' ? 'Multilingual Auto' :
                  language === 'es' ? 'Spanish (Español)' :
                  language === 'fr' ? 'French (Français)' :
@@ -328,11 +328,11 @@ function CreateRoom() {
             {showLanguageMenu && (
               <div className="mic-submenu form-submenu no-scroll">
                 <div className="mic-submenu-header">
-                  Language / Accent
+                  Speech Language
                 </div>
                 <div className="mic-submenu-list">
                   {[
-                    { value: 'en', label: 'English (Standard)' },
+                    { value: 'en', label: 'English' },
                     { value: 'auto', label: 'Multilingual Auto' },
                     { value: 'es', label: 'Spanish (Español)' },
                     { value: 'fr', label: 'French (Français)' },
