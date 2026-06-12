@@ -3,6 +3,28 @@ import { useParams, useNavigate } from 'react-router-dom';
 import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import './shared.css';
 import { getRoomById } from '../services/api';
+import { motion } from 'framer-motion';
+
+const staggerContainerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    }
+  }
+};
+
+const staggerItemVariants = {
+  hidden: { opacity: 0 },
+  show: { 
+    opacity: 1, 
+    transition: { 
+      duration: 0.6, 
+      ease: 'easeOut' 
+    } 
+  }
+};
 
 const RANDOM_ALIASES = ['Echo', 'Wave', 'Drift', 'Haze', 'Pulse', 'Nova', 'Storm', 'Blaze', 'Frost', 'Sonic'];
 
@@ -124,11 +146,18 @@ function JoinRoom() {
   return (
     <>
       <AmbientVideoBackground variant="subtle" />
-      <section className="page-section">
-        <h2 className="page-title">Join Room</h2>
-        <p className="page-subtitle">You're about to enter an anonymous voice session.</p>
+      <motion.section 
+        className="page-section"
+        variants={staggerContainerVariants}
+        initial="hidden"
+        animate="show"
+      >
+        <motion.div variants={staggerItemVariants}>
+          <h2 className="page-title">Join Room</h2>
+          <p className="page-subtitle">You're about to enter an anonymous voice session.</p>
+        </motion.div>
 
-      <div className="card join-room-card participants-card-with-lamp" style={{ marginBottom: '1.2rem' }}>
+      <motion.div className="card join-room-card participants-card-with-lamp" style={{ marginBottom: '1.2rem' }} variants={staggerItemVariants}>
         {/* Lamp visual effect wrapper */}
         <div className="voice-room-lamp-wrapper">
           <div className="voice-room-lamp-beam-left"></div>
@@ -172,10 +201,10 @@ function JoinRoom() {
             />
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {hasActiveRoom && (
-        <div className="card active-room-warning-card" style={{ marginBottom: '1.2rem', border: '1.5px solid var(--warning)', background: 'rgba(248,113,113,0.05)' }}>
+        <motion.div className="card active-room-warning-card" style={{ marginBottom: '1.2rem', border: '1.5px solid var(--warning)', background: 'rgba(248,113,113,0.05)' }} variants={staggerItemVariants}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="warning-icon">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
@@ -207,10 +236,11 @@ function JoinRoom() {
               Disconnect & Join
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      <button
+      <motion.button
+        variants={staggerItemVariants}
         className={`home-btn home-btn-solid join-room-submit-btn ${isBubbling ? 'rocket-thrust' : ''}`}
         style={{ width: '100%', justifyContent: 'center', opacity: (isFull || hasActiveRoom) ? 0.5 : 1 }}
         onClick={handleJoin}
@@ -223,8 +253,8 @@ function JoinRoom() {
         </div>
         <svg className="join-room-mic-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
         {isFull ? 'Room is Full' : hasActiveRoom ? 'Already in a Room' : 'Join Voice Room'}
-      </button>
-      </section>
+      </motion.button>
+      </motion.section>
     </>
   );
 }

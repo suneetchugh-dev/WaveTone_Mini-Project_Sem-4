@@ -2,6 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import './shared.css';
 import { getSessionSummary, getAISummary } from '../services/api';
+import { motion } from 'framer-motion';
+
+const staggerContainerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    }
+  }
+};
+
+const staggerItemVariants = {
+  hidden: { opacity: 0 },
+  show: { 
+    opacity: 1, 
+    transition: { 
+      duration: 0.6, 
+      ease: 'easeOut' 
+    } 
+  }
+};
 
 function PostRoomSummary() {
   const { roomId } = useParams();
@@ -90,16 +112,23 @@ function PostRoomSummary() {
   }, [roomId]);
 
   return (
-    <section className="page-section">
-      <h2 className="page-title">Session Summary</h2>
-      <p className="page-subtitle">Here's a recap of your voice session.</p>
+    <motion.section 
+      className="page-section"
+      variants={staggerContainerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={staggerItemVariants}>
+        <h2 className="page-title">Session Summary</h2>
+        <p className="page-subtitle">Here's a recap of your voice session.</p>
+      </motion.div>
 
       {loading ? (
-        <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>Loading summary...</p>
+        <motion.p style={{ color: 'var(--text-secondary)', textAlign: 'center' }} variants={staggerItemVariants}>Loading summary...</motion.p>
       ) : (
         <>
           {/* Stats */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+          <motion.div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }} variants={staggerItemVariants}>
             <div className="card stat-card">
               <div className="stat-value">{summary?.duration ?? '-'}</div>
               <div className="stat-label">Minutes</div>
@@ -112,11 +141,11 @@ function PostRoomSummary() {
               <div className="stat-value">0</div>
               <div className="stat-label">Warnings</div>
             </div>
-          </div>
+          </motion.div>
 
           {/* AI Summary */}
           {(aiLoading || aiSummary) && (
-            <div className="card" style={{ marginBottom: '1.2rem', border: '1.5px solid var(--speaking)', background: 'rgba(56,189,248,0.03)' }}>
+            <motion.div className="card" style={{ marginBottom: '1.2rem', border: '1.5px solid var(--speaking)', background: 'rgba(56,189,248,0.03)' }} variants={staggerItemVariants}>
               <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '0.8rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/><path d="M18 10v2a6 6 0 0 1-12 0v-2"/><path d="M6 20h12"/><path d="M12 16v4"/></svg>
                 AI Conversation Summary
@@ -144,7 +173,7 @@ function PostRoomSummary() {
                   {aiMeta.reason}
                 </p>
               )}
-            </div>
+            </motion.div>
           )}
 
           {/* Speaker Balance */}
@@ -154,7 +183,7 @@ function PostRoomSummary() {
             const totalTime = Object.values(times).reduce((a, b) => a + b, 0) || 1;
             const formatTime = (s) => s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
             return (
-              <div className="card" style={{ marginBottom: '1.2rem' }}>
+              <motion.div className="card" style={{ marginBottom: '1.2rem' }} variants={staggerItemVariants}>
                 <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '1rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
                   Speaker Balance
@@ -181,12 +210,12 @@ function PostRoomSummary() {
                     </div>
                   ))
                 }
-              </div>
+              </motion.div>
             );
           })()}
 
           {/* Details */}
-          <div className="card" style={{ marginBottom: '1.2rem' }}>
+          <motion.div className="card" style={{ marginBottom: '1.2rem' }} variants={staggerItemVariants}>
             <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '0.8rem', fontSize: '1rem' }}>Session Details</h3>
             {summary?.topic && (
               <div className="info-row">
@@ -212,11 +241,11 @@ function PostRoomSummary() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
               <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>No audio was recorded or stored.</span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Participants List */}
           {summary?.participants && summary.participants.length > 0 && (
-            <div className="card" style={{ marginBottom: '1.2rem' }}>
+            <motion.div className="card" style={{ marginBottom: '1.2rem' }} variants={staggerItemVariants}>
               <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '0.8rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 Session Participants ({summary.participants.length})
@@ -261,13 +290,13 @@ function PostRoomSummary() {
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
         </>
       )}
 
       {/* Actions */}
-      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <motion.div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }} variants={staggerItemVariants}>
         <Link to="/browse" className="home-btn home-btn-solid" style={{ width: '220px', padding: '0.75rem 1rem', justifyContent: 'center' }}>
           <div className="bubble-container" aria-hidden="true">
             {[...Array(6)].map((_, i) => (
@@ -285,8 +314,8 @@ function PostRoomSummary() {
           </div>
           Back to Home
         </Link>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }
 

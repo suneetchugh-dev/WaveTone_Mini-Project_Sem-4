@@ -4,7 +4,7 @@ import { getModerationMetrics, getFlaggedLogs, testTextModeration, testAudioMode
 import './shared.css';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
-// framer-motion removed: animations/effects intentionally disabled
+import { motion } from 'framer-motion';
 
 const BENCHMARK_SUITE = [
   // Clean Cases
@@ -46,13 +46,12 @@ const staggerContainerVariants = {
 };
 
 const staggerItemVariants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0 },
   show: { 
     opacity: 1, 
-    y: 0, 
     transition: { 
       duration: 0.7, 
-      ease: [0.25, 1, 0.5, 1] 
+      ease: 'easeOut' 
     } 
   }
 };
@@ -280,12 +279,19 @@ function About() {
   return (
     <>
       <AmbientVideoBackground variant="subtle" />
-      <section className="page-section-wide">
+      <motion.section 
+        className="page-section-wide"
+        variants={staggerContainerVariants}
+        initial="hidden"
+        animate="show"
+      >
         <div style={{ maxWidth: '800px', margin: '0 auto 4rem auto' }}>
-          <h2 className="page-title">About WaveTone</h2>
-          <p className="page-subtitle">Privacy-first, anonymous voice conversations.</p>
+          <motion.div variants={staggerItemVariants}>
+            <h2 className="page-title">About WaveTone</h2>
+            <p className="page-subtitle">Privacy-first, anonymous voice conversations.</p>
+          </motion.div>
 
-          <div className="card card--spaced about-hero-card">
+          <motion.div variants={staggerItemVariants} className="card card--spaced about-hero-card">
             <div className="about-hero">
               <div className="about-hero-content">
                 <h3 className="about-card-title">What is WaveTone?</h3>
@@ -302,9 +308,9 @@ function About() {
                 <li>Ephemeral sessions</li>
               </ul>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="card card--spaced">
+          <motion.div variants={staggerItemVariants} className="card card--spaced">
             <h3 className="about-card-title about-card-title--with-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="mediumaquamarine" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><path d="M22 4 12 14.01l-3-3"/></svg>
               Why WaveTone
@@ -328,9 +334,9 @@ function About() {
               <span>Safety-first moderation</span>
               <span>Designed for short sessions</span>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="card card--spaced">
+          <motion.div variants={staggerItemVariants} className="card card--spaced">
             <h3 className="about-card-title about-card-title--with-icon about-card-title--spaced">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="mediumaquamarine" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
               How It Works
@@ -353,10 +359,10 @@ function About() {
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--card-border)', paddingTop: '3rem', marginTop: '3rem' }}>
+        <motion.div variants={staggerItemVariants} style={{ borderTop: '1px solid var(--card-border)', paddingTop: '3rem', marginTop: '3rem' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h2 className="page-title">Try the Moderation Engine</h2>
             <p className="page-subtitle" style={{ marginBottom: '2rem' }}>
@@ -364,38 +370,38 @@ function About() {
             </p>
 
             {/* Metrics Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Total Flagged Items</span>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>{metrics.totalFlagged}</span>
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Logged across sessions</span>
-            </div>
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Verified Accuracy</span>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>
-                {metrics.accuracyRate}%
-              </span>
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Based on moderator feedback</span>
-            </div>
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>False Positive Rate</span>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>
-                {metrics.falsePositiveRate}%
-              </span>
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Clean flagged as profane</span>
-            </div>
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Active Classifiers</span>
-              <span style={{ fontSize: '1.05rem', fontWeight: 700, color: 'lightseagreen', marginTop: '0.6rem' }}>
-                Dictionary + TF.js
-              </span>
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Whisper Multilingual</span>
-            </div>
-          </div>
+            <motion.div variants={staggerItemVariants} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+              <div className="card moderation-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Total Flagged Items</span>
+                <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>{metrics.totalFlagged}</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Logged across sessions</span>
+              </div>
+              <div className="card moderation-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Verified Accuracy</span>
+                <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>
+                  {metrics.accuracyRate}%
+                </span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Based on moderator feedback</span>
+              </div>
+              <div className="card moderation-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>False Positive Rate</span>
+                <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'lightseagreen' }}>
+                  {metrics.falsePositiveRate}%
+                </span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Clean flagged as profane</span>
+              </div>
+              <div className="card moderation-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Active Classifiers</span>
+                <span style={{ fontSize: '1.05rem', fontWeight: 700, color: 'lightseagreen', marginTop: '0.6rem' }}>
+                  Dictionary + TF.js
+                </span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Whisper Multilingual</span>
+              </div>
+            </motion.div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-            {/* Sandbox Card */}
-            <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
+            <motion.div variants={staggerItemVariants} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+              {/* Sandbox Card */}
+              <div className="card moderation-card" style={{ display: 'flex', flexDirection: 'column' }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Interactive Sandbox</h3>
               
               {/* Tab Selector */}
@@ -567,8 +573,8 @@ function About() {
               )}
             </div>
 
-            {/* Benchmark Runner Card */}
-            <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
+              {/* Benchmark Runner Card */}
+              <div className="card moderation-card" style={{ display: 'flex', flexDirection: 'column' }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Bulk Benchmark Test Suite</h3>
               <p style={{ margin: '0 0 1rem 0', fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                 Test the filters against {BENCHMARK_SUITE.length} pre-compiled scenarios including leet-speak, spaces, Spanish, French, German, and Hindi.
@@ -609,12 +615,12 @@ function About() {
                   </div>
                 </div>
               )}
-            </div>
-          </div>
+              </div>
+            </motion.div>
 
           {/* Benchmark results table */}
           {benchmarkResults.length > 0 && (
-            <div className="card" style={{ marginBottom: '2rem', overflowX: 'auto' }}>
+            <motion.div variants={staggerItemVariants} className="card moderation-card" style={{ marginBottom: '2rem', overflowX: 'auto' }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Benchmark Suite Breakdown</h3>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
                 <thead>
@@ -646,11 +652,11 @@ function About() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </motion.div>
           )}
 
           {/* Flagged logs queue */}
-          <div className="card" style={{ overflowX: 'auto' }}>
+          <motion.div variants={staggerItemVariants} className="card moderation-card" style={{ overflowX: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
               <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Moderator Review Queue</h3>
               <button onClick={fetchLogs} style={{ background: 'none', border: 'none', color: 'var(--speaking)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
@@ -730,10 +736,10 @@ function About() {
                 </tbody>
               </table>
             )}
+            </motion.div>
           </div>
-          </div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     </>
   );
 }

@@ -3314,3 +3314,53 @@ button.form-select {
 .delay-400 { animation-delay: 0.4s !important; }
 .delay-500 { animation-delay: 0.5s !important; }
 
+/* Moderation Engine Cards Hover Styling */
+.moderation-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.moderation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure card children stack above the gradient overlay */
+.moderation-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.moderation-card:hover {
+  background: rgba(56, 189, 248, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 4px 24px 0 rgba(56, 189, 248, 0.13), 0 1.5px 6px 0 rgba(56, 189, 248, 0.09) !important;
+}
+
+.moderation-card:hover::before {
+  opacity: 1;
+}
+
+/* Light theme moderation card styles */
+[data-theme="light"] .moderation-card::before {
+  background: linear-gradient(135deg, rgba(10, 46, 80, 0.05) 0%, transparent 100%);
+}
+
+[data-theme="light"] .moderation-card:hover {
+  background: linear-gradient(135deg, #e6f0f9 0%, #f9fbfd 100%) !important;
+  border-color: rgba(10, 46, 80, 0.25) !important;
+  box-shadow: 0 8px 36px 0 rgba(10, 46, 80, 0.18), 0 3px 12px 0 rgba(10, 46, 80, 0.13) !important;
+}
+
+

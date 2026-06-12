@@ -5,6 +5,30 @@ import './shared.css';
 import AmbientVideoBackground from '../components/AmbientVideoBackground';
 import { getRooms } from '../services/api';
 import { connectSocket } from '../services/socket';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+import { motion } from 'framer-motion';
+
+const staggerContainerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    }
+  }
+};
+
+const staggerItemVariants = {
+  hidden: { opacity: 0 },
+  show: { 
+    opacity: 1, 
+    transition: { 
+      duration: 0.6, 
+      ease: 'easeOut' 
+    } 
+  }
+};
 
 const standardCategories = ['General', 'Study', 'Debate', 'Feedback', 'Chill'];
 const categories = ['All', 'General', 'Study', 'Debate', 'Feedback', 'Chill', 'Other'];
@@ -29,6 +53,32 @@ function BrowseRooms() {
   const navigate = useNavigate();
   const location = useLocation();
   const socket = connectSocket();
+
+  // Rigid, dense, and smooth Custom Scroll using Lenis Scroll
+  useEffect(() => {
+    // Initialize Lenis
+    const lenis = new Lenis({
+      duration: 1.4, // Speed of scroll animation
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Smooth exponential deceleration
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 0.75, // Lower multiplier dampens delta scrolling to feel rigid/dense
+    });
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   useEffect(() => {
     if (location.state?.error) {
@@ -167,37 +217,47 @@ function BrowseRooms() {
   }
 
   return (
-    <section className="page-section-wide">
+    <motion.section 
+      className="page-section-wide"
+      variants={staggerContainerVariants}
+      initial="hidden"
+      animate="show"
+    >
       <AmbientVideoBackground variant="audio-only" showToggleButton={false} />
-      <h1 className="page-title">Browse Rooms</h1>
-      <p className="page-subtitle">Find a conversation that interests you.</p>
+      <motion.div variants={staggerItemVariants}>
+        <h1 className="page-title">Browse Rooms</h1>
+        <p className="page-subtitle">Find a conversation that interests you.</p>
+      </motion.div>
 
       {toastMessage && (
-        <div style={{
-          background: 'rgba(239, 68, 68, 0.1)',
-          border: '1.5px solid #ef4444',
-          borderRadius: '12px',
-          padding: '0.8rem 1.2rem',
-          marginBottom: '1.5rem',
-          color: '#ef4444',
-          fontSize: '0.88rem',
-          fontWeight: 600,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.6rem',
-          animation: 'fadeIn 0.3s ease'
-        }}>
+        <motion.div 
+          variants={staggerItemVariants}
+          style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1.5px solid #ef4444',
+            borderRadius: '12px',
+            padding: '0.8rem 1.2rem',
+            marginBottom: '1.5rem',
+            color: '#ef4444',
+            fontSize: '0.88rem',
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.6rem',
+            animation: 'fadeIn 0.3s ease'
+          }}
+        >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
             <line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
           <span>{toastMessage}</span>
-        </div>
+        </motion.div>
       )}
 
       {/* Join by Code */}
-      <div style={{ marginBottom: '1.5rem' }}>
+      <motion.div variants={staggerItemVariants} style={{ marginBottom: '1.5rem' }}>
         <form onSubmit={handleJoinByCode} className="card join-form" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'nowrap', marginBottom: 0 }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
@@ -226,9 +286,9 @@ function BrowseRooms() {
             {joinError}
           </div>
         )}
-      </div>
+      </motion.div>
 
-      <div className="browse-search-row">
+      <motion.div variants={staggerItemVariants} className="browse-search-row">
         <div className={`browse-search-box${search ? ' searching' : ''}`}>
           <label htmlFor="search-rooms" className="sr-only">Search rooms</label>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -294,9 +354,9 @@ function BrowseRooms() {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
-      <div className="browse-tabs">
+      <motion.div variants={staggerItemVariants} className="browse-tabs">
         {categories.map(cat => (
           <button
             key={cat}
@@ -306,9 +366,9 @@ function BrowseRooms() {
             {cat}
           </button>
         ))}
-      </div>
+      </motion.div>
 
-      <div style={{ position: 'relative', marginTop: '4.5rem' }}>
+      <motion.div variants={staggerItemVariants} style={{ position: 'relative', marginTop: '4.5rem' }}>
         {/* Lamp visual effect wrapper */}
         <div className="voice-room-lamp-wrapper" style={{ height: '220px', top: '0px' }}>
           <div className="voice-room-lamp-beam-left"></div>
@@ -357,7 +417,11 @@ function BrowseRooms() {
                 const count = activeCount(room);
                 const isFull = count >= room.maxUsers;
                 return (
-                  <div className={`room-card${search ? ' search-match' : ''}`} key={room._id}>
+                  <motion.div 
+                    variants={staggerItemVariants}
+                    className={`room-card${search ? ' search-match' : ''}`} 
+                    key={room._id}
+                  >
                     <div className="room-card-header">
                       <span className="badge badge-live">
                         <span className="live-dot" />
@@ -384,14 +448,14 @@ function BrowseRooms() {
                         </button>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
           )}
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }
 
