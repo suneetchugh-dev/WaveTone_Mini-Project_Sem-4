@@ -304,6 +304,12 @@ body[data-route="home"] .page-container {
   }
 }
 
+@media (min-width: 1025px) and (max-height: 960px) {
+  .home-title {
+    font-size: 4.1rem;
+  }
+}
+
 @media (max-width: 680px) {
   .home-actions,
   .home-features {
