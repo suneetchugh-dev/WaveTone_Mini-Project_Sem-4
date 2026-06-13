@@ -1299,6 +1299,31 @@
 
 /* HP Victus laptop screen size only (shorter desktop/laptop viewports) */
 @media (min-width: 1025px) and (max-height: 960px) {
+  .nav-logo-img {
+    width: 145px;
+    height: 55px;
+    object-fit: contain;
+    box-shadow: none;
+    transition: filter .2s ease, transform .2s ease;
+    transform: translateY(-5px);
+    margin: 0rem 1.7rem;
+  }
+
+  .nav-title {
+    margin-left: -3.1rem;
+    transform: translateY(0);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -.03em;
+    border: none;
+    border-radius: 8px;
+    padding: .75rem .5rem .35rem;
+    color: #fff;
+    position: relative;
+    font-family: Space Grotesk, sans-serif;
+    font-feature-settings: var(--font-features);
+  }
+
   .main-nav.nav-scrolled .nav-logo-img {
     width: 124px;
     height: 49px;
@@ -1308,3 +1333,4 @@
     border-radius: 0;
   }
 }
+
