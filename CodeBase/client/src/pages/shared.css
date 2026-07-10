@@ -2719,10 +2719,10 @@ body[data-route='voice-room'] .page-section {
   width: max-content;
   padding: 0.45rem 0.65rem;
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.95);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  background: rgba(30, 33, 40, 0.95);
+  color: floralwhite;
+  border: 1px solid rgba(255, 222, 173, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 8px rgba(255, 222, 173, 0.05);
   font-size: 0.72rem;
   font-weight: 500;
   opacity: 0;
@@ -2733,9 +2733,9 @@ body[data-route='voice-room'] .page-section {
 
 [data-theme="light"] .voiceroom-controls .control-btn-wrapper[data-tooltip]::after {
   background: rgba(255, 255, 255, 0.98);
-  color: #0f172a;
-  border: 1px solid rgba(10, 46, 80, 0.15);
-  box-shadow: 0 4px 12px rgba(10, 46, 80, 0.12);
+  color: #334155;
+  border: 1px solid rgba(71, 85, 105, 0.25);
+  box-shadow: 0 4px 12px rgba(71, 85, 105, 0.12);
 }
 
 .voiceroom-controls .control-btn-wrapper[data-tooltip]:hover::after {
