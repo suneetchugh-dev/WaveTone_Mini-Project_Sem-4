@@ -3702,20 +3702,20 @@ button.form-select {
   font-size: 0.62rem;
   color: var(--premium-border);
   background: rgba(255, 222, 173, 0.07);
-  border: 1px solid rgba(255, 222, 173, 0.18);
   border-radius: 4px;
-  padding: 1.5px 6px;
+  padding: 2px 7px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 0.25rem;
   line-height: 1;
+  box-shadow: 0 2px 6px rgba(255, 222, 173, 0.15);
 }
 
 [data-theme="light"] .host-tag-label {
   color: lightseagreen;
   background: rgba(32, 178, 170, 0.07);
-  border: 1px solid rgba(32, 178, 170, 0.18);
+  box-shadow: 0 2px 6px rgba(32, 178, 170, 0.2);
   opacity: 1;
 }
 
