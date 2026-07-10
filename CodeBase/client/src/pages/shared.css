@@ -3695,4 +3695,21 @@ button.form-select {
   }
 }
 
+/* Host tag label premium themes */
+.host-tag-label {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--premium-border);
+  opacity: 0.85;
+  margin-top: 0.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="light"] .host-tag-label {
+  color: lightseagreen;
+  opacity: 0.95;
+}
+
 

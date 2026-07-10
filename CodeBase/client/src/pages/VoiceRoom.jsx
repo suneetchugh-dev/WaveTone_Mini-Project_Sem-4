@@ -1207,7 +1207,7 @@ function VoiceRoom() {
                       {p.alias}{p.isSelf ? ' (you)' : ''}
                     </div>
                     {isHost && p.isSelf && (
-                      <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--speaking)', opacity: 0.7, marginTop: '0.1rem' }}>Host</span>
+                      <span className="host-tag-label">Host</span>
                     )}
                     {subHosts.some(s => s.socketId === p.socketId) && (
                       <span style={{ display: 'block', fontSize: '0.65rem', color: '#fbbf24', opacity: 0.9, marginTop: '0.1rem' }}>⭐ Sub-Host</span>
