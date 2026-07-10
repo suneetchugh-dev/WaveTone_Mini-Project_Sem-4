@@ -224,9 +224,10 @@
   left: 0;
   right: 0;
   z-index: 50;
-  transition:
-    background 0.35s ease,
-    box-shadow 0.35s ease;
+  transform: translateX(0);
+  border-radius: 0;
+  border: 1px solid transparent;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   width: 100%;
 }
@@ -243,6 +244,7 @@
   gap: 0.65rem;
   text-decoration: none;
   align-items: center;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav-logo-img {
@@ -280,6 +282,7 @@
   display: flex;
   gap: 1.5rem;
   align-items: center;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Nav actions container (home + toggle) */
@@ -289,6 +292,7 @@
   align-items: center;
   margin-left: 1.5rem;
   margin-right: -0.5rem;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav-link {
