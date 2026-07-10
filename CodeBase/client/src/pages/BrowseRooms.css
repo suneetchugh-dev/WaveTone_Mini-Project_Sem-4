@@ -468,7 +468,7 @@
 
 /* Dark mode room join button styling (matches home-btn-solid from "Paste room link" button) */
 [data-theme="dark"] .room-join-link {
-  background: var(--speaking) !important;
+  background: transparent !important;
   color: floralwhite !important;
   font-size: 0.8rem;
   font-weight: 700 !important;
@@ -477,18 +477,22 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s ease;
   border: 1px solid navajowhite !important;
   cursor: pointer;
   text-decoration: none !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 0 20px rgba(56, 189, 248, 0.15),
+    inset 0 0 20px rgba(56, 189, 248, 0.05) !important;
 }
 
 [data-theme="dark"] .room-join-link:hover {
-  background: #0ea5e9 !important;
-  color: floralwhite !important;
-  border-color: navajowhite !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background: #fff !important;
+  color: #0a2e50 !important;
+  border-color: #0a2e50 !important;
+  box-shadow:
+    0 8px 32px rgba(10, 46, 80, 0.2),
+    inset 0 0 20px rgba(56, 189, 248, 0.1) !important;
   transform: translateY(-2px);
 }
 
