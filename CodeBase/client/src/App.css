@@ -6,7 +6,7 @@
 /* Ensure home and theme toggle buttons have consistent border width */
 .nav-home-link,
 .theme-toggle {
-  border: 1.5px solid rgba(56, 189, 248, 0.28);
+  border: 1.5px solid rgba(255, 222, 173, 0.22);
   box-sizing: border-box;
 }
 /* ===== ROOT THEME VARS (dark defaults) ===== */
@@ -492,7 +492,7 @@
 /* ===== THEME TOGGLE ===== */
 .theme-toggle {
   background: transparent;
-  border: 1.5px solid rgba(56, 189, 248, 0.28);
+  border: 1.5px solid rgba(255, 222, 173, 0.22);
   outline: none;
   cursor: pointer;
   margin-left: 0;
@@ -504,7 +504,7 @@
   transition: all 0.2s ease;
   width: 40px;
   height: 40px;
-  color: var(--text-secondary);
+  color: rgba(255, 250, 240, 0.45);
   position: relative;
 }
 .theme-toggle::before {
@@ -515,7 +515,7 @@
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(56, 189, 248, 0.06);
+  background: rgba(255, 222, 173, 0.05);
   transform: translate(-50%, -50%);
   transition: all 0.3s ease;
   z-index: 0;
@@ -582,7 +582,7 @@
 /* Home button */
 .nav-home-link {
   background: transparent;
-  border: 1.5px solid rgba(56, 189, 248, 0.28);
+  border: 1.5px solid rgba(255, 222, 173, 0.22);
   outline: none;
   cursor: pointer;
   display: flex;
@@ -593,7 +593,7 @@
   transition: all 0.2s ease;
   width: 40px;
   height: 40px;
-  color: var(--text-secondary);
+  color: rgba(255, 250, 240, 0.45);
   position: relative;
 }
 .nav-home-link::before {
@@ -604,7 +604,7 @@
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(56, 189, 248, 0.06);
+  background: rgba(255, 222, 173, 0.06);
   transform: translate(-50%, -50%);
   transition: all 0.3s ease;
   z-index: 0;
