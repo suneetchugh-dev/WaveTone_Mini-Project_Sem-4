@@ -252,8 +252,8 @@
 }
 .browse-tab.active {
   background: rgba(56, 189, 248, 0.1);
-  color: var(--speaking);
-  border-color: rgba(56, 189, 248, 0.3);
+  color: var(--premium-text);
+  border-color: var(--premium-border);
 }
 
 /* Room grid - Mobile-first responsive */

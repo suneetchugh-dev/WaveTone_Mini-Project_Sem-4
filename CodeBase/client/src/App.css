@@ -21,6 +21,8 @@
   --text-secondary: #94a3b8;
   --text-tertiary: #64748b;
   --glow: rgba(56, 189, 248, 0.06);
+  --premium-border: navajowhite;
+  --premium-text: floralwhite;
 }
 
 /* Light theme overrides */
@@ -35,6 +37,8 @@
   --text-secondary: #475569;
   --text-tertiary: #5a6a7a;
   --glow: rgba(0, 212, 255, 0.08);
+  --premium-border: rgba(71, 85, 105, 0.45);
+  --premium-text: #334155;
 }
 
 [data-theme="light"] .main-nav {
@@ -1362,12 +1366,12 @@
   }
 }
 
-/* Keyboard accessibility focus outlines using premium brand/steel colors */
-:focus-visible {
+/* Keyboard accessibility focus outlines using premium brand/steel colors (excluding text inputs) */
+:focus-visible:not(input):not(textarea):not(select) {
   outline: 2.5px solid navajowhite !important;
   outline-offset: 3px !important;
 }
-[data-theme="light"] :focus-visible {
+[data-theme="light"] :focus-visible:not(input):not(textarea):not(select) {
   outline: 2.5px solid #334155 !important;
   outline-offset: 3px !important;
 }
