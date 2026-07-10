@@ -145,9 +145,9 @@ function PostRoomSummary() {
 
           {/* AI Summary */}
           {(aiLoading || aiSummary) && (
-            <motion.div className="card" style={{ marginBottom: '1.2rem', border: '1.5px solid var(--speaking)', background: 'rgba(56,189,248,0.03)' }} variants={staggerItemVariants}>
+            <motion.div className="card" style={{ marginBottom: '1.2rem', border: '1.5px solid var(--premium-border)', background: 'var(--premium-bg-subtle)' }} variants={staggerItemVariants}>
               <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '0.8rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/><path d="M18 10v2a6 6 0 0 1-12 0v-2"/><path d="M6 20h12"/><path d="M12 16v4"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--premium-border)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/><path d="M18 10v2a6 6 0 0 1-12 0v-2"/><path d="M6 20h12"/><path d="M12 16v4"/></svg>
                 AI Conversation Summary
               </h3>
               {aiLoading ? (
@@ -185,7 +185,7 @@ function PostRoomSummary() {
             return (
               <motion.div className="card" style={{ marginBottom: '1.2rem' }} variants={staggerItemVariants}>
                 <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '1rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--premium-border)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
                   Speaker Balance
                 </h3>
                 {Object.entries(times)
@@ -201,7 +201,7 @@ function PostRoomSummary() {
                       <div style={{ background: 'var(--card-border)', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
                         <div style={{
                           width: `${(seconds / maxTime) * 100}%`,
-                          background: 'var(--speaking)',
+                          background: 'var(--premium-border)',
                           height: '100%',
                           borderRadius: '4px',
                           transition: 'width 0.5s ease',
@@ -219,22 +219,22 @@ function PostRoomSummary() {
             <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '0.8rem', fontSize: '1rem' }}>Session Details</h3>
             {summary?.topic && (
               <div className="info-row">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--premium-border)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
                 <span>Topic: <strong style={{ color: 'var(--text-primary)' }}>{summary.topic}</strong></span>
               </div>
             )}
             {summary?.category && (
               <div className="info-row">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--premium-border)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/></svg>
                 <span>Category: <strong style={{ color: 'var(--text-primary)' }}>{summary.category}</strong></span>
               </div>
             )}
             <div className="info-row">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--premium-border)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               <span>Duration: {summary?.duration ?? '-'} {summary?.duration !== '-' ? 'minute(s)' : ''}</span>
             </div>
             <div className="info-row">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--premium-border)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               <span>Moderation: Active throughout session</span>
             </div>
             <div className="info-row">
@@ -247,7 +247,7 @@ function PostRoomSummary() {
           {summary?.participants && summary.participants.length > 0 && (
             <motion.div className="card" style={{ marginBottom: '1.2rem' }} variants={staggerItemVariants}>
               <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '0.8rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--speaking)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--premium-border)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 Session Participants ({summary.participants.length})
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -265,7 +265,7 @@ function PostRoomSummary() {
                       width: '32px',
                       height: '32px',
                       borderRadius: '50%',
-                      background: 'var(--speaking)',
+                      background: 'var(--premium-border)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',

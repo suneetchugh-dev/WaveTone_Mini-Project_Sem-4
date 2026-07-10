@@ -179,6 +179,137 @@
   box-shadow: 0 4px 12px rgba(10, 46, 80, 0.12);
 }
 
+/* ===== VOICE ROOM BUTTON TRANSITION ANIMATIONS ===== */
+
+/* Mic button animations - plays once when toggled */
+.mic-btn-voiceroom svg {
+  will-change: transform;
+}
+.mic-btn-voiceroom.active svg {
+  animation: micDance 0.95s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  transform-origin: center bottom;
+}
+.mic-btn-voiceroom:not(.active) svg {
+  animation: micMuteShake 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  transform-origin: center bottom;
+}
+
+@keyframes micDance {
+  0% {
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: scale(1.08) translateY(-2px) rotate(4deg);
+  }
+  60% {
+    transform: scale(0.96) translateY(0) rotate(-3deg);
+  }
+  100% {
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes micMuteShake {
+  0% { transform: rotate(0deg); }
+  15% { transform: rotate(4deg); }
+  30% { transform: rotate(-4deg); }
+  45% { transform: rotate(2.5deg); }
+  60% { transform: rotate(-2.5deg); }
+  75% { transform: rotate(1.2deg); }
+  90% { transform: rotate(-1.2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Copy button animations - swaps squares on click/copied state */
+.copy-btn-voiceroom .copy-rect,
+.copy-btn-voiceroom .copy-path {
+  will-change: transform;
+}
+.copy-btn-voiceroom.active .copy-rect {
+  animation: copyRectSwap 0.55s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+.copy-btn-voiceroom.active .copy-path {
+  animation: copyPathSwap 0.55s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+.copy-btn-voiceroom:not(.active) .copy-rect {
+  animation: copyRectReset 0.45s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+.copy-btn-voiceroom:not(.active) .copy-path {
+  animation: copyPathReset 0.45s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+.copy-btn-voiceroom:not(.active):hover .copy-rect {
+  animation: copyRectHover 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.copy-btn-voiceroom:not(.active):hover .copy-path {
+  animation: copyPathHover 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+@keyframes copyRectReset {
+  0% { transform: translate(-5px, -5px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes copyPathReset {
+  0% { transform: translate(5px, 5px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes copyRectSwap {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-7px, -7px) scale(0.9);
+  }
+  100% {
+    transform: translate(-5px, -5px);
+  }
+}
+
+@keyframes copyPathSwap {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(7px, 7px) scale(1.1);
+  }
+  100% {
+    transform: translate(5px, 5px);
+  }
+}
+
+@keyframes copyRectHover {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-2px, -2px); }
+}
+
+@keyframes copyPathHover {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(2px, 2px); }
+}
+
+/* Exit button animations */
+.exit-btn-voiceroom svg polyline,
+.exit-btn-voiceroom svg line {
+  will-change: transform;
+}
+.exit-btn-voiceroom:hover svg polyline,
+.exit-btn-voiceroom:hover svg line {
+  animation: arrowSlideOut 0.45s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes arrowSlideOut {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 /* Copy Link Button styles for light and dark themes */
 .copy-link-btn {
   display: inline-flex;
@@ -608,6 +739,9 @@ body[data-route='create-room'] .page-subtitle {
   padding-top: 1.5rem;
   margin-top: 0.5rem;
 }
+[data-theme="light"] .create-room-toggle {
+  border-top-color: rgba(10, 46, 80, 0.1);
+}
 
 /* Consolidated Create Room Form Responsiveness */
 @media (max-width: 768px) {
@@ -1033,9 +1167,9 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 [data-theme="light"] .form-input:focus,
 [data-theme="light"] .form-select:focus,
 [data-theme="light"] .form-textarea:focus {
-  border-color: var(--speaking);
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
-  background: rgba(0, 212, 255, 0.02);
+  border-color: #334155;
+  box-shadow: 0 0 0 3px rgba(71, 85, 105, 0.15);
+  background: rgba(71, 85, 105, 0.02);
 }
 .form-input::placeholder, .form-textarea::placeholder {
   color: rgba(255, 255, 255, 0.4);
@@ -1188,11 +1322,11 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 }
 
 [data-theme="light"] .toggle-switch.active {
-  background: linear-gradient(135deg, var(--speaking) 0%, rgba(0, 212, 255, 0.8) 100%);
-  box-shadow: 0 0 16px rgba(0, 212, 255, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, var(--premium-border) 0%, rgba(71, 85, 105, 0.85) 100%);
+  box-shadow: 0 0 16px rgba(71, 85, 105, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 [data-theme="light"] .toggle-switch.active::after {
-  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(71, 85, 105, 0.2);
 }
 
 /* Badge */
@@ -1217,11 +1351,13 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
   color: var(--text-secondary);
 }
 
-/* Light theme badges */
 [data-theme="light"] .badge-live {
-  background: rgba(10, 46, 80, 0.08);
-  color: #0A2E50;
-  border-color: transparent;
+  background: rgba(71, 85, 105, 0.08);
+  color: var(--premium-text);
+  border: 1px solid var(--premium-border);
+}
+[data-theme="light"] .live-dot {
+  background: var(--premium-text);
 }
 [data-theme="light"] .badge-count {
   background: rgba(10, 46, 80, 0.08);
@@ -1248,7 +1384,7 @@ body[data-route='create-room'] .home-btn-solid:focus-visible .create-room-submit
 .stat-value {
   font-size: 2rem;
   font-weight: 800;
-  color: var(--speaking);
+  color: lightseagreen;
 }
 .stat-label {
   font-size: 0.8rem;
@@ -2860,7 +2996,7 @@ body[data-route='voice-room'] .page-section {
 
 [data-theme="light"] .mic-submenu {
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(14, 165, 233, 0.2);
+  border: 1px solid var(--premium-border);
   box-shadow: 0 16px 32px rgba(10, 46, 80, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.7);
 }
 
@@ -3058,7 +3194,7 @@ body[data-route='voice-room'] .page-section {
 
 [data-theme="light"] .mic-submenu {
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(14, 165, 233, 0.2);
+  border: 1px solid var(--premium-border);
   box-shadow: 0 16px 32px rgba(10, 46, 80, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.7);
 }
 
@@ -3167,9 +3303,9 @@ body[data-route='voice-room'] .page-section {
 }
 
 [data-theme="light"] .mic-submenu-indicator-btn:hover {
-  color: #0ea5e9 !important;
-  border-color: #0ea5e9 !important;
-  box-shadow: 0 0 8px rgba(14, 165, 233, 0.2);
+  color: var(--premium-text) !important;
+  border-color: var(--premium-border) !important;
+  box-shadow: 0 0 8px rgba(71, 85, 105, 0.2);
 }
 
 /* Voice Room Lamp Effect for Participants Card */
@@ -3267,13 +3403,13 @@ body[data-route='voice-room'] .page-section {
 /* Disable or soften effect in light theme */
 [data-theme="light"] .participants-card-with-lamp {
   background: #ffffff !important;
-  border: 1.5px solid rgba(6, 182, 212, 0.3) !important;
-  box-shadow: 0 10px 25px rgba(6, 182, 212, 0.1) !important;
+  border: 1.5px solid var(--premium-border) !important;
+  box-shadow: 0 10px 25px rgba(71, 85, 105, 0.08) !important;
 }
 
 [data-theme="light"] .participants-card-with-lamp:hover {
-  border-color: rgba(6, 182, 212, 0.5) !important;
-  box-shadow: 0 12px 30px rgba(6, 182, 212, 0.18) !important;
+  border-color: var(--premium-text) !important;
+  box-shadow: 0 12px 30px rgba(71, 85, 105, 0.15) !important;
 }
 
 [data-theme="light"] .voice-room-lamp-wrapper {
@@ -3376,7 +3512,7 @@ button.form-select {
 }
 
 [data-theme="light"] .form-select.menu-open .form-select-caret {
-  color: var(--speaking);
+  color: var(--premium-border);
 }
 
 /* Custom select dropdown active/open state outline */
@@ -3387,9 +3523,9 @@ button.form-select {
 }
 
 [data-theme="light"] .form-select.menu-open {
-  border-color: var(--speaking) !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15) !important;
-  background-color: rgba(0, 212, 255, 0.02) !important;
+  border-color: var(--premium-border) !important;
+  box-shadow: 0 0 0 3px rgba(71, 85, 105, 0.15) !important;
+  background-color: rgba(71, 85, 105, 0.02) !important;
 }
 
 /* Page Load Entry Animations (using 'both' to prevent initial flash) */

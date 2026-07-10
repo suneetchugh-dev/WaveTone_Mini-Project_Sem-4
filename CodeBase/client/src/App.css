@@ -23,6 +23,7 @@
   --glow: rgba(56, 189, 248, 0.06);
   --premium-border: navajowhite;
   --premium-text: floralwhite;
+  --premium-bg-subtle: rgba(255, 222, 173, 0.03);
 }
 
 /* Light theme overrides */
@@ -39,6 +40,7 @@
   --glow: rgba(0, 212, 255, 0.08);
   --premium-border: rgba(71, 85, 105, 0.45);
   --premium-text: #334155;
+  --premium-bg-subtle: rgba(71, 85, 105, 0.03);
 }
 
 [data-theme="light"] .main-nav {

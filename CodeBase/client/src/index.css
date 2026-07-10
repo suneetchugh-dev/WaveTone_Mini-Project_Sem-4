@@ -25,17 +25,25 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--card-border);
-  border-radius: 6px;
+  border-radius: 99px;
+  transition: background 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-tertiary);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: var(--premium-border);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--premium-text);
 }
 
 ::selection {
