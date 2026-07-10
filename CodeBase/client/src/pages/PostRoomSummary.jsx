@@ -198,7 +198,7 @@ function PostRoomSummary() {
                           {formatTime(seconds)} ({Math.round((seconds / totalTime) * 100)}%)
                         </span>
                       </div>
-                      <div style={{ background: 'var(--card-border)', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
+                      <div style={{ background: 'var(--premium-progress-bg)', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
                         <div style={{
                           width: `${(seconds / maxTime) * 100}%`,
                           background: 'var(--premium-border)',
