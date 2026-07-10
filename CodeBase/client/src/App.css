@@ -309,15 +309,15 @@
   white-space: nowrap;
 }
 .nav-link:hover {
-  color: var(--speaking);
-  background: rgba(56, 189, 248, 0.06);
-  border-color: rgba(56, 189, 248, 0.15);
+  color: floralwhite;
+  background: rgba(255, 222, 173, 0.04);
+  border-color: rgba(255, 222, 173, 0.15);
 }
 .nav-link.active {
-  color: var(--speaking);
-  background: rgba(56, 189, 248, 0.12);
-  border-color: var(--speaking);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+  color: floralwhite;
+  background: rgba(255, 222, 173, 0.08);
+  border-color: navajowhite;
+  box-shadow: 0 0 12px rgba(255, 222, 173, 0.12);
 }
 
 .nav-icon {
@@ -460,10 +460,10 @@
 /* Convert create-room button hover border and shadow to white to match hovered state */
 .nav-cta:hover,
 .nav-cta:focus-visible {
-  color: var(--speaking);
-  background: rgba(56, 189, 248, 0.06);
-  border-color: rgba(56, 189, 248, 0.15);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+  color: floralwhite;
+  background: rgba(255, 222, 173, 0.06);
+  border-color: rgba(255, 222, 173, 0.15);
+  box-shadow: 0 0 12px rgba(255, 222, 173, 0.15);
 }
 
 /* Browse Room button icon animation - revolving magnifying glass */
@@ -556,14 +556,14 @@
   transform: translateY(0);
 }
 .theme-toggle:hover {
-  color: var(--speaking);
-  border-color: rgba(56, 189, 248, 0.5);
+  color: floralwhite;
+  border-color: rgba(255, 222, 173, 0.5);
   box-shadow: none;
 }
 .theme-toggle:focus-visible {
-  color: var(--speaking);
-  border-color: rgba(56, 189, 248, 0.65);
-  outline: 2px solid var(--speaking);
+  color: floralwhite;
+  border-color: rgba(255, 222, 173, 0.65);
+  outline: 2px solid navajowhite;
   outline-offset: 3px;
   box-shadow: none;
 }
@@ -615,14 +615,14 @@
 }
 .nav-home-link:hover {
   background: transparent !important;
-  color: var(--speaking) !important;
-  border-color: rgba(56, 189, 248, 0.5) !important;
+  color: floralwhite !important;
+  border-color: rgba(255, 222, 173, 0.5) !important;
   box-shadow: none !important;
 }
 .nav-home-link.active {
   background: transparent !important;
-  color: var(--speaking) !important;
-  border-color: rgba(56, 189, 248, 0.5) !important;
+  color: floralwhite !important;
+  border-color: rgba(255, 222, 173, 0.5) !important;
 }
 .nav-home-link svg {
   position: relative;
@@ -631,24 +631,24 @@
 
 /* Light theme home button */
 [data-theme="light"] .nav-home-link {
-  color: #64748b;
-  border-color: rgba(10, 46, 80, 0.18);
-  background: transparent;
+  color: #64748b !important;
+  border-color: rgba(10, 46, 80, 0.18) !important;
+  background: transparent !important;
   border-radius: 999px;
 }
 [data-theme="light"] .nav-home-link::before {
   background: rgba(14, 165, 233, 0.05);
 }
 [data-theme="light"] .nav-home-link:hover {
-  color: #0ea5e9;
-  border-color: rgba(14, 165, 233, 0.45);
-  background: transparent;
-  box-shadow: none;
+  color: #0ea5e9 !important;
+  border-color: rgba(14, 165, 233, 0.45) !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 [data-theme="light"] .nav-home-link.active {
-  color: #0ea5e9;
-  border-color: rgba(14, 165, 233, 0.45);
-  background: transparent;
+  color: #0ea5e9 !important;
+  border-color: rgba(14, 165, 233, 0.45) !important;
+  background: transparent !important;
 }
 
 .theme-icon {
@@ -700,8 +700,8 @@
 }
 .home-btn-solid {
   background: transparent;
-  color: #fff;
-  border: 1px solid var(--speaking);
+  color: floralwhite;
+  border: 1px solid navajowhite;
   box-shadow:
     0 0 20px rgba(56, 189, 248, 0.15),
     inset 0 0 20px rgba(56, 189, 248, 0.05);
@@ -724,10 +724,15 @@
     0 0 20px rgba(10, 46, 80, 0.08),
     inset 0 0 20px rgba(10, 46, 80, 0.02);
 }
+.home-btn-outline {
+  background: transparent;
+  color: floralwhite;
+  border: 1px solid navajowhite;
+}
 .home-btn-outline:hover {
-  border-color: var(--speaking);
-  color: var(--text-primary);
-  background: rgba(56, 189, 248, 0.05);
+  border-color: navajowhite;
+  color: floralwhite;
+  background: rgba(255, 222, 173, 0.08);
   /* keep container static to avoid layout shift; icon animates separately */
   z-index: 1;
 }
@@ -1155,16 +1160,16 @@
 }
 
 .main-nav.nav-scrolled .nav-link:hover {
-  color: var(--speaking);
-  background: rgba(56, 189, 248, 0.08);
-  border-color: rgba(56, 189, 248, 0.2);
+  color: floralwhite;
+  background: rgba(255, 222, 173, 0.08);
+  border-color: rgba(255, 222, 173, 0.2);
 }
 
 .main-nav.nav-scrolled .nav-link.active {
-  color: var(--speaking);
-  background: rgba(56, 189, 248, 0.15);
-  border-color: var(--speaking);
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+  color: floralwhite;
+  background: rgba(255, 222, 173, 0.15);
+  border-color: navajowhite;
+  box-shadow: 0 0 16px rgba(255, 222, 173, 0.2);
 }
 
 /* Nav actions adjustments for scrolled state */

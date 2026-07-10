@@ -256,34 +256,27 @@
 }
 .home-btn-solid {
   background: var(--speaking);
-  color: #fff;
-  box-shadow: 0 2px 12px rgba(56,189,248,0.18);
-  border: 1.5px solid transparent;
+  color: floralwhite;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 2px 12px rgba(56,189,248,0.18);
+  border: 1px solid navajowhite;
 }
 .home-btn-solid:hover, .home-btn-solid:focus {
   background: #0ea5e9;
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(56,189,248,0.22);
+  color: floralwhite;
+  border-color: navajowhite;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(56,189,248,0.22);
   /* No transform on hover to avoid layout/scale changes */
-}
-/* Add subtle drop shadow for buttons */
-.home-btn-solid {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.home-btn-solid:hover, .home-btn-solid:focus {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 .home-btn-outline {
   background: transparent;
-  color: var(--speaking);
-  border: 1.5px solid var(--speaking);
+  color: floralwhite;
+  border: 1px solid navajowhite;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .home-btn-outline:hover, .home-btn-outline:focus {
-  background: rgba(56,189,248,0.08);
-  color: #0ea5e9;
-  border-color: #0ea5e9;
+  background: rgba(255, 222, 173, 0.08);
+  color: floralwhite;
+  border-color: navajowhite;
   /* No translate/scale on hover */
 }
 
