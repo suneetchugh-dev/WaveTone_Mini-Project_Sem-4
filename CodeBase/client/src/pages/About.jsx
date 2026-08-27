@@ -849,7 +849,9 @@ function About() {
           <motion.div variants={staggerItemVariants} className="card moderation-card no-hover-translate" style={{ overflowX: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
               <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>Moderator Review Queue</h3>
-              <button onClick={fetchLogs} style={{ background: 'none', border: 'none', color: 'var(--speaking)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
+              <button onClick={fetchLogs} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'color 0.2s ease' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text-primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-secondary)')}>
                 Refresh Logs
               </button>
             </div>
