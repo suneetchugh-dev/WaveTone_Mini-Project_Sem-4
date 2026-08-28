@@ -510,6 +510,13 @@ body[data-route="home"] .page-container {
   box-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
 }
 
+/* Dark theme: warm golden bubbles (no blue) on Create/Browse CTA buttons */
+[data-theme="dark"] .home-btn-solid .bubble,
+[data-theme="dark"] .home-btn-outline .bubble {
+  background: radial-gradient(circle at 30% 30%, #FFE8C8, #FFD9A0);
+  box-shadow: 0 0 15px rgba(255, 217, 160, 0.6);
+}
+
 [data-theme="light"] .bubble {
   background: radial-gradient(circle at 30% 30%, #0284C7, #0369A1);
   box-shadow: 0 0 15px rgba(2, 132, 199, 0.4);

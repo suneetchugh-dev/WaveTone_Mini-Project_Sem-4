@@ -609,3 +609,80 @@
 .ambient-video-backdrop--audio-only {
   display: none;
 }
+
+/* "create one" empty-state link - golden like the box outline, no blur/glow accent */
+.empty-state-link {
+  color: var(--premium-border);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.2s ease;
+}
+.empty-state-link:hover,
+.empty-state-link:focus-visible {
+  opacity: 0.75;
+  color: var(--premium-border);
+}
+
+/* Paste room link/ID card - original look, but no backdrop blur, no cyan/glow outline, no hover translate */
+.join-form {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  box-shadow: none;
+}
+.join-form:hover {
+  transform: none !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+  box-shadow: none;
+}
+.join-form:focus-within {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  box-shadow: none;
+}
+[data-theme="light"] .join-form:hover {
+  transform: none !important;
+  border-color: rgba(10, 46, 80, 0.1) !important;
+  box-shadow: none !important;
+  box-shadow: none;
+}
+
+/* Join button inside the card - no blurred glow, no translate, no cyan flash on selection/hover */
+.join-form .home-btn-solid,
+.join-form .home-btn-solid:hover,
+.join-form .home-btn-solid:focus,
+.join-form .home-btn-solid:focus-visible,
+.join-form .home-btn-solid:active {
+  box-shadow: none !important;
+  transform: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.join-form .home-btn-solid:active,
+.join-form .home-btn-solid:focus,
+.join-form .home-btn-solid:focus-visible {
+  color: floralwhite;
+  border-color: navajowhite;
+  background: #0a2e50;
+}
+[data-theme="light"] .join-form .home-btn-solid:active,
+[data-theme="light"] .join-form .home-btn-solid:focus,
+[data-theme="light"] .join-form .home-btn-solid:focus-visible {
+  color: var(--text-primary);
+  border-color: rgba(10, 46, 80, 0.3);
+  background: rgba(255, 222, 173, 0.08);
+}
+
+/* Join button arrow - no translate/slide animation */
+.join-form-arrow {
+  transform: none !important;
+  transition: none;
+}
+.join-form .home-btn-solid:hover .join-form-arrow,
+.join-form .home-btn-solid:focus-visible .join-form-arrow {
+  transform: none !important;
+  animation: none !important;
+}

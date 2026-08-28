@@ -407,7 +407,7 @@ function BrowseRooms() {
           {!loading && !error && filtered.length === 0 && (
             <div className="empty-state">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-              <p>No rooms found. Try a different search or <Link to="/create" style={{ color: 'var(--speaking)' }}>create one</Link>.</p>
+              <p>No rooms found. Try a different search or <Link to="/create" className="empty-state-link">create one</Link>.</p>
             </div>
           )}
 
